@@ -257,6 +257,85 @@ namespace engine::render
 
     void SDL3GPURenderer::drawParallax(const Camera &camera, const Sprite &sprite, const glm::vec2 &position, const glm::vec2 &scroll_factor, const glm::bvec2 &repeat, const glm::vec2 &scale, double angle)
     {
+        // 1. 基础安全检查
+        if (!_active_pass || !_current_cmd || !_sprite_pipeline || !_res_mgr)
+            return;
+
+        SDL_GPUTexture *gpu_tex = _res_mgr->getGPUTexture(sprite.getTextureId());
+        SDL_GPUSampler *sampler = _res_mgr->getDefaultSampler();
+        if (!gpu_tex || !sampler)
+            return;
+
+        // 2. 准备绘制状态
+        SDL_BindGPUGraphicsPipeline(_active_pass, _sprite_pipeline);
+        SDL_GPUTextureSamplerBinding binding = {gpu_tex, sampler};
+        SDL_BindGPUFragmentSamplers(_active_pass, 0, &binding, 1);
+
+        // 3. 计算基础尺寸和视口信息
+        glm::vec2 sprite_size = sprite.getSize() * scale;
+        glm::vec2 viewport_size = camera.getViewportSize();
+
+        // 应用视差计算：根据相机位置和滚动因子计算在屏幕上的参考位置
+        glm::vec2 position_screen = camera.worldToScreenWithParallax(position, scroll_factor);
+
+        // 4. 计算平铺范围
+        glm::vec2 start, stop;
+
+        // 处理 X 轴平铺
+        if (repeat.x)
+        {
+            start.x = glm::mod(position_screen.x, sprite_size.x) - sprite_size.x;
+            stop.x = viewport_size.x + sprite_size.x; // 多出一块防止边缘闪烁
+        }
+        else
+        {
+            start.x = position_screen.x;
+            stop.x = position_screen.x + sprite_size.x;
+        }
+
+        // 处理 Y 轴平铺
+        if (repeat.y)
+        {
+            start.y = glm::mod(position_screen.y, sprite_size.y) - sprite_size.y;
+            stop.y = viewport_size.y + sprite_size.y;
+        }
+        else
+        {
+            start.y = position_screen.y;
+            stop.y = position_screen.y + sprite_size.y;
+        }
+
+        // 5. 循环绘制（平铺）
+        // 注意：在 GPU 架构中，这里的循环会产生多个 Draw Call。
+        // 如果性能受限，后续可以考虑使用 Instance Drawing（实例化绘制）优化。
+        for (float x = start.x; x < stop.x; x += sprite_size.x)
+        {
+            for (float y = start.y; y < stop.y; y += sprite_size.y)
+            {
+                // 在视差滚动中，由于 camera.worldToScreen 已经包含了相机偏移，
+                // 这里的投影矩阵应该使用正交投影（不再次应用 View 矩阵，因为位置已是屏幕空间）
+                // 或者通过矩阵位移来实现。
+
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f));
+                if (angle != 0.0)
+                {
+                    // 绕中心旋转逻辑
+                    model = glm::translate(model, glm::vec3(0.5f * sprite_size.x, 0.5f * sprite_size.y, 0.0f));
+                    model = glm::rotate(model, glm::radians((float)angle), glm::vec3(0.0f, 0.0f, 1.0f));
+                    model = glm::translate(model, glm::vec3(-0.5f * sprite_size.x, -0.5f * sprite_size.y, 0.0f));
+                }
+                model = glm::scale(model, glm::vec3(sprite_size, 1.0f));
+
+                // 因为位置已经是计算好的屏幕/逻辑空间坐标，直接乘以投影矩阵即可
+                SpritePushConstants constants;
+                constants.mvp = camera.getProjectionMatrix() * model;
+                constants.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+                // 推送当前图块的常量数据并绘制
+                SDL_PushGPUVertexUniformData(_current_cmd, 0, &constants, sizeof(constants));
+                SDL_DrawGPUPrimitives(_active_pass, 6, 1, 0, 0);
+            }
+        }
     }
 
     glm::vec2 SDL3GPURenderer::windowToLogical(float window_x, float window_y) const
@@ -268,12 +347,11 @@ namespace engine::render
         float offset_x = (win_w - _logical_w * scale) * 0.5f;
         float offset_y = (win_h - _logical_h * scale) * 0.5f;
 
-        return { (window_x - offset_x) / scale, (window_y - offset_y) / scale };
+        return {(window_x - offset_x) / scale, (window_y - offset_y) / scale};
     }
 
     void SDL3GPURenderer::clean()
     {
-        
     }
 
     void SDL3GPURenderer::present()

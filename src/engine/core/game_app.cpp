@@ -40,7 +40,41 @@ namespace engine::core
      *
      * @note 此函数处理特殊字符，如 \t (制表符)、\r (回车符) 和 \n (换行符)。
      */
-    GameApp::~GameApp() = default;
+    GameApp::~GameApp()
+    {
+        spdlog::trace("开始清理 GameApp 资源...");
+
+        // 1. 先停掉场景（场景可能持有 GameObject，GameObject 持有纹理引用）
+        _scene_manager.reset();
+
+        // 2. 停掉上下文
+        _context.reset();
+
+        // 3. 【核心修复】在 Renderer (GPU Device) 销毁之前，先清空所有 GPU 资源
+        if (_resource_manager)
+        {
+            spdlog::trace("正在清空 GPU 纹理资源...");
+            _resource_manager->clear();
+            _resource_manager.reset();
+        }
+
+        // 4. 现在销毁渲染器是安全的（它会关闭 SDL_GPUDevice）
+        if (_renderer)
+        {
+            _renderer->clean();
+            _renderer.reset();
+        }
+
+        // 5. 最后关闭窗口和 SDL 系统
+        if (_window)
+        {
+            SDL_DestroyWindow(_window);
+            _window = nullptr;
+        }
+        SDL_Quit();
+
+        spdlog::trace("游戏已安全退出");
+    }
 
     void GameApp::run()
     {
@@ -158,17 +192,11 @@ namespace engine::core
     void GameApp::close()
     {
         spdlog::trace("关闭游戏");
-        if (_renderer)
-        {
-            _renderer->clean();
-        }
-        if (_window)
-        {
-            SDL_DestroyWindow(_window);
-            _window = nullptr;
-        }
-        SDL_Quit();
+        if (!_is_running)
+            return;
+        spdlog::trace("收到关闭信号，准备退出主循环...");
         _is_running = false;
+        // 具体的资源清理交给析构函数处理，保持逻辑单一
     }
     bool GameApp::initConfig()
     {
@@ -299,7 +327,7 @@ namespace engine::core
             }
             else
             {
-                SDL_Renderer* sdl_renderer = SDL_CreateRenderer(_window, nullptr);
+                SDL_Renderer *sdl_renderer = SDL_CreateRenderer(_window, nullptr);
                 if (!sdl_renderer)
                 {
                     spdlog::error("SDL渲染器创建失败，SDL错误信息：{}", SDL_GetError());

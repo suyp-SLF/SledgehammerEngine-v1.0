@@ -38,17 +38,22 @@ namespace engine::core
     class GameApp final
     {
     private:
-        SDL_Window *_window = nullptr;         // SDL窗口指针，用于创建和管理游戏窗口
-        bool _is_running = false;              // 游戏运行状态标志，true表示游戏正在运行
+        SDL_Window *_window = nullptr; // SDL窗口指针，用于创建和管理游戏窗口
+        bool _is_running = false;      // 游戏运行状态标志，true表示游戏正在运行
 
         // 引擎组件
-        std::unique_ptr<engine::core::Time> _time;
+        // 1. 最底层的配置和时间（无依赖）
         std::unique_ptr<engine::core::Config> _config;
-        std::unique_ptr<engine::core::Context> _context; // 游戏上下文
+        std::unique_ptr<engine::core::Time> _time;
+        // 2. 资源管理（依赖设备，但生存期应长于依赖它的渲染组件）
         std::unique_ptr<engine::resource::ResourceManager> _resource_manager;
+        // 3. 渲染器（持有 GPUDevice）
         std::unique_ptr<engine::render::Renderer> _renderer;
+        // 4. 其它功能组件
         std::unique_ptr<engine::render::Camera> _camera;
         std::unique_ptr<engine::input::InputManager> _input_manager;
+        // 5. 依赖以上所有内容的上下文和场景管理（最先析构）
+        std::unique_ptr<engine::core::Context> _context;
         std::unique_ptr<engine::scene::SceneManager> _scene_manager;
 
     public:

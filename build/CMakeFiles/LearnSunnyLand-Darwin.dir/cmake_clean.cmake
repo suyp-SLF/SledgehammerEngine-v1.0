@@ -41,6 +41,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/resource/shader_manager.cpp.o.d"
   "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/resource/texture_manager.cpp.o"
   "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/resource/texture_manager.cpp.o.d"
+  "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/leve_loader.cpp.o"
+  "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/leve_loader.cpp.o.d"
   "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/scene.cpp.o"
   "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/scene.cpp.o.d"
   "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/scene_manager.cpp.o"

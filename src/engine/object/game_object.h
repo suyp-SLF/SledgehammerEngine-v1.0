@@ -21,7 +21,7 @@ namespace engine::object
         std::unordered_map<std::type_index, std::unique_ptr<engine::component::Component>> _components;
 
     public:
-        GameObject(engine::core::Context& context, 
+        GameObject(engine::core::Context &context,
             const std::string &name = "未定义的名字", 
             const std::string &tag = "未定义的标签");
 

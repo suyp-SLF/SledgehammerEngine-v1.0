@@ -7,47 +7,35 @@
 
 namespace engine::render
 {
-    /**
-     * @brief 渲染所有可见的视差背景组件
-     *
-     * 该方法负责批量渲染场景中的所有视差背景组件，包括：
-     * 1. 获取渲染后端和相机引用
-     * 2. 遍历所有视差组件进行渲染
-     * 3. 对每个组件进行可见性检查和变换计算
-     * 4. 通过抽象渲染接口执行实际绘制，支持滚动因子与重复平铺
-     *
-     * @param ctx 引擎上下文对象，提供渲染器和相机访问
-     *
-     * @note 该方法会跳过隐藏的视差组件和没有变换组件的实体
-     * @note scroll_factor 控制背景相对于相机移动的速度比例（0=固定，1=随相机同步移动）
-     * @note repeat 控制纹理在 X/Y 方向上是否无限平铺
-     * @note 通过抽象渲染接口实现跨平台渲染（SDL/Vulkan等）
-     */
     void ParallaxRenderSystem::renderAll(engine::core::Context &ctx)
     {
         auto &renderer = ctx.getRenderer();
         auto &camera = ctx.getCamera();
 
+        // 💡 提示：如果背景层级很多，可以考虑在这里按 Transform 的 Z 轴或手动定义的 Layer 排序
+        // std::sort(_parallaxs.begin(), _parallaxs.end(), ...);
+
         for (auto *comp : _parallaxs)
         {
-            if (comp->isHidden()) continue;
+            // 1. 基础状态过滤
+            if (!comp || comp->isHidden())
+                continue;
+
+            // 2. ⚡️ 核心：按需更新（把原本 update 里的逻辑搬到这）
+            // 内部会检查 version 和 dirty_flags
+            comp->ensureResourcesReady();
 
             auto *transform = comp->getTransformComp();
-            if (!transform) continue;
+            if (!transform)
+                continue;
 
-            const glm::vec2 &pos = transform->getPosition();
-            const glm::vec2 &scale = transform->getScale();
-            double rotation = static_cast<double>(transform->getRotation());
+            // 3. ⚡️ 视口剔除 (Frustum Culling) - 可选
+            // 如果精灵在相机范围外，直接跳过 draw 调用，节省 GPU/CPU 开销
+            if (!camera.isBoxInView(transform->getPosition(), comp->getSprite().getSize())) continue;
 
-            renderer.drawParallax(
-                camera,
-                comp->getSprite(),
-                pos,
-                comp->getScrollFactor(),
-                comp->getRepeat(),
-                scale,
-                rotation
-            );
+            // 4. 调用组件自身的 draw（或者直接在这里调用 renderer）
+            // 建议统一调用 comp->draw(ctx)，因为组件最清楚自己的 offset 怎么加
+            comp->draw(ctx);
         }
     }
 }

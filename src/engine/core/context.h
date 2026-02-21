@@ -3,7 +3,7 @@
 
 // 前置声明
 namespace engine::input { class InputManager; }
-namespace engine::render { class Renderer; class Camera; class SpriteRenderSystem; }
+namespace engine::render { class Renderer; class Camera; class SpriteRenderSystem; class ParallaxRenderSystem; }
 namespace engine::resource { class ResourceManager; }
 
 namespace engine::core
@@ -34,7 +34,7 @@ namespace engine::core
 
         // 获取渲染系统
         engine::render::SpriteRenderSystem &getSpriteRenderSystem() { return *_sprite_render_system; }
-
+        engine::render::ParallaxRenderSystem &getParallaxRenderSystem() { return *_parallax_render_system; }
     private:
         engine::input::InputManager &_input_manager;
         engine::render::Renderer &_renderer;
@@ -42,5 +42,6 @@ namespace engine::core
         engine::resource::ResourceManager &_resource_manager;
 
         std::unique_ptr<engine::render::SpriteRenderSystem> _sprite_render_system;
+        std::unique_ptr<engine::render::ParallaxRenderSystem> _parallax_render_system;
     };
 } // namespace engine::core

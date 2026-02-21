@@ -1199,7 +1199,13 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o: \
   /opt/homebrew/include/glm/detail/func_integer.inl \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/component/../utils/math.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/core/context.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/scene/leve_loader.h \
+  /opt/homebrew/include/nlohmann/json_fwd.hpp \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/map \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__tree \
+  /opt/homebrew/include/nlohmann/detail/abi_macros.hpp \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/sprite_render_system.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/parallax_render_system.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/resource/resource_manager.h \
   /opt/homebrew/include/SDL3/SDL_gpu.h \
   /opt/homebrew/include/SDL3/SDL_stdinc.h \
@@ -1263,4 +1269,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o: \
   /opt/homebrew/include/SDL3/SDL_timer.h \
   /opt/homebrew/include/SDL3/SDL_tray.h \
   /opt/homebrew/include/SDL3/SDL_version.h \
-  /opt/homebrew/include/SDL3/SDL_oldnames.h
+  /opt/homebrew/include/SDL3/SDL_oldnames.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/input/input_manager.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/camera.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/../utils/math.h

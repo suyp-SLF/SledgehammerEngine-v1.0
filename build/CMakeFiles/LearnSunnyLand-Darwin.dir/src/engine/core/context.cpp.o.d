@@ -1135,6 +1135,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/core/context.cpp.o: \
   /opt/homebrew/include/glm/detail/func_integer.inl \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/sprite_render_system.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/parallax_render_system.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../resource/resource_manager.h \
   /opt/homebrew/include/SDL3_ttf/SDL_ttf.h \
   /opt/homebrew/include/SDL3/SDL.h \

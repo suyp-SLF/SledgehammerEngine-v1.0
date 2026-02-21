@@ -3,6 +3,7 @@
 #include "../render/camera.h"
 #include "../render/renderer.h"
 #include "../render/sprite_render_system.h"
+#include "../render/parallax_render_system.h"
 #include "../resource/resource_manager.h"
 #include <spdlog/spdlog.h>
 
@@ -23,8 +24,8 @@ namespace engine::core
         Current = this;
         // 2. 初始化高性能渲染系统
         _sprite_render_system = std::make_unique<engine::render::SpriteRenderSystem>();
-
-        spdlog::trace("Context 初始化完成。静态指针已绑定，SpriteRenderSystem 已创建。");
+        _parallax_render_system = std::make_unique<engine::render::ParallaxRenderSystem>();
+        spdlog::trace("Context 初始化完成。静态指针已绑定，SpriteRenderSystem, ParallaxRenderSystem 已创建。");
     }
     Context::~Context()
     {

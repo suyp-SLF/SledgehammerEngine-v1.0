@@ -20,17 +20,33 @@ namespace engine::component
     {
         friend class engine::object::GameObject;
 
+        /** * @brief 内部脏标记位掩码 */
+        enum ParallaxDirtyFlags : uint8_t
+        {
+            CLEAN        = 0,
+            DIRTY_SIZE   = 1 << 0,
+            DIRTY_OFFSET = 1 << 1
+        };
     public:
         // --- 构造与析构 ---
         ParallaxComponent(const std::string& texture_id,
                           const glm::vec2& scroll_factor = glm::vec2(1.0f, 1.0f),
                           glm::bvec2 repeat = glm::bvec2(false, false));
 
-        virtual ~ParallaxComponent() override = default;
+        virtual ~ParallaxComponent() override;
 
         // 禁止拷贝与移动
         ParallaxComponent(const ParallaxComponent&) = delete;
         ParallaxComponent& operator=(const ParallaxComponent&) = delete;
+
+        // --- 核心渲染流水线 ---
+        
+        /** * @brief 提交渲染命令 */
+        void draw(engine::core::Context &ctx);
+
+        /** * @brief 确保资源与偏移量在渲染前已就绪（Lazy Evaluation） */
+        void ensureResourcesReady();
+
 
         // --- Getter ---
         const engine::render::Sprite& getSprite()       const { return _sprite; }
@@ -45,7 +61,7 @@ namespace engine::component
         void setHidden(bool is_hidden)                       { _is_hidden = is_hidden; }
         
         // 通常视差背景的纹理更换频率较低，但保留此接口以支持动态切换背景
-        void setTexture(const std::string& texture_id)       { _sprite.setTextureId(texture_id); }
+        void setTexture(const std::string& texture_id);
 
     protected:
         // --- 生命周期重写 ---
@@ -57,6 +73,8 @@ namespace engine::component
         // --- 状态追踪 ---
         uint32_t _last_transform_version = 0xFFFFFFFF;
         TransformComponent* _transform_comp = nullptr;
+
+        uint8_t _dirty_flags = DIRTY_SIZE | DIRTY_OFFSET;
 
         // --- 核心数据 ---
         engine::render::Sprite _sprite;

@@ -3,8 +3,12 @@
 #include "../../engine/component/transform_component.h"
 #include "../../engine/component/sprite_component.h"
 #include "../../engine/core/context.h"
+#include "../../engine/scene/leve_loader.h"
 #include "../../engine/render/sprite_render_system.h"
+#include "../../engine/render/parallax_render_system.h"
 #include "../../engine/resource/resource_manager.h"
+#include "../../engine/input/input_manager.h"
+#include "../../engine/render/camera.h"
 #include <spdlog/spdlog.h>
 
 namespace game::scene
@@ -47,6 +51,9 @@ namespace game::scene
     {
         try
         {
+            // 加载关卡（level_loader通常加载完成后即可销毁， 因此不存在成员变量）
+            engine::scene::LevelLoader levelLoader;
+            levelLoader.loadLevel("assets/maps/level1.tmj", this);
             // 初始化场景特定内容
             createTestObject();
 
@@ -80,6 +87,7 @@ namespace game::scene
 
         // 2. 核心：驱动渲染系统绘制所有已注册的 SpriteComponent
         // 这里才是真正去调 Renderer -> SDL_Render/SDL_GPU 的地方
+        _context.getParallaxRenderSystem().renderAll(_context);
         _context.getSpriteRenderSystem().renderAll(_context);
     }
     /**
@@ -94,6 +102,7 @@ namespace game::scene
     void GameScene::handleInput()
     {
         Scene::handleInput();
+        testCamera();
     }
     /**
      * @brief 清理游戏场景资源
@@ -126,9 +135,9 @@ namespace game::scene
     void GameScene::createTestObject()
     {
         spdlog::trace("GameScene 创建测试对象");
-        for (int i = 0; i < 1250; i += 32)
+        for (int i = 0; i < 50; i += 32)
         {
-            for (int j = 0; j < 1250; j += 32)
+            for (int j = 0; j < 50; j += 32)
             {
                 auto test_object = std::make_unique<engine::object::GameObject>(_context, "test_object");
                 // 添加组件
@@ -139,5 +148,14 @@ namespace game::scene
             }
         }
         spdlog::trace("GameScene 测试对象创建完成");
+    }
+
+    void GameScene::testCamera(){
+        auto& camera = engine::core::Context::Current->getCamera();
+        auto& input_manager = engine::core::Context::Current->getInputManager();
+        if(input_manager.isActionDown("move_up")) camera.move(glm::vec2(0, -1));
+        if(input_manager.isActionDown("move_down")) camera.move(glm::vec2(0, 1));
+        if(input_manager.isActionDown("move_left")) camera.move(glm::vec2(-1, 0));
+        if(input_manager.isActionDown("move_right")) camera.move(glm::vec2(1, 0));
     }
 }

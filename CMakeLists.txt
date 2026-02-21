@@ -78,6 +78,7 @@ add_executable(
 
     src/engine/scene/scene.cpp
     src/engine/scene/scene_manager.cpp
+    src/engine/scene/leve_loader.cpp
 
     src/engine/object/game_object.cpp
 
