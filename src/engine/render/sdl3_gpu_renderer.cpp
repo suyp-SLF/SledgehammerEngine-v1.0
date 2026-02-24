@@ -80,15 +80,19 @@ namespace engine::render
         SDL_GPUColorTargetDescription color_desc = {};
         color_desc.format = SDL_GetGPUSwapchainTextureFormat(_device, _window);
 
-        // ⚡️ 修正：使用你的版本中无下划线的成员名 blendfactor 和 blendop
+        // 开启混合
         color_desc.blend_state.enable_blend = true;
+
         color_desc.blend_state.src_color_blendfactor = SDL_GPU_BLENDFACTOR_SRC_ALPHA;
         color_desc.blend_state.dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA;
         color_desc.blend_state.color_blend_op = SDL_GPU_BLENDOP_ADD;
 
+        // Alpha 通道的混合
         color_desc.blend_state.src_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
-        color_desc.blend_state.dst_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ZERO;
+        color_desc.blend_state.dst_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA;
         color_desc.blend_state.alpha_blend_op = SDL_GPU_BLENDOP_ADD;
+
+        color_desc.blend_state.color_write_mask = 0xF; // 确保写入 RGBA 所有通道
 
         // 3. 配置管线描述符
         SDL_GPUGraphicsPipelineCreateInfo pipeline_info = {};
@@ -207,7 +211,6 @@ namespace engine::render
     // }
     void SDL3GPURenderer::drawSprite(const Camera &camera, const Sprite &sprite, const glm::vec2 &position, const glm::vec2 &scale, double angle)
     {
-        // 1. 安全检查
         if (!_active_pass || !_current_cmd || !_sprite_pipeline || !_res_mgr)
             return;
 
@@ -217,37 +220,63 @@ namespace engine::render
         if (!gpu_tex || !sampler)
             return;
 
-        // 2. 绑定管线
-        SDL_BindGPUGraphicsPipeline(_active_pass, _sprite_pipeline);
+        // 获取贴图尺寸
+        glm::vec2 tex_pixel_size = _res_mgr->getTextureSize(sprite.getTextureId());
+        float tex_w = tex_pixel_size.x;
+        float tex_h = tex_pixel_size.y;
 
-        // 3. 变换矩阵计算
-        glm::vec2 size = sprite.getSize() * scale;
+        if (tex_w <= 0.0f || tex_h <= 0.0f)
+            return;
 
-        // ⚡️ 修正：只平移一次
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f));
+        // --- 变换矩阵计算 ---
+        glm::vec2 display_size = sprite.getSize() * scale;
 
-        // 如果有旋转，先平移到中心旋转再平移回来，或者简单处理：
+        // ⚡️ 修正：强制物体坐标取整（像素完美对齐）
+        glm::vec2 aligned_pos = glm::floor(position);
+
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(aligned_pos, 0.0f));
         if (angle != 0.0)
         {
+            model = glm::translate(model, glm::vec3(display_size.x * 0.5f, display_size.y * 0.5f, 0.0f));
             model = glm::rotate(model, glm::radians((float)angle), glm::vec3(0.0f, 0.0f, 1.0f));
+            model = glm::translate(model, glm::vec3(-display_size.x * 0.5f, -display_size.y * 0.5f, 0.0f));
         }
-        model = glm::scale(model, glm::vec3(size, 1.0f));
+        model = glm::scale(model, glm::vec3(display_size, 1.0f));
 
-        // ⚡️ 矩阵顺序：Projection * View * Model 是正确的
+        // 矩阵合并：Projection * View * Model
         glm::mat4 mvp = camera.getProjectionMatrix() * camera.getViewMatrix() * model;
 
-        // 4. 绑定贴图
-        SDL_GPUTextureSamplerBinding binding = {gpu_tex, sampler};
-        SDL_BindGPUFragmentSamplers(_active_pass, 0, &binding, 1);
+        // --- UV 矩形计算与防缝隙处理 ---
+        engine::utils::FRect src;
+        auto src_opt = sprite.getSourceRect();
+        if (src_opt.has_value())
+        {
+            src = *src_opt;
+        }
+        else
+        {
+            src.position = glm::vec2(0.0f, 0.0f);
+            src.size = glm::vec2(tex_w, tex_h);
+        }
 
-        // 5. 推送常量
+        // ⚡️ 核心黑科技：UV 微收缩 (Inset)
+        // 给 UV 坐标增加一个极小的偏移量（约 0.01 像素），防止移动时采样到邻居 Tile 的边缘。
+        const float epsilon = 0.005f;
+
         SpritePushConstants constants;
         constants.mvp = mvp;
-        constants.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f); // 确保颜色是 1.0
+        constants.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        constants.uv_rect = glm::vec4(
+            (src.position.x + epsilon) / tex_w,
+            (src.position.y + epsilon) / tex_h,
+            (src.size.x - epsilon * 2.0f) / tex_w,
+            (src.size.y - epsilon * 2.0f) / tex_h);
 
+        // --- 执行绘制 ---
+        SDL_BindGPUGraphicsPipeline(_active_pass, _sprite_pipeline);
+        SDL_GPUTextureSamplerBinding binding = {gpu_tex, sampler};
+        SDL_BindGPUFragmentSamplers(_active_pass, 0, &binding, 1);
         SDL_PushGPUVertexUniformData(_current_cmd, 0, &constants, sizeof(constants));
-
-        // 6. 绘制
         SDL_DrawGPUPrimitives(_active_pass, 6, 1, 0, 0);
     }
 
@@ -266,26 +295,51 @@ namespace engine::render
         if (!gpu_tex || !sampler)
             return;
 
+        // 获取贴图物理尺寸，用于 UV 映射
+        glm::vec2 tex_pixel_size = _res_mgr->getTextureSize(sprite.getTextureId());
+        float tex_w = tex_pixel_size.x;
+        float tex_h = tex_pixel_size.y;
+        if (tex_w <= 0.0f || tex_h <= 0.0f)
+            return;
+
         // 2. 准备绘制状态
         SDL_BindGPUGraphicsPipeline(_active_pass, _sprite_pipeline);
         SDL_GPUTextureSamplerBinding binding = {gpu_tex, sampler};
         SDL_BindGPUFragmentSamplers(_active_pass, 0, &binding, 1);
 
-        // 3. 计算基础尺寸和视口信息
+        // 3. 计算 UV 矩形 (核心：必须要传给常量缓冲)
+        engine::utils::FRect src;
+        auto src_opt = sprite.getSourceRect();
+        if (src_opt.has_value())
+        {
+            src = *src_opt;
+        }
+        else
+        {
+            src.position = glm::vec2(0.0f, 0.0f);
+            src.size = glm::vec2(tex_w, tex_h);
+        }
+
+        // 防缝隙微调
+        const float eps = 0.005f;
+        glm::vec4 uv_rect = glm::vec4(
+            (src.position.x + eps) / tex_w,
+            (src.position.y + eps) / tex_h,
+            (src.size.x - eps * 2.0f) / tex_w,
+            (src.size.y - eps * 2.0f) / tex_h);
+
+        // 4. 计算视口与平铺逻辑
         glm::vec2 sprite_size = sprite.getSize() * scale;
         glm::vec2 viewport_size = camera.getViewportSize();
 
-        // 应用视差计算：根据相机位置和滚动因子计算在屏幕上的参考位置
+        // 计算屏幕参考位置
         glm::vec2 position_screen = camera.worldToScreenWithParallax(position, scroll_factor);
 
-        // 4. 计算平铺范围
         glm::vec2 start, stop;
-
-        // 处理 X 轴平铺
         if (repeat.x)
         {
             start.x = glm::mod(position_screen.x, sprite_size.x) - sprite_size.x;
-            stop.x = viewport_size.x + sprite_size.x; // 多出一块防止边缘闪烁
+            stop.x = viewport_size.x + sprite_size.x;
         }
         else
         {
@@ -293,7 +347,6 @@ namespace engine::render
             stop.x = position_screen.x + sprite_size.x;
         }
 
-        // 处理 Y 轴平铺
         if (repeat.y)
         {
             start.y = glm::mod(position_screen.y, sprite_size.y) - sprite_size.y;
@@ -305,33 +358,28 @@ namespace engine::render
             stop.y = position_screen.y + sprite_size.y;
         }
 
-        // 5. 循环绘制（平铺）
-        // 注意：在 GPU 架构中，这里的循环会产生多个 Draw Call。
-        // 如果性能受限，后续可以考虑使用 Instance Drawing（实例化绘制）优化。
+        // 5. 循环绘制
         for (float x = start.x; x < stop.x; x += sprite_size.x)
         {
             for (float y = start.y; y < stop.y; y += sprite_size.y)
             {
-                // 在视差滚动中，由于 camera.worldToScreen 已经包含了相机偏移，
-                // 这里的投影矩阵应该使用正交投影（不再次应用 View 矩阵，因为位置已是屏幕空间）
-                // 或者通过矩阵位移来实现。
+                // 像素对齐
+                glm::vec2 draw_pos = glm::floor(glm::vec2(x, y));
 
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f));
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(draw_pos, 0.0f));
                 if (angle != 0.0)
                 {
-                    // 绕中心旋转逻辑
                     model = glm::translate(model, glm::vec3(0.5f * sprite_size.x, 0.5f * sprite_size.y, 0.0f));
                     model = glm::rotate(model, glm::radians((float)angle), glm::vec3(0.0f, 0.0f, 1.0f));
                     model = glm::translate(model, glm::vec3(-0.5f * sprite_size.x, -0.5f * sprite_size.y, 0.0f));
                 }
                 model = glm::scale(model, glm::vec3(sprite_size, 1.0f));
 
-                // 因为位置已经是计算好的屏幕/逻辑空间坐标，直接乘以投影矩阵即可
                 SpritePushConstants constants;
                 constants.mvp = camera.getProjectionMatrix() * model;
                 constants.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+                constants.uv_rect = uv_rect; // ⚡️ 修正：必须把计算好的 UV 传给 Shader
 
-                // 推送当前图块的常量数据并绘制
                 SDL_PushGPUVertexUniformData(_current_cmd, 0, &constants, sizeof(constants));
                 SDL_DrawGPUPrimitives(_active_pass, 6, 1, 0, 0);
             }

@@ -41,8 +41,8 @@
         "target_fps": 60
     },
     "window": {
-        "camer_width": 1280,
-        "camera_height": 720,
+        "camera_width": 640,
+        "camera_height": 360,
         "height": 1080,
         "logical_height": 720,
         "logical_width": 1280,

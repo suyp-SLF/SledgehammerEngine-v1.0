@@ -149,6 +149,11 @@ namespace engine::core
             _is_running = false;
             return;
         }
+        // 2. ⚡️ 补全：将事件处理权传递给当前场景
+        if (_scene_manager)
+        {
+            _scene_manager->handleInput();
+        }
     }
 
     /**
@@ -333,7 +338,6 @@ namespace engine::core
                     spdlog::error("SDL渲染器创建失败，SDL错误信息：{}", SDL_GetError());
                     return false;
                 }
-
                 // 设置VSync
                 int vsync_mode = _config->_vsync_enabled ? SDL_RENDERER_VSYNC_ADAPTIVE : SDL_RENDERER_VSYNC_DISABLED;
                 SDL_SetRenderVSync(sdl_renderer, vsync_mode);
@@ -419,61 +423,4 @@ namespace engine::core
         spdlog::trace("初始化场景管理器成功");
         return true;
     }
-    // void GameApp::test()
-    // {
-    //     _resource_manager->loadTexture("assets/textures/Actors/eagle-attack.png");
-    //     _resource_manager->loadFont("assets/fonts/VonwaonBitmap-16px.ttf", 32);
-    // }
-    // void GameApp::testRenderer()
-    // {
-    //     engine::render::Sprite sprite_world("assets/textures/Actors/frog.png");
-    //     engine::render::Sprite sprite_world1("assets/textures/Items/apple.png");
-    //     engine::render::Sprite sprite_ui("assets/textures/UI/buttons/Start1.png");
-    //     engine::render::Sprite sprite_parallax("assets/textures/Layers/back.png");
-
-    //     static float rotation = 0.0f;
-    //     rotation += 0.1f;
-
-    //     _renderer->drawParallax(*_camera, sprite_parallax, glm::vec2(100, 100), glm::vec2(0.5f, 0.5f), glm::bvec2(true, false));
-    //     _renderer->drawSprite(*_camera, sprite_world, glm::vec2(200, 200), glm::vec2(1.0f, 1.0f), rotation);
-    //     _renderer->drawSprite(*_camera, sprite_world1, glm::vec2(200, 200), glm::vec2(1.0f, 1.0f), rotation);
-    //     _renderer->drawUISprite(sprite_ui, glm::vec2(100, 100));
-    // }
-    // void GameApp::testCamera()
-    // {
-    //     auto key_state = SDL_GetKeyboardState(nullptr);
-    //     if (key_state[SDL_SCANCODE_UP])
-    //         _camera->move(glm::vec2(0, -1));
-    //     if (key_state[SDL_SCANCODE_DOWN])
-    //         _camera->move(glm::vec2(0, 1));
-    //     if (key_state[SDL_SCANCODE_LEFT])
-    //         _camera->move(glm::vec2(-1, 0));
-    //     if (key_state[SDL_SCANCODE_RIGHT])
-    //         _camera->move(glm::vec2(1, 0));
-    // }
-    // void GameApp::testInputManager()
-    // {
-    //     std::vector<std::string> actions = {
-    //         "move_up",
-    //         "move_down",
-    //         "move_left",
-    //         "move_right",
-    //         "attack",
-    //     };
-    //     for (const auto &action : actions)
-    //     {
-    //         if (_input_manager->isActionPressed(action))
-    //         {
-    //             spdlog::info("Action {} is pressed", action);
-    //         }
-    //         if (_input_manager->isActionReleased(action))
-    //         {
-    //             spdlog::info("Action {} is released", action);
-    //         }
-    //         if (_input_manager->isActionDown(action))
-    //         {
-    //             spdlog::info("Action {} is held", action);
-    //         }
-    //     }
-    // }
 } // namespace engine

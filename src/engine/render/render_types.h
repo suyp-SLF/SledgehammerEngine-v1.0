@@ -20,6 +20,7 @@ namespace engine::render
     struct SpritePushConstants {
         glm::mat4 mvp;   // 64 字节 (4x4 矩阵)
         glm::vec4 color; // 16 字节 (RGBA)
+        glm::vec4 uv_rect; // 对应 vec4 uv_rect
         // 当前已用 80 字节，还剩 48 字节可用于 UV 动画等扩展
     };
 

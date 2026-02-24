@@ -5,7 +5,6 @@
 #include <optional>
 namespace engine::render
 {
-    // class SDL_FRect;
     class Sprite final
     {
     private:
@@ -15,6 +14,13 @@ namespace engine::render
         bool _is_flipped = false;
 
     public:
+        /**
+         * 默认构造函数
+         */
+        Sprite() = default;
+        /**
+         * 构造函数
+         */
         Sprite(const std::string &texture_id, const std::optional<engine::utils::FRect> &source_rect = std::nullopt, bool is_flipped = false)
             : _texture_id(texture_id),
               _source_rect(source_rect),

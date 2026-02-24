@@ -38,6 +38,7 @@ namespace engine::component
 
     public:
         // --- 构造与析构 ---
+        SpriteComponent(engine::render::Sprite &&sprite);
         SpriteComponent(const std::string &texture_id,
                         engine::utils::Alignment alignment = engine::utils::Alignment::NONE,
                         std::optional<engine::utils::FRect> source_rect_opt = std::nullopt,

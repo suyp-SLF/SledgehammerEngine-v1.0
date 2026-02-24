@@ -25,6 +25,8 @@ namespace engine::resource
             sampler_info.min_filter = SDL_GPU_FILTER_NEAREST;
             sampler_info.mag_filter = SDL_GPU_FILTER_NEAREST;
             sampler_info.mipmap_mode = SDL_GPU_SAMPLERMIPMAPMODE_NEAREST;
+
+            // ⚡️ 核心修正：防止采样器在 1.0 边缘处采样到对面的像素
             sampler_info.address_mode_u = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE;
             sampler_info.address_mode_v = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE;
             sampler_info.address_mode_w = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE;

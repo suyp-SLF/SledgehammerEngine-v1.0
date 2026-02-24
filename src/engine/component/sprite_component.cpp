@@ -10,6 +10,12 @@
 
 namespace engine::component
 {
+    SpriteComponent::SpriteComponent(engine::render::Sprite &&sprite)
+        : _sprite(std::move(sprite))
+    {
+        spdlog::trace("创建 SpriteComponent，纹理ID: {}", sprite.getTextureId());
+    }
+
     SpriteComponent::SpriteComponent(const std::string &texture_id,
                                      engine::utils::Alignment alignment,
                                      std::optional<engine::utils::FRect> source_rect_opt,
@@ -81,12 +87,13 @@ namespace engine::component
         }
     }
 
-    void SpriteComponent::draw(engine::core::Context& ctx)
+    void SpriteComponent::draw(engine::core::Context &ctx)
     {
         // 渲染前最后同步资源与偏移
         ensureResourcesReady();
 
-        if (!_transform_comp || _is_hidden) return;
+        if (!_transform_comp || _is_hidden)
+            return;
 
         const glm::vec2 &pos = _transform_comp->getPosition();
         const glm::vec2 &scale = _transform_comp->getScale();
@@ -96,7 +103,7 @@ namespace engine::component
         ctx.getRenderer().drawSprite(
             ctx.getCamera(),
             _sprite,
-            pos + _offset, 
+            pos + _offset,
             scale,
             rotation);
     }
@@ -105,15 +112,16 @@ namespace engine::component
 
     void SpriteComponent::setAlignment(engine::utils::Alignment archor)
     {
-        if (_alignment == archor) return;
+        if (_alignment == archor)
+            return;
         _alignment = archor;
         _dirty_flags |= DIRTY_OFFSET;
     }
 
     void SpriteComponent::setFlipped(bool flipped)
     {
-         _sprite.setFlipped(flipped);
-         // Flipped 状态直接在渲染时由 _sprite 提供给渲染器，无需重算 Offset
+        _sprite.setFlipped(flipped);
+        // Flipped 状态直接在渲染时由 _sprite 提供给渲染器，无需重算 Offset
     }
 
     void SpriteComponent::setSpriteById(const std::string &texture_id, std::optional<engine::utils::FRect> source_rect_opt)
@@ -141,7 +149,7 @@ namespace engine::component
 
         const glm::vec2 &scale = _transform_comp->getScale();
 
-        // 
+        //
         switch (_alignment)
         {
         case engine::utils::Alignment::CENTER:
@@ -188,7 +196,7 @@ namespace engine::component
         {
             _sprite_size = _context->getResourceManager().getTextureSize(_sprite.getTextureId());
         }
-        
+
         _sprite.setSize(_sprite_size);
         spdlog::trace("Sprite 尺寸更新: {}x{}", _sprite_size.x, _sprite_size.y);
     }

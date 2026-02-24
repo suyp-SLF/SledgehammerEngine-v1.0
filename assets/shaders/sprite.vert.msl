@@ -48,6 +48,7 @@ struct PushConstants
 {
     float4x4 mvp;
     float4 color;
+    float4 uv_rect;
 };
 
 constant spvUnsafeArray<float2, 6> _19 = spvUnsafeArray<float2, 6>({ float2(0.0), float2(1.0, 0.0), float2(0.0, 1.0), float2(0.0, 1.0), float2(1.0, 0.0), float2(1.0) });
@@ -62,7 +63,7 @@ vertex main0_out main0(constant PushConstants& pc [[buffer(0)]], uint gl_VertexI
 {
     main0_out out = {};
     float2 pos = _19[int(gl_VertexIndex)];
-    out.outUV = pos;
+    out.outUV = (pos * pc.uv_rect.zw) + pc.uv_rect.xy;
     out.gl_Position = pc.mvp * float4(pos, 0.0, 1.0);
     return out;
 }

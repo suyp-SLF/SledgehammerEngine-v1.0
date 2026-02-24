@@ -6,6 +6,7 @@
 #include "../../engine/scene/leve_loader.h"
 #include "../../engine/render/sprite_render_system.h"
 #include "../../engine/render/parallax_render_system.h"
+#include "../../engine/render/tilelayer_render_system.h"
 #include "../../engine/resource/resource_manager.h"
 #include "../../engine/input/input_manager.h"
 #include "../../engine/render/camera.h"
@@ -89,6 +90,7 @@ namespace game::scene
         // 这里才是真正去调 Renderer -> SDL_Render/SDL_GPU 的地方
         _context.getParallaxRenderSystem().renderAll(_context);
         _context.getSpriteRenderSystem().renderAll(_context);
+        _context.getTilelayerRenderSystem().renderAll(_context);
     }
     /**
      * @brief 处理游戏场景的输入事件

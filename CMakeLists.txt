@@ -68,13 +68,16 @@ add_executable(
     src/engine/render/sdl_renderer.cpp
     src/engine/render/vulkan_renderer.cpp
     src/engine/render/sdl3_gpu_renderer.cpp
+    
     src/engine/render/sprite_render_system.cpp
     src/engine/render/parallax_render_system.cpp
+    src/engine/render/tilelayer_render_system.cpp
 
 
     src/engine/component/sprite_component.cpp
     src/engine/component/transform_component.cpp
     src/engine/component/parallax_component.cpp
+    src/engine/component/tilelayer_component.cpp
 
     src/engine/scene/scene.cpp
     src/engine/scene/scene_manager.cpp

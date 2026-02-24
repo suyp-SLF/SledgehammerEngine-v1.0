@@ -85,6 +85,13 @@ namespace engine::resource
         if (_renderer)
         {
             res.sdl_tex = SDL_CreateTextureFromSurface(_renderer, converted);
+
+            if (res.sdl_tex) {
+                SDL_SetTextureBlendMode(res.sdl_tex, SDL_BLENDMODE_BLEND);
+                if(!SDL_SetTextureScaleMode(res.sdl_tex, SDL_SCALEMODE_NEAREST)) {
+                    spdlog::error("无法设置为临近插值: {}", SDL_GetError());
+                }
+            }
         }
 
         if (_gpu_device)

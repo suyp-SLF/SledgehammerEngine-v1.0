@@ -51,15 +51,19 @@ namespace engine::render
     glm::mat4 Camera::getViewMatrix() const
     {
         glm::mat4 view = glm::mat4(1.0f);
-        // 先缩放，再平移
+
+        // ⚡️ 核心：逻辑坐标 _position 是带小数的，
+        // 但渲染偏移必须是整数，否则移动时 Tile 边缘会因采样误差出现缝隙（白线）
+        glm::vec2 renderPos = glm::floor(_position);
+
         view = glm::scale(view, glm::vec3(_zoom, _zoom, 1.0f));
-        // 关键：相机的 position 是 (x, y)，那么物体应该平移 (-x, -y)
-        view = glm::translate(view, glm::vec3(-_position.x, -_position.y, 0.0f));
+        view = glm::translate(view, glm::vec3(-renderPos.x, -renderPos.y, 0.0f));
+
         return view;
     }
     glm::mat4 Camera::getProjectionMatrix() const
     {
-        // 确保 near=0.0f, far=1.0f 
+        // 确保 near=0.0f, far=1.0f
         // 并且 Y 轴是从 0 到 height (向下)
         return glm::ortho(0.0f, _viewport_size.x, _viewport_size.y, 0.0f, 0.0f, 1.0f);
     }

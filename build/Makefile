@@ -177,6 +177,30 @@ src/engine/component/sprite_component.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/component/sprite_component.cpp.s
 .PHONY : src/engine/component/sprite_component.cpp.s
 
+src/engine/component/tilelayer_component.o: src/engine/component/tilelayer_component.cpp.o
+.PHONY : src/engine/component/tilelayer_component.o
+
+# target to build an object file
+src/engine/component/tilelayer_component.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/component/tilelayer_component.cpp.o
+.PHONY : src/engine/component/tilelayer_component.cpp.o
+
+src/engine/component/tilelayer_component.i: src/engine/component/tilelayer_component.cpp.i
+.PHONY : src/engine/component/tilelayer_component.i
+
+# target to preprocess a source file
+src/engine/component/tilelayer_component.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/component/tilelayer_component.cpp.i
+.PHONY : src/engine/component/tilelayer_component.cpp.i
+
+src/engine/component/tilelayer_component.s: src/engine/component/tilelayer_component.cpp.s
+.PHONY : src/engine/component/tilelayer_component.s
+
+# target to generate assembly for a file
+src/engine/component/tilelayer_component.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/component/tilelayer_component.cpp.s
+.PHONY : src/engine/component/tilelayer_component.cpp.s
+
 src/engine/component/transform_component.o: src/engine/component/transform_component.cpp.o
 .PHONY : src/engine/component/transform_component.o
 
@@ -465,6 +489,30 @@ src/engine/render/sprite_render_system.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/sprite_render_system.cpp.s
 .PHONY : src/engine/render/sprite_render_system.cpp.s
 
+src/engine/render/tilelayer_render_system.o: src/engine/render/tilelayer_render_system.cpp.o
+.PHONY : src/engine/render/tilelayer_render_system.o
+
+# target to build an object file
+src/engine/render/tilelayer_render_system.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/tilelayer_render_system.cpp.o
+.PHONY : src/engine/render/tilelayer_render_system.cpp.o
+
+src/engine/render/tilelayer_render_system.i: src/engine/render/tilelayer_render_system.cpp.i
+.PHONY : src/engine/render/tilelayer_render_system.i
+
+# target to preprocess a source file
+src/engine/render/tilelayer_render_system.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/tilelayer_render_system.cpp.i
+.PHONY : src/engine/render/tilelayer_render_system.cpp.i
+
+src/engine/render/tilelayer_render_system.s: src/engine/render/tilelayer_render_system.cpp.s
+.PHONY : src/engine/render/tilelayer_render_system.s
+
+# target to generate assembly for a file
+src/engine/render/tilelayer_render_system.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/tilelayer_render_system.cpp.s
+.PHONY : src/engine/render/tilelayer_render_system.cpp.s
+
 src/engine/render/vulkan_renderer.o: src/engine/render/vulkan_renderer.cpp.o
 .PHONY : src/engine/render/vulkan_renderer.o
 
@@ -744,6 +792,9 @@ help:
 	@echo "... src/engine/component/sprite_component.o"
 	@echo "... src/engine/component/sprite_component.i"
 	@echo "... src/engine/component/sprite_component.s"
+	@echo "... src/engine/component/tilelayer_component.o"
+	@echo "... src/engine/component/tilelayer_component.i"
+	@echo "... src/engine/component/tilelayer_component.s"
 	@echo "... src/engine/component/transform_component.o"
 	@echo "... src/engine/component/transform_component.i"
 	@echo "... src/engine/component/transform_component.s"
@@ -780,6 +831,9 @@ help:
 	@echo "... src/engine/render/sprite_render_system.o"
 	@echo "... src/engine/render/sprite_render_system.i"
 	@echo "... src/engine/render/sprite_render_system.s"
+	@echo "... src/engine/render/tilelayer_render_system.o"
+	@echo "... src/engine/render/tilelayer_render_system.i"
+	@echo "... src/engine/render/tilelayer_render_system.s"
 	@echo "... src/engine/render/vulkan_renderer.o"
 	@echo "... src/engine/render/vulkan_renderer.i"
 	@echo "... src/engine/render/vulkan_renderer.s"
