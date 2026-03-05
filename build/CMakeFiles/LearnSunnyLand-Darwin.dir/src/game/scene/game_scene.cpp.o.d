@@ -1199,7 +1199,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o: \
   /opt/homebrew/include/glm/detail/func_integer.inl \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/component/../utils/math.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/core/context.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/scene/leve_loader.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/scene/level_loader.h \
   /opt/homebrew/include/nlohmann/json.hpp \
   /opt/homebrew/include/nlohmann/adl_serializer.hpp \
   /opt/homebrew/include/nlohmann/detail/abi_macros.hpp \

@@ -32,8 +32,10 @@ namespace engine::component
         enum SpriteDirtyFlags : uint8_t
         {
             CLEAN        = 0,
-            DIRTY_SIZE   = 1 << 0,
-            DIRTY_OFFSET = 1 << 1
+            DIRTY_SIZE   = 1 << 0,  // 逻辑大小变了
+            DIRTY_OFFSET = 1 << 1,  // 渲染偏移变了
+            DIRTY_UV     = 1 << 2,  // 归一化 UV 变了（切换帧或纹理加载完成）
+            DIRTY_ALL    = 0xFF
         };
 
     public:
@@ -61,6 +63,7 @@ namespace engine::component
         void ensureResourcesReady();
 
         // --- Getter ---
+        const glm::vec4& getCachedUV() const { return _cached_uv; }
         const engine::render::Sprite& getSprite()       const { return _sprite; }
         const std::string&            getTextureId()    const { return _sprite.getTextureId(); }
         const glm::vec2               getSpriteSize()   const { return _sprite_size; }
@@ -89,10 +92,10 @@ namespace engine::component
     private:
         // --- 私有辅助计算 ---
         void updateOffset();
-        void updateSpriteSize();
+        void updateSpriteSizeAndUV(); // ⚡️ 合并更新，因为它们都依赖纹理大小
 
         // --- 状态追踪 ---
-        uint8_t  _dirty_flags = CLEAN;
+        uint8_t  _dirty_flags = DIRTY_ALL; // 脏标记位掩码
         uint32_t _last_transform_version = 0xFFFFFFFF; // 追踪 Transform 是否变动
 
         // --- 核心成员数据 ---
@@ -100,6 +103,8 @@ namespace engine::component
         engine::render::Sprite   _sprite;
         engine::utils::Alignment _alignment = engine::utils::Alignment::NONE;
         
+        // 缓存归一化后的 UV: x=U, y=V, z=Width, w=Height (范围 0.0~1.0)
+        glm::vec4 _cached_uv = {0.0f, 0.0f, 1.0f, 1.0f};
         glm::vec2 _sprite_size = {0.0f, 0.0f};
         glm::vec2 _offset      = {0.0f, 0.0f};
         bool      _is_hidden   = false;

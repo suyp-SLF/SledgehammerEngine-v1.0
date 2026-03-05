@@ -3,12 +3,14 @@
 #include "sprite.h"
 #include "../core/context.h"
 #include "../resource/resource_manager.h"
+#include "../component/tilelayer_component.h"
 #include "camera.h"
 #include <spdlog/spdlog.h>
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
+#include <map>
 
 namespace engine::render
 {
@@ -47,88 +49,86 @@ namespace engine::render
             spdlog::error("SDL_CreateGPUDevice 失败: {}", SDL_GetError());
             return;
         }
-        SDL_GPUShaderFormat formats = SDL_GetGPUShaderFormats(_device);
-        if (formats & SDL_GPU_SHADERFORMAT_SPIRV)
-            spdlog::info("支持 SPIRV");
-        if (formats & SDL_GPU_SHADERFORMAT_MSL)
-            spdlog::info("支持 MSL");
-        if (formats & SDL_GPU_SHADERFORMAT_METALLIB)
-            spdlog::info("支持 MetalLib");
         SDL_ClaimWindowForGPUDevice(_device, _window);
+
+        // --- 1. 创建通用的单位矩形顶点缓冲 (一次性创建) ---
+        GPUVertex unit_quad_data[] = {
+            {{0.0f, 0.0f}, {0.0f, 0.0f}}, {{1.0f, 0.0f}, {1.0f, 0.0f}}, {{0.0f, 1.0f}, {0.0f, 1.0f}}, {{0.0f, 1.0f}, {0.0f, 1.0f}}, {{1.0f, 0.0f}, {1.0f, 0.0f}}, {{1.0f, 1.0f}, {1.0f, 1.0f}}};
+
+        SDL_GPUBufferCreateInfo unit_info = {.usage = SDL_GPU_BUFFERUSAGE_VERTEX, .size = sizeof(unit_quad_data)};
+        _unit_quad_buffer = SDL_CreateGPUBuffer(_device, &unit_info);
+
+        // 上传数据 (使用简单的立即提交模式)
+        SDL_GPUTransferBufferCreateInfo tb_info = {.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD, .size = sizeof(unit_quad_data)};
+        SDL_GPUTransferBuffer *tb = SDL_CreateGPUTransferBuffer(_device, &tb_info);
+        void *map = SDL_MapGPUTransferBuffer(_device, tb, false);
+        std::memcpy(map, unit_quad_data, sizeof(unit_quad_data));
+        SDL_UnmapGPUTransferBuffer(_device, tb);
+
+        SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(_device);
+        SDL_GPUCopyPass *copy = SDL_BeginGPUCopyPass(cmd);
+        SDL_GPUTransferBufferLocation src_loc = {tb, 0};
+        SDL_GPUBufferRegion dst_reg = {_unit_quad_buffer, 0, sizeof(unit_quad_data)};
+        SDL_UploadToGPUBuffer(copy, &src_loc, &dst_reg, false);
+        SDL_EndGPUCopyPass(copy);
+        SDL_SubmitGPUCommandBuffer(cmd);
+        SDL_ReleaseGPUTransferBuffer(_device, tb);
+
+        // --- 2. 创建瓦片地图动态缓冲 ---
+        SDL_GPUBufferCreateInfo tile_info = {.usage = SDL_GPU_BUFFERUSAGE_VERTEX, .size = sizeof(GPUVertex) * 6 * 4000};
+        _tile_vertex_buffer = SDL_CreateGPUBuffer(_device, &tile_info);
+
+        // --- 3. 创建采样器 ---
+        SDL_GPUSamplerCreateInfo sampler_info = {.min_filter = SDL_GPU_FILTER_NEAREST, .mag_filter = SDL_GPU_FILTER_NEAREST};
+        _default_sampler = SDL_CreateGPUSampler(_device, &sampler_info);
     }
 
     void SDL3GPURenderer::createPipeline()
     {
         if (!_res_mgr || !_device || !_window)
-        {
-            spdlog::warn("SDL3 GPU: 资源管理器未就绪，跳过管线创建。");
             return;
-        }
 
-        // 1. 加载 Shader
-        // 顶点着色器：通常只处理坐标，不需要采样器
         SDL_GPUShader *v_shader = _res_mgr->loadShader("sprite_vert", "assets/shaders/sprite.vert", 0, 1);
         SDL_GPUShader *f_shader = _res_mgr->loadShader("sprite_frag", "assets/shaders/sprite.frag", 1, 0);
-
         if (!v_shader || !f_shader)
-        {
-            spdlog::error("SDL3 GPU: 无法创建管线，着色器加载失败。");
             return;
-        }
 
-        // 2. 配置颜色混合描述符
+        // 顶点输入配置
+        SDL_GPUVertexAttribute attributes[2];
+        attributes[0] = {0, 0, SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2, 0};                 // a_pos
+        attributes[1] = {1, 0, SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2, sizeof(glm::vec2)}; // a_uv
+
+        SDL_GPUVertexBufferDescription buffer_desc = {};
+        buffer_desc.slot = 0;
+        buffer_desc.input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX; // 使用枚举常量
+        buffer_desc.instance_step_rate = 0;
+        buffer_desc.pitch = sizeof(GPUVertex);
+        // 混合状态
         SDL_GPUColorTargetDescription color_desc = {};
         color_desc.format = SDL_GetGPUSwapchainTextureFormat(_device, _window);
-
-        // 开启混合
         color_desc.blend_state.enable_blend = true;
-
         color_desc.blend_state.src_color_blendfactor = SDL_GPU_BLENDFACTOR_SRC_ALPHA;
         color_desc.blend_state.dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA;
         color_desc.blend_state.color_blend_op = SDL_GPU_BLENDOP_ADD;
-
-        // Alpha 通道的混合
         color_desc.blend_state.src_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE;
         color_desc.blend_state.dst_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA;
         color_desc.blend_state.alpha_blend_op = SDL_GPU_BLENDOP_ADD;
+        color_desc.blend_state.color_write_mask = 0xF;
 
-        color_desc.blend_state.color_write_mask = 0xF; // 确保写入 RGBA 所有通道
-
-        // 3. 配置管线描述符
         SDL_GPUGraphicsPipelineCreateInfo pipeline_info = {};
-
-        // 绑定着色器
         pipeline_info.vertex_shader = v_shader;
         pipeline_info.fragment_shader = f_shader;
-
-        // 绑定目标信息
+        pipeline_info.vertex_input_state.num_vertex_attributes = 2;
+        pipeline_info.vertex_input_state.vertex_attributes = attributes;
+        pipeline_info.vertex_input_state.num_vertex_buffers = 1;
+        pipeline_info.vertex_input_state.vertex_buffer_descriptions = &buffer_desc;
         pipeline_info.target_info.num_color_targets = 1;
         pipeline_info.target_info.color_target_descriptions = &color_desc;
-
-        pipeline_info.depth_stencil_state.enable_depth_test = false;
-        pipeline_info.depth_stencil_state.enable_depth_write = false;
-
-        // ⚡️ 关键修正：在 SDL 3.2.0 中，不再需要 fragment_sampler_metadata
-        // 资源信息已包含在 frag_shader 对象中。
-
         pipeline_info.primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST;
 
-        // 4. 创建管线
         if (_sprite_pipeline)
-        {
             SDL_ReleaseGPUGraphicsPipeline(_device, _sprite_pipeline);
-        }
-
         _sprite_pipeline = SDL_CreateGPUGraphicsPipeline(_device, &pipeline_info);
-
-        if (!_sprite_pipeline)
-        {
-            spdlog::error("SDL3 GPU: 创建管线失败: {}", SDL_GetError());
-        }
-        else
-        {
-            spdlog::info("SDL3 GPU: 图形管线创建成功！");
-        }
     }
 
     void SDL3GPURenderer::clearScreen()
@@ -155,127 +155,75 @@ namespace engine::render
         // 仅仅开启 Pass，不在这里做具体的 Pipeline 绑定
         _active_pass = SDL_BeginGPURenderPass(_current_cmd, &color_target, 1, nullptr);
     }
-    // void SDL3GPURenderer::drawSprite(const Camera &camera, const Sprite &sprite, const glm::vec2 &position, const glm::vec2 &scale, double angle)
-    // {
-    //     // 1. 基础安全检查
-    //     if (!_active_pass || !_current_cmd || !_sprite_pipeline || !_res_mgr)
-    //         return;
-
-    //     SDL_GPUTexture *gpu_tex = _res_mgr->getGPUTexture(sprite.getTextureId());
-    //     SDL_GPUSampler *sampler = _res_mgr->getDefaultSampler();
-
-    //     if (!gpu_tex || !sampler)
-    //         return;
-
-    //     // 2. 绑定管线
-    //     SDL_BindGPUGraphicsPipeline(_active_pass, _sprite_pipeline);
-
-    //     // --- ⚡️ 临时测试逻辑开始 ---
-
-    //     // 获取当前窗口的像素大小（确保投影矩阵单位正确）
-    //     int w, h;
-    //     SDL_GetWindowSize(_window, &w, &h);
-
-    //     // 强制创建一个简单的正交投影：左上(0,0)，右下(w,h)
-    //     // 注意：glm::ortho 的参数顺序是 (left, right, bottom, top, near, far)
-    //     // 这里 top=0, bottom=h 实现了 2D 常见的 Y 轴向下坐标系
-    //     glm::mat4 test_p = glm::ortho(0.0f, (float)w, (float)h, 0.0f, 0.0f, 1.0f);
-
-    //     // 强制把物体画在屏幕坐标 (50, 50) 的位置，大小为 200x200 像素
-    //     glm::mat4 test_m = glm::translate(glm::mat4(1.0f), glm::vec3(50.0f, 50.0f, 0.0f));
-    //     test_m = glm::scale(test_m, glm::vec3(200.0f, 200.0f, 1.0f));
-
-    //     SpritePushConstants constants;
-    //     constants.mvp = test_p * test_m;
-    //     constants.color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f); // 强制红色
-
-    //     // --- ⚡️ 临时测试逻辑结束 ---
-
-    //     // 3. 绑定贴图
-    //     SDL_GPUTextureSamplerBinding binding = {gpu_tex, sampler};
-    //     SDL_BindGPUFragmentSamplers(_active_pass, 0, &binding, 1);
-
-    //     // 4. 推送常量（注意：确保你的着色器现在接收的是 pc.mvp）
-    //     SDL_PushGPUVertexUniformData(_current_cmd, 0, &constants, sizeof(constants));
-
-    //     // 5. 执行绘制
-    //     SDL_DrawGPUPrimitives(_active_pass, 6, 1, 0, 0);
-
-    //     // 打印一下，确保这个函数确实被每帧调用了
-    //     static bool logged = false;
-    //     if (!logged)
-    //     {
-    //         spdlog::info("Debug Draw: Window Size {}x{}, Matrix pushed.", w, h);
-    //         logged = true;
-    //     }
-    // }
-    void SDL3GPURenderer::drawSprite(const Camera &camera, const Sprite &sprite, const glm::vec2 &position, const glm::vec2 &scale, double angle)
+    void SDL3GPURenderer::drawSprite(const Camera &camera,
+                                     const Sprite &sprite,
+                                     const glm::vec2 &position,
+                                     const glm::vec2 &scale,
+                                     double angle,
+                                     const glm::vec4 &uv_rect)
     {
-        if (!_active_pass || !_current_cmd || !_sprite_pipeline || !_res_mgr)
+        if (!_active_pass || !_sprite_pipeline || !_res_mgr)
             return;
 
         SDL_GPUTexture *gpu_tex = _res_mgr->getGPUTexture(sprite.getTextureId());
         SDL_GPUSampler *sampler = _res_mgr->getDefaultSampler();
-
         if (!gpu_tex || !sampler)
             return;
 
-        // 获取贴图尺寸
-        glm::vec2 tex_pixel_size = _res_mgr->getTextureSize(sprite.getTextureId());
-        float tex_w = tex_pixel_size.x;
-        float tex_h = tex_pixel_size.y;
-
-        if (tex_w <= 0.0f || tex_h <= 0.0f)
+        glm::vec2 tex_total_size = _res_mgr->getTextureSize(sprite.getTextureId());
+        if (tex_total_size.x <= 0.0f)
             return;
 
-        // --- 变换矩阵计算 ---
-        glm::vec2 display_size = sprite.getSize() * scale;
+        // 1. 状态绑定
+        SDL_BindGPUGraphicsPipeline(_active_pass, _sprite_pipeline);
+        SDL_GPUBufferBinding v_binding = {_unit_quad_buffer, 0};
+        SDL_BindGPUVertexBuffers(_active_pass, 0, &v_binding, 1);
 
-        // ⚡️ 修正：强制物体坐标取整（像素完美对齐）
-        glm::vec2 aligned_pos = glm::floor(position);
+        // 2. ⚡️ 修正尺寸逻辑：优先使用 Sprite 自身的尺寸（来自 Object Layer 的 width/height）
+        // 如果 sprite 没有设置 size，再退而求其次用纹理全尺寸
+        glm::vec2 base_size = sprite.getSize();
+        if (base_size.x <= 0 || base_size.y <= 0)
+        {
+            base_size = tex_total_size;
+        }
+        glm::vec2 logical_size = base_size * scale;
 
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(aligned_pos, 0.0f));
+        // 3. 变换矩阵计算
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(glm::floor(position), 0.0f));
         if (angle != 0.0)
         {
-            model = glm::translate(model, glm::vec3(display_size.x * 0.5f, display_size.y * 0.5f, 0.0f));
+            glm::vec2 center = logical_size * 0.5f;
+            model = glm::translate(model, glm::vec3(center, 0.0f));
             model = glm::rotate(model, glm::radians((float)angle), glm::vec3(0.0f, 0.0f, 1.0f));
-            model = glm::translate(model, glm::vec3(-display_size.x * 0.5f, -display_size.y * 0.5f, 0.0f));
+            model = glm::translate(model, glm::vec3(-center, 0.0f));
         }
-        model = glm::scale(model, glm::vec3(display_size, 1.0f));
-
-        // 矩阵合并：Projection * View * Model
-        glm::mat4 mvp = camera.getProjectionMatrix() * camera.getViewMatrix() * model;
-
-        // --- UV 矩形计算与防缝隙处理 ---
-        engine::utils::FRect src;
-        auto src_opt = sprite.getSourceRect();
-        if (src_opt.has_value())
-        {
-            src = *src_opt;
-        }
-        else
-        {
-            src.position = glm::vec2(0.0f, 0.0f);
-            src.size = glm::vec2(tex_w, tex_h);
-        }
-
-        // ⚡️ 核心黑科技：UV 微收缩 (Inset)
-        // 给 UV 坐标增加一个极小的偏移量（约 0.01 像素），防止移动时采样到邻居 Tile 的边缘。
-        const float epsilon = 0.005f;
+        model = glm::scale(model, glm::vec3(logical_size, 1.0f));
 
         SpritePushConstants constants;
-        constants.mvp = mvp;
-        constants.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        constants.uv_rect = glm::vec4(
-            (src.position.x + epsilon) / tex_w,
-            (src.position.y + epsilon) / tex_h,
-            (src.size.x - epsilon * 2.0f) / tex_w,
-            (src.size.y - epsilon * 2.0f) / tex_h);
+        constants.mvp = camera.getProjectionMatrix() * camera.getViewMatrix() * model;
+        constants.color = glm::vec4(1.0f);
 
-        // --- 执行绘制 ---
-        SDL_BindGPUGraphicsPipeline(_active_pass, _sprite_pipeline);
-        SDL_GPUTextureSamplerBinding binding = {gpu_tex, sampler};
-        SDL_BindGPUFragmentSamplers(_active_pass, 0, &binding, 1);
+        // 4. ⚡️ 修正 UV 逻辑
+        // 从 Sprite 中获取像素单位的裁剪区域
+        engine::utils::FRect src = sprite.getSourceRect().value_or(
+            engine::utils::FRect{{0, 0}, tex_total_size});
+
+        // 将像素单位转换为 0.0~1.0 的归一化坐标
+        float u = src.position.x / tex_total_size.x;
+        float v = src.position.y / tex_total_size.y;
+        float uw = src.size.x / tex_total_size.x;
+        float vh = src.size.y / tex_total_size.y;
+
+        if (sprite.isFlipped())
+        {
+            u = u + uw;
+            uw = -uw;
+        }
+        constants.uv_rect = glm::vec4(u, v, uw, vh);
+
+        // 5. 提交绘制
+        SDL_GPUTextureSamplerBinding tex_binding = {gpu_tex, sampler};
+        SDL_BindGPUFragmentSamplers(_active_pass, 0, &tex_binding, 1);
         SDL_PushGPUVertexUniformData(_current_cmd, 0, &constants, sizeof(constants));
         SDL_DrawGPUPrimitives(_active_pass, 6, 1, 0, 0);
     }
@@ -286,8 +234,7 @@ namespace engine::render
 
     void SDL3GPURenderer::drawParallax(const Camera &camera, const Sprite &sprite, const glm::vec2 &position, const glm::vec2 &scroll_factor, const glm::bvec2 &repeat, const glm::vec2 &scale, double angle)
     {
-        // 1. 基础安全检查
-        if (!_active_pass || !_current_cmd || !_sprite_pipeline || !_res_mgr)
+        if (!_active_pass || !_sprite_pipeline || !_res_mgr)
             return;
 
         SDL_GPUTexture *gpu_tex = _res_mgr->getGPUTexture(sprite.getTextureId());
@@ -295,94 +242,189 @@ namespace engine::render
         if (!gpu_tex || !sampler)
             return;
 
-        // 获取贴图物理尺寸，用于 UV 映射
         glm::vec2 tex_pixel_size = _res_mgr->getTextureSize(sprite.getTextureId());
-        float tex_w = tex_pixel_size.x;
-        float tex_h = tex_pixel_size.y;
-        if (tex_w <= 0.0f || tex_h <= 0.0f)
+        if (tex_pixel_size.x <= 0.0f || tex_pixel_size.y <= 0.0f)
             return;
 
-        // 2. 准备绘制状态
+        // --- 1. 核心修复：绑定状态 ---
         SDL_BindGPUGraphicsPipeline(_active_pass, _sprite_pipeline);
-        SDL_GPUTextureSamplerBinding binding = {gpu_tex, sampler};
-        SDL_BindGPUFragmentSamplers(_active_pass, 0, &binding, 1);
 
-        // 3. 计算 UV 矩形 (核心：必须要传给常量缓冲)
+        // ⚡️ 必须绑定顶点缓冲，否则 Draw 调用无效
+        SDL_GPUBufferBinding v_binding = {_unit_quad_buffer, 0};
+        SDL_BindGPUVertexBuffers(_active_pass, 0, &v_binding, 1);
+
+        SDL_GPUTextureSamplerBinding tex_binding = {gpu_tex, sampler};
+        SDL_BindGPUFragmentSamplers(_active_pass, 0, &tex_binding, 1);
+
+        // --- 2. UV 计算 ---
         engine::utils::FRect src;
         auto src_opt = sprite.getSourceRect();
-        if (src_opt.has_value())
-        {
-            src = *src_opt;
-        }
-        else
-        {
-            src.position = glm::vec2(0.0f, 0.0f);
-            src.size = glm::vec2(tex_w, tex_h);
-        }
+        src = src_opt.has_value() ? *src_opt : engine::utils::FRect{{0, 0}, tex_pixel_size};
 
-        // 防缝隙微调
-        const float eps = 0.005f;
-        glm::vec4 uv_rect = glm::vec4(
-            (src.position.x + eps) / tex_w,
-            (src.position.y + eps) / tex_h,
-            (src.size.x - eps * 2.0f) / tex_w,
-            (src.size.y - eps * 2.0f) / tex_h);
+        glm::vec4 uv_rect = glm::vec4(src.position.x / tex_pixel_size.x, src.position.y / tex_pixel_size.y,
+                                      src.size.x / tex_pixel_size.x, src.size.y / tex_pixel_size.y);
 
-        // 4. 计算视口与平铺逻辑
+        // --- 3. 视差逻辑 ---
         glm::vec2 sprite_size = sprite.getSize() * scale;
         glm::vec2 viewport_size = camera.getViewportSize();
-
-        // 计算屏幕参考位置
         glm::vec2 position_screen = camera.worldToScreenWithParallax(position, scroll_factor);
 
         glm::vec2 start, stop;
-        if (repeat.x)
-        {
-            start.x = glm::mod(position_screen.x, sprite_size.x) - sprite_size.x;
-            stop.x = viewport_size.x + sprite_size.x;
-        }
-        else
-        {
-            start.x = position_screen.x;
-            stop.x = position_screen.x + sprite_size.x;
-        }
+        start.x = repeat.x ? glm::mod(position_screen.x, sprite_size.x) - sprite_size.x : position_screen.x;
+        stop.x = repeat.x ? viewport_size.x + sprite_size.x : position_screen.x + sprite_size.x;
+        start.y = repeat.y ? glm::mod(position_screen.y, sprite_size.y) - sprite_size.y : position_screen.y;
+        stop.y = repeat.y ? viewport_size.y + sprite_size.y : position_screen.y + sprite_size.y;
 
-        if (repeat.y)
-        {
-            start.y = glm::mod(position_screen.y, sprite_size.y) - sprite_size.y;
-            stop.y = viewport_size.y + sprite_size.y;
-        }
-        else
-        {
-            start.y = position_screen.y;
-            stop.y = position_screen.y + sprite_size.y;
-        }
-
-        // 5. 循环绘制
+        // --- 4. 循环绘制 ---
         for (float x = start.x; x < stop.x; x += sprite_size.x)
         {
             for (float y = start.y; y < stop.y; y += sprite_size.y)
             {
-                // 像素对齐
-                glm::vec2 draw_pos = glm::floor(glm::vec2(x, y));
-
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(draw_pos, 0.0f));
-                if (angle != 0.0)
-                {
-                    model = glm::translate(model, glm::vec3(0.5f * sprite_size.x, 0.5f * sprite_size.y, 0.0f));
-                    model = glm::rotate(model, glm::radians((float)angle), glm::vec3(0.0f, 0.0f, 1.0f));
-                    model = glm::translate(model, glm::vec3(-0.5f * sprite_size.x, -0.5f * sprite_size.y, 0.0f));
-                }
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(glm::floor(glm::vec2(x, y)), 0.0f));
                 model = glm::scale(model, glm::vec3(sprite_size, 1.0f));
 
-                SpritePushConstants constants;
-                constants.mvp = camera.getProjectionMatrix() * model;
-                constants.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-                constants.uv_rect = uv_rect; // ⚡️ 修正：必须把计算好的 UV 传给 Shader
+                SpritePushConstants pc;
+                pc.mvp = camera.getProjectionMatrix() * model; // 背景不随 View 矩阵移动
+                pc.color = glm::vec4(1.0f);
+                pc.uv_rect = uv_rect;
 
-                SDL_PushGPUVertexUniformData(_current_cmd, 0, &constants, sizeof(constants));
+                SDL_PushGPUVertexUniformData(_current_cmd, 0, &pc, sizeof(pc));
                 SDL_DrawGPUPrimitives(_active_pass, 6, 1, 0, 0);
             }
+        }
+    }
+
+    void SDL3GPURenderer::drawTileMap(const Camera &camera,
+                                      const glm::ivec2 &map_size,
+                                      const glm::vec2 &tile_size,
+                                      const std::vector<engine::component::TileInfo> &tiles,
+                                      const glm::vec2 &layer_offset)
+    {
+        if (!_current_cmd || tiles.empty() || !_res_mgr)
+            return;
+
+        // --- 1. 计算裁剪区域 ---
+        glm::vec2 cam_pos = camera.getPosition();
+        glm::vec2 view_size = camera.getViewportSize();
+
+        int start_col = std::max(0, (int)std::floor((cam_pos.x - layer_offset.x) / tile_size.x));
+        int end_col = std::min(map_size.x, (int)std::ceil((cam_pos.x + view_size.x - layer_offset.x) / tile_size.x));
+        int start_row = std::max(0, (int)std::floor((cam_pos.y - layer_offset.y) / tile_size.y));
+        int end_row = std::min(map_size.y, (int)std::ceil((cam_pos.y + view_size.y - layer_offset.y) / tile_size.y));
+
+        // --- 2. 顶点分类收集 (Batching) ---
+        // 使用 std::map 存储：纹理对象 -> 该纹理对应的所有顶点
+        static std::map<SDL_GPUTexture *, std::vector<GPUVertex>> batch_map;
+        batch_map.clear();
+        size_t total_vertex_count = 0;
+
+        for (int y = start_row; y < end_row; ++y)
+        {
+            for (int x = start_col; x < end_col; ++x)
+            {
+                const auto &tile = tiles[y * map_size.x + x];
+                if (tile.uv_rect.z <= 0.0f)
+                    continue; // 跳过空瓦片
+
+                // 获取纹理指针（从缓存获取）
+                SDL_GPUTexture *gpu_tex = _res_mgr->getGPUTexture(tile.texture_id);
+                if (!gpu_tex)
+                    continue;
+
+                // 计算屏幕坐标
+                glm::vec2 screen_pos = camera.worldToScreen(glm::vec2(x, y) * tile_size + layer_offset);
+                float L = std::floor(screen_pos.x);
+                float T = std::floor(screen_pos.y);
+                float R = L + tile_size.x;
+                float B = T + tile_size.y;
+
+                float u1 = tile.uv_rect.x, v1 = tile.uv_rect.y;
+                float u2 = u1 + tile.uv_rect.z, v2 = v1 + tile.uv_rect.w;
+
+                // 存入对应的 Batch
+                auto &v_list = batch_map[gpu_tex];
+                v_list.push_back({{L, T}, {u1, v1}});
+                v_list.push_back({{R, T}, {u2, v1}});
+                v_list.push_back({{L, B}, {u1, v2}});
+                v_list.push_back({{L, B}, {u1, v2}});
+                v_list.push_back({{R, T}, {u2, v1}});
+                v_list.push_back({{R, B}, {u2, v2}});
+
+                total_vertex_count += 6;
+            }
+        }
+
+        if (total_vertex_count == 0)
+            return;
+
+        // --- 3. 统一上传顶点数据 ---
+        // 结束当前的 Render Pass (SDL3 规定 Copy 操作不能在 Render Pass 中)
+        if (_active_pass)
+        {
+            SDL_EndGPURenderPass(_active_pass);
+            _active_pass = nullptr;
+        }
+
+        // 创建或使用预分配的 Transfer Buffer
+        uint32_t total_data_size = (uint32_t)(total_vertex_count * sizeof(GPUVertex));
+        SDL_GPUTransferBufferCreateInfo tb_info = {SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD, total_data_size};
+        SDL_GPUTransferBuffer *tb = SDL_CreateGPUTransferBuffer(_device, &tb_info);
+
+        GPUVertex *map = (GPUVertex *)SDL_MapGPUTransferBuffer(_device, tb, false);
+
+        // 依次填充数据并记录每个纹理在 Buffer 中的偏移量
+        struct DrawCall
+        {
+            SDL_GPUTexture *tex;
+            uint32_t start_vertex;
+            uint32_t count;
+        };
+        std::vector<DrawCall> draw_calls;
+        uint32_t current_offset = 0;
+
+        for (auto &[tex, v_list] : batch_map)
+        {
+            uint32_t count = (uint32_t)v_list.size();
+            std::memcpy(map + current_offset, v_list.data(), count * sizeof(GPUVertex));
+            draw_calls.push_back({tex, current_offset, count});
+            current_offset += count;
+        }
+        SDL_UnmapGPUTransferBuffer(_device, tb);
+
+        // 执行 Copy 操作到 GPU 显存 Buffer
+        SDL_GPUCopyPass *copy = SDL_BeginGPUCopyPass(_current_cmd);
+        SDL_GPUTransferBufferLocation src_loc = {tb, 0};
+        SDL_GPUBufferRegion dst_reg = {_tile_vertex_buffer, 0, total_data_size};
+        SDL_UploadToGPUBuffer(copy, &src_loc, &dst_reg, false);
+        SDL_EndGPUCopyPass(copy);
+        SDL_ReleaseGPUTransferBuffer(_device, tb);
+
+        // --- 4. 分批绘制 (Re-open Render Pass) ---
+        SDL_GPUColorTargetInfo color_target = {};
+        color_target.texture = _current_swapchain_texture;
+        color_target.load_op = SDL_GPU_LOADOP_LOAD; // 重要：保留之前的内容
+        color_target.store_op = SDL_GPU_STOREOP_STORE;
+        _active_pass = SDL_BeginGPURenderPass(_current_cmd, &color_target, 1, nullptr);
+
+        // 设置全局状态
+        SDL_BindGPUGraphicsPipeline(_active_pass, _sprite_pipeline);
+        SDL_GPUBufferBinding v_binding = {_tile_vertex_buffer, 0};
+        SDL_BindGPUVertexBuffers(_active_pass, 0, &v_binding, 1);
+
+        SpritePushConstants pc;
+        pc.mvp = camera.getProjectionMatrix();
+        pc.color = glm::vec4(1.0f);
+        pc.uv_rect = glm::vec4(0, 0, 1, 1); // UV 已包含在顶点属性中
+
+        for (const auto &call : draw_calls)
+        {
+            // 绑定该批次的纹理
+            SDL_GPUTextureSamplerBinding tex_binding = {call.tex, _default_sampler};
+            SDL_BindGPUFragmentSamplers(_active_pass, 0, &tex_binding, 1);
+
+            // 推送常量并绘制对应范围的顶点
+            SDL_PushGPUVertexUniformData(_current_cmd, 0, &pc, sizeof(pc));
+            SDL_DrawGPUPrimitives(_active_pass, call.count, 1, call.start_vertex, 0);
         }
     }
 

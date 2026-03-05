@@ -1165,6 +1165,9 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/sdl3_gpu_renderer.cpp.o: 
   /opt/homebrew/include/SDL3/SDL_tray.h \
   /opt/homebrew/include/SDL3/SDL_version.h \
   /opt/homebrew/include/SDL3/SDL_oldnames.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../component/tilelayer_component.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../component/../render/sprite.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../component/component.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/camera.h \
   /opt/homebrew/include/spdlog/spdlog.h \
   /opt/homebrew/include/spdlog/common.h \
@@ -1283,4 +1286,6 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/sdl3_gpu_renderer.cpp.o: 
   /opt/homebrew/include/glm/gtx/../gtc/../geometric.hpp \
   /opt/homebrew/include/glm/gtx/../gtc/../trigonometric.hpp \
   /opt/homebrew/include/glm/gtx/../gtc/../matrix.hpp \
-  /opt/homebrew/include/glm/gtx/transform.inl
+  /opt/homebrew/include/glm/gtx/transform.inl \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/map \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__tree

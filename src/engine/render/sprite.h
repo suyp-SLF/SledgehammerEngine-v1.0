@@ -9,7 +9,9 @@ namespace engine::render
     {
     private:
         std::string _texture_id;
+        // 需要截取的纹理区域
         std::optional<engine::utils::FRect> _source_rect;
+        // 全图大小
         glm::vec2 _size = {0.0f, 0.0f};
         bool _is_flipped = false;
 
@@ -34,9 +36,9 @@ namespace engine::render
         const std::optional<engine::utils::FRect> &getSourceRect() const { return _source_rect; }
         glm::vec2 getSize() const
         {
-            if (_source_rect)
-                return _source_rect->size;
-            return _size;
+            // 如果手动设置了逻辑大小，优先返回
+            if (_size.x > 0.0f && _size.y > 0.0f) return _size;
+            return {0.0f, 0.0f};
         };
         bool isFlipped() const { return _is_flipped; }
         // SETTER

@@ -1,24 +1,19 @@
 #version 450
 
-layout(push_constant) uniform PushConstants {
+// ⚡️ 必须声明这部分，对应 attributes[0] 和 attributes[1]
+layout(location = 0) in vec2 a_pos; 
+layout(location = 1) in vec2 a_uv;
+
+layout(location = 0) out vec2 v_uv;
+
+layout(push_constant) uniform Constants {
     mat4 mvp;
     vec4 color;
-    vec4 uv_rect; // ⚡️ 新增：x=U偏移, y=V偏移, z=U宽度, w=V高度
+    vec4 uv_rect; // drawSprite 用，drawTileMap 时我们会传默认值
 } pc;
 
-layout(location = 0) out vec2 outUV;
-
 void main() {
-    vec2 positions[6] = vec2[](
-        vec2(0.0, 0.0), vec2(1.0, 0.0), vec2(0.0, 1.0),
-        vec2(0.0, 1.0), vec2(1.0, 0.0), vec2(1.0, 1.0)
-    );
-
-    vec2 pos = positions[gl_VertexIndex];
-
-    // ⚡️ 核心修正：计算裁剪后的 UV
-    // 公式：最终UV = (原始UV * 瓦片宽高) + 瓦片起始点
-    outUV = (pos * pc.uv_rect.zw) + pc.uv_rect.xy;
-
-    gl_Position = pc.mvp * vec4(pos, 0.0, 1.0);
+    // ⚡️ 确保使用的是 a_pos 而不是硬编码的数组
+    gl_Position = pc.mvp * vec4(a_pos, 0.0, 1.0);
+    v_uv = a_uv;
 }

@@ -32,7 +32,7 @@ namespace engine::component
         if (_context)
         {
             _context->getParallaxRenderSystem().unregisterComponent(this);
-            spdlog::trace("ParallaxComponent 已从渲染系统中注销");
+            spdlog::debug("注销组件到 ParallaxRenderSystem 系统: {}", (void*)this); // 打印系统实例地址
         }
     }
 
@@ -100,7 +100,7 @@ namespace engine::component
         if (!_transform_comp) {
             _transform_comp = _owner->addComponent<TransformComponent>();
         }
-
+        spdlog::debug("注册组件到 ParallaxRenderSystem 系统: {}", (void*)this); // 打印系统实例地址
         // 2. 注册到视差渲染系统
         _context->getParallaxRenderSystem().registerComponent(this);
         

@@ -2,6 +2,7 @@
 #include "../core/context.h"
 #include "camera.h"
 #include "../resource/resource_manager.h"
+#include "../component/tilelayer_component.h"
 #include <SDL3_image/SDL_image.h>
 #include <SDL3/SDL.h>
 #include <spdlog/spdlog.h>
@@ -46,46 +47,45 @@ namespace engine::render
      *          - \r: 回车符
      *          - \n: 换行符
      */
-    void SDLRenderer::drawSprite(const Camera &camera, const Sprite &sprite, const glm::vec2 &position, const glm::vec2 &scale, double angle)
+    void SDLRenderer::drawSprite(const Camera &camera,
+                                 const Sprite &sprite,
+                                 const glm::vec2 &position,
+                                 const glm::vec2 &scale,
+                                 double angle,
+                                 const glm::vec4 &uv_rect)
     {
         if (!_res_mgr)
             return;
-
         auto texture = _res_mgr->getTexture(sprite.getTextureId());
         if (!texture)
-        {
-            spdlog::error("无法为ID：{}的纹理获取纹理", sprite.getTextureId());
             return;
-        }
-        auto src_rect = getSpriteRect(sprite);
-        if (!src_rect.has_value())
-        {
-            spdlog::error("无法获取精灵的源矩形，ID：{}", sprite.getTextureId());
+
+        float tex_w, tex_h;
+        if (!SDL_GetTextureSize(texture, &tex_w, &tex_h))
             return;
-        }
-        // 应用相机变换
+
+        // 1. 还原 Source Rect
+        SDL_FRect src_rect = {uv_rect.x * tex_w, uv_rect.y * tex_h, uv_rect.z * tex_w, uv_rect.w * tex_h};
+
+        // 2. 目标矩形计算
         glm::vec2 position_screen = camera.worldToScreen(position);
-        // 计算目标矩形
-        float scaled_width = src_rect.value().w;  // * scale.x;
-        float scaled_height = src_rect.value().h; // * scale.y;
-        SDL_FRect dst_rect = {position_screen.x,
-                              position_screen.y,
-                              scaled_width,
-                              scaled_height};
-        // 不在屏幕内不绘制
+        glm::vec2 logical_size = sprite.getSize() * scale;
+
+        SDL_FRect dst_rect = {position_screen.x, position_screen.y, logical_size.x * scale.x, logical_size.y * scale.y};
+
         if (!isRectInViewport(camera, dst_rect))
-        {
-            spdlog::trace("精灵不在屏幕内，ID：{}", sprite.getTextureId());
             return;
-        }
-        // 执行绘制
-        if (!SDL_RenderTextureRotated(_sdl_renderer, texture, &src_rect.value(), &dst_rect, angle, nullptr, sprite.isFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE))
-        {
-            spdlog::error("渲染旋转纹理失败，ID：{}：{}", sprite.getTextureId(), SDL_GetError());
-        }
-        spdlog::debug("渲染精灵，ID：{}", sprite.getTextureId());
+
+        SDL_FlipMode flip = sprite.isFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+        SDL_RenderTextureRotated(_sdl_renderer, texture, &src_rect, &dst_rect, angle, nullptr, flip);
     }
-    void SDLRenderer::drawParallax(const Camera &camera, const Sprite &sprite, const glm::vec2 &position, const glm::vec2 &scroll_factor, const glm::bvec2 &repeat, const glm::vec2 &scale, double angle)
+    void SDLRenderer::drawParallax(const Camera &camera,
+                                   const Sprite &sprite,
+                                   const glm::vec2 &position,
+                                   const glm::vec2 &scroll_factor,
+                                   const glm::bvec2 &repeat,
+                                   const glm::vec2 &scale,
+                                   double angle)
     {
         if (!engine::core::Context::Current)
             return;
@@ -144,6 +144,89 @@ namespace engine::render
             }
         }
     }
+
+    void SDLRenderer::drawTileMap(const Camera &camera,
+                                  const glm::ivec2 &map_size,
+                                  const glm::vec2 &tile_size,
+                                  const std::vector<engine::component::TileInfo> &tiles,
+                                  const glm::vec2 &layer_offset)
+    {
+        if (!_res_mgr || tiles.empty())
+            return;
+
+        // 1. 视口裁剪：计算当前摄像机能看到的瓦片范围
+        glm::vec2 view_size = camera.getViewportSize();
+        glm::vec2 cam_pos = camera.getPosition();
+
+        int start_col = std::max(0, (int)std::floor((cam_pos.x - layer_offset.x) / tile_size.x));
+        int end_col = std::min(map_size.x, (int)std::ceil((cam_pos.x + view_size.x - layer_offset.x) / tile_size.x));
+        int start_row = std::max(0, (int)std::floor((cam_pos.y - layer_offset.y) / tile_size.y));
+        int end_row = std::min(map_size.y, (int)std::ceil((cam_pos.y + view_size.y - layer_offset.y) / tile_size.y));
+
+        // 2. 准备分组容器 (按 SDL_Texture* 指针分组)
+        // 使用 std::map 将拥有相同纹理的顶点收集到一起
+        static std::map<SDL_Texture *, std::vector<SDL_Vertex>> batch_map;
+        for (auto &pair : batch_map)
+            pair.second.clear(); // 清理旧数据，保留预分配内存
+
+        SDL_FColor white = {1.0f, 1.0f, 1.0f, 1.0f};
+
+        // 3. 填充数据
+        for (int y = start_row; y < end_row; ++y)
+        {
+            for (int x = start_col; x < end_col; ++x)
+            {
+                size_t index = static_cast<size_t>(y) * map_size.x + x;
+                if (index >= tiles.size())
+                    continue;
+
+                const auto &tile = tiles[index];
+                if (tile.uv_rect.z <= 0.0f)
+                    continue;
+
+                // 获取该瓦片的纹理
+                // 注意：LevelLoader 必须在 getTileInfoByGid 中为多图模式填充了 texture_id
+                SDL_Texture *current_tex = _res_mgr->getTexture(tile.texture_id);
+                if (!current_tex)
+                    continue;
+
+                // 计算位置与对齐
+                glm::vec2 world_pos = glm::vec2(x, y) * tile_size + layer_offset;
+                glm::vec2 screen_pos = camera.worldToScreen(world_pos);
+
+                float left = std::floor(screen_pos.x);
+                float top = std::floor(screen_pos.y);
+                float right = std::floor(screen_pos.x + tile_size.x);
+                float bottom = std::floor(screen_pos.y + tile_size.y);
+
+                float u_min = tile.uv_rect.x;
+                float v_min = tile.uv_rect.y;
+                float u_max = u_min + tile.uv_rect.z;
+                float v_max = v_min + tile.uv_rect.w;
+
+                // 获取当前纹理对应的顶点数组
+                auto &vertices = batch_map[current_tex];
+
+                // 填充两个三角形 (6个顶点)
+                vertices.push_back(SDL_Vertex{{left, top}, white, {u_min, v_min}});
+                vertices.push_back(SDL_Vertex{{right, top}, white, {u_max, v_min}});
+                vertices.push_back(SDL_Vertex{{left, bottom}, white, {u_min, v_max}});
+
+                vertices.push_back(SDL_Vertex{{left, bottom}, white, {u_min, v_max}});
+                vertices.push_back(SDL_Vertex{{right, top}, white, {u_max, v_min}});
+                vertices.push_back(SDL_Vertex{{right, bottom}, white, {u_max, v_max}});
+            }
+        }
+
+        // 4. 分组提交：每个不同的纹理执行一次 Draw Call
+        for (const auto &[texture, vertices] : batch_map)
+        {
+            if (!vertices.empty())
+            {
+                SDL_RenderGeometry(_sdl_renderer, texture, vertices.data(), (int)vertices.size(), nullptr, 0);
+            }
+        }
+    }
     /**
      * @brief 在UI上绘制一个精灵
      *
@@ -161,38 +244,32 @@ namespace engine::render
      */
     void SDLRenderer::drawUISprite(const Sprite &sprite, const glm::vec2 &position, const std::optional<glm::vec2> &size)
     {
-        if (!engine::core::Context::Current)
-            return;
-
         auto texture = _res_mgr->getTexture(sprite.getTextureId());
         if (!texture)
-        {
-            spdlog::error("无法为ID：{}的纹理获取纹理", sprite.getTextureId());
             return;
-        }
-        auto src_rect = getSpriteRect(sprite);
-        if (!src_rect.has_value())
+
+        float tex_w, tex_h;
+        SDL_GetTextureSize(texture, &tex_w, &tex_h);
+
+        // 直接从 Sprite 获取缓存的像素区域（如果有的话）或全图
+        auto src_opt = sprite.getSourceRect();
+        SDL_FRect src_rect;
+        if (src_opt)
         {
-            spdlog::error("无法获取精灵的源矩形，ID：{}", sprite.getTextureId());
-            return;
-        }
-        // 计算目标矩形
-        SDL_FRect dst_rect = {position.x, position.y, 0, 0};
-        if (size.has_value())
-        {
-            dst_rect.w = size.value().x;
-            dst_rect.h = size.value().y;
+            src_rect = {src_opt->position.x, src_opt->position.y, src_opt->size.x, src_opt->size.y};
         }
         else
         {
-            dst_rect.w = src_rect.value().w;
-            dst_rect.h = src_rect.value().h;
+            src_rect = {0, 0, tex_w, tex_h};
         }
-        // 执行绘制
-        if (!SDL_RenderTextureRotated(_sdl_renderer, texture, &src_rect.value(), &dst_rect, 0.0f, nullptr, sprite.isFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE))
-        {
-            spdlog::error("渲染旋转纹理失败，ID：{}：{}", sprite.getTextureId(), SDL_GetError());
-        }
+
+        // 目标大小：优先使用参数，其次使用 Sprite 的逻辑大小
+        glm::vec2 draw_size = size.value_or(sprite.getSize());
+
+        SDL_FRect dst_rect = {position.x, position.y, draw_size.x, draw_size.y};
+
+        SDL_RenderTextureRotated(_sdl_renderer, texture, &src_rect, &dst_rect, 0.0f, nullptr,
+                                 sprite.isFlipped() ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
     }
 
     /**
@@ -356,8 +433,11 @@ namespace engine::render
      */
     bool SDLRenderer::isRectInViewport(const Camera &camera, const SDL_FRect &rect)
     {
-        glm::vec2 viewport_size = camera.getViewportSize();
-        return rect.x >= -rect.w && rect.x <= viewport_size.x &&
-               rect.y >= -rect.h && rect.y <= viewport_size.y;
+        glm::vec2 view = camera.getViewportSize();
+        // 只要矩形的右边 > 视口左边 且 矩形的左边 < 视口右边，就说明在视口内
+        bool horizontal_overlap = (rect.x + rect.w >= 0) && (rect.x <= view.x);
+        bool vertical_overlap = (rect.y + rect.h >= 0) && (rect.y <= view.y);
+
+        return horizontal_overlap && vertical_overlap;
     }
 }

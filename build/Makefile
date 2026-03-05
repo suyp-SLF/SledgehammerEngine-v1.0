@@ -657,29 +657,29 @@ src/engine/resource/texture_manager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/resource/texture_manager.cpp.s
 .PHONY : src/engine/resource/texture_manager.cpp.s
 
-src/engine/scene/leve_loader.o: src/engine/scene/leve_loader.cpp.o
-.PHONY : src/engine/scene/leve_loader.o
+src/engine/scene/level_loader.o: src/engine/scene/level_loader.cpp.o
+.PHONY : src/engine/scene/level_loader.o
 
 # target to build an object file
-src/engine/scene/leve_loader.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/leve_loader.cpp.o
-.PHONY : src/engine/scene/leve_loader.cpp.o
+src/engine/scene/level_loader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/level_loader.cpp.o
+.PHONY : src/engine/scene/level_loader.cpp.o
 
-src/engine/scene/leve_loader.i: src/engine/scene/leve_loader.cpp.i
-.PHONY : src/engine/scene/leve_loader.i
+src/engine/scene/level_loader.i: src/engine/scene/level_loader.cpp.i
+.PHONY : src/engine/scene/level_loader.i
 
 # target to preprocess a source file
-src/engine/scene/leve_loader.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/leve_loader.cpp.i
-.PHONY : src/engine/scene/leve_loader.cpp.i
+src/engine/scene/level_loader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/level_loader.cpp.i
+.PHONY : src/engine/scene/level_loader.cpp.i
 
-src/engine/scene/leve_loader.s: src/engine/scene/leve_loader.cpp.s
-.PHONY : src/engine/scene/leve_loader.s
+src/engine/scene/level_loader.s: src/engine/scene/level_loader.cpp.s
+.PHONY : src/engine/scene/level_loader.s
 
 # target to generate assembly for a file
-src/engine/scene/leve_loader.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/leve_loader.cpp.s
-.PHONY : src/engine/scene/leve_loader.cpp.s
+src/engine/scene/level_loader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/level_loader.cpp.s
+.PHONY : src/engine/scene/level_loader.cpp.s
 
 src/engine/scene/scene.o: src/engine/scene/scene.cpp.o
 .PHONY : src/engine/scene/scene.o
@@ -852,9 +852,9 @@ help:
 	@echo "... src/engine/resource/texture_manager.o"
 	@echo "... src/engine/resource/texture_manager.i"
 	@echo "... src/engine/resource/texture_manager.s"
-	@echo "... src/engine/scene/leve_loader.o"
-	@echo "... src/engine/scene/leve_loader.i"
-	@echo "... src/engine/scene/leve_loader.s"
+	@echo "... src/engine/scene/level_loader.o"
+	@echo "... src/engine/scene/level_loader.i"
+	@echo "... src/engine/scene/level_loader.s"
 	@echo "... src/engine/scene/scene.o"
 	@echo "... src/engine/scene/scene.i"
 	@echo "... src/engine/scene/scene.s"

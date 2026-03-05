@@ -71,51 +71,56 @@ namespace engine::component
 
     void SpriteComponent::ensureResourcesReady()
     {
-        // 1. 处理延迟加载：若尺寸未知，尝试从资源管理器同步
-        if (_sprite_size.x <= 0 || _sprite_size.y <= 0)
+        // 1. 获取纹理物理尺寸
+        glm::vec2 tex_size = _context->getResourceManager().getTextureSize(_sprite.getTextureId());
+
+        // 如果纹理还没加载好（异步加载中），直接返回，不清除脏标记，等待下一帧
+        if (tex_size.x <= 0)
+            return;
+
+        // 2. 更新尺寸和 UV (这两个通常是一起变的)
+        if (_dirty_flags & (DIRTY_SIZE | DIRTY_UV))
         {
-            updateSpriteSize();
-            if (_sprite_size.x > 0)
-                _dirty_flags |= DIRTY_OFFSET;
+            updateSpriteSizeAndUV();
+            _dirty_flags &= ~(DIRTY_SIZE | DIRTY_UV);
+            _dirty_flags |= DIRTY_OFFSET; // 尺寸变了，Offset 肯定要重算
         }
 
-        // 2. 按需计算：仅在脏标记存在时执行 switch 和浮点运算
+        // 3. 更新 Offset (对齐计算)
         if (_dirty_flags & DIRTY_OFFSET)
         {
             updateOffset();
-            _dirty_flags &= ~DIRTY_OFFSET; // 清除标记
+            _dirty_flags &= ~DIRTY_OFFSET;
         }
     }
 
     void SpriteComponent::draw(engine::core::Context &ctx)
     {
-        // 渲染前最后同步资源与偏移
-        ensureResourcesReady();
-
-        if (!_transform_comp || _is_hidden)
+        if (!_transform_comp || _is_hidden || _sprite_size.x <= 0)
             return;
 
-        const glm::vec2 &pos = _transform_comp->getPosition();
-        const glm::vec2 &scale = _transform_comp->getScale();
-        float rotation = _transform_comp->getRotation();
+        const glm::vec2 render_pos = _transform_comp->getPosition() + _offset;
 
-        // 提交至渲染器，应用计算好的 _offset
+        // ⚡️ 将缓存好的 _cached_uv 传给渲染器
         ctx.getRenderer().drawSprite(
             ctx.getCamera(),
             _sprite,
-            pos + _offset,
-            scale,
-            rotation);
+            render_pos,
+            _transform_comp->getScale(),
+            _transform_comp->getRotation(),
+            _cached_uv // Renderer 的参数需要增加这一项
+        );
     }
 
     // --- Setter 接口实现 ---
 
-    void SpriteComponent::setAlignment(engine::utils::Alignment archor)
+    void SpriteComponent::setAlignment(engine::utils::Alignment anchor)
     {
-        if (_alignment == archor)
-            return;
-        _alignment = archor;
-        _dirty_flags |= DIRTY_OFFSET;
+        if (_alignment != anchor)
+        {
+            _alignment = anchor;
+            _dirty_flags |= DIRTY_OFFSET;
+        }
     }
 
     void SpriteComponent::setFlipped(bool flipped)
@@ -134,7 +139,8 @@ namespace engine::component
     void SpriteComponent::setSourceRect(const std::optional<engine::utils::FRect> &source_rect_opt)
     {
         _sprite.setSourceRect(source_rect_opt);
-        _dirty_flags |= (DIRTY_SIZE | DIRTY_OFFSET);
+        // 只要 Rect 变了，UV 和 Size 全部变脏
+        _dirty_flags |= (DIRTY_SIZE | DIRTY_UV);
     }
 
     // --- 内部辅助计算 ---
@@ -185,19 +191,24 @@ namespace engine::component
         }
     }
 
-    void SpriteComponent::updateSpriteSize()
+    void SpriteComponent::updateSpriteSizeAndUV()
     {
-        auto source_rect_opt = _sprite.getSourceRect();
-        if (source_rect_opt.has_value())
-        {
-            _sprite_size = source_rect_opt->size;
-        }
-        else if (_context)
-        {
-            _sprite_size = _context->getResourceManager().getTextureSize(_sprite.getTextureId());
-        }
+        glm::vec2 tex_size = _context->getResourceManager().getTextureSize(_sprite.getTextureId());
+        auto src_opt = _sprite.getSourceRect();
 
+        // 计算逻辑尺寸
+        _sprite_size = src_opt.has_value() ? src_opt->size : tex_size;
+
+        // ⚡️ 必须同步到内部 Sprite 对象，渲染器才能通过 sprite.getSize() 拿到数据
         _sprite.setSize(_sprite_size);
-        spdlog::trace("Sprite 尺寸更新: {}x{}", _sprite_size.x, _sprite_size.y);
+
+        // --- 核心：计算归一化 UV ---
+        engine::utils::FRect src = src_opt.value_or(engine::utils::FRect{{0.0f, 0.0f}, tex_size});
+
+        const float eps = 0.005f; // 防缝隙微调（像素单位）
+        _cached_uv.x = (src.position.x + eps) / tex_size.x;
+        _cached_uv.y = (src.position.y + eps) / tex_size.y;
+        _cached_uv.z = (src.size.x - eps * 2.0f) / tex_size.x;
+        _cached_uv.w = (src.size.y - eps * 2.0f) / tex_size.y;
     }
 }

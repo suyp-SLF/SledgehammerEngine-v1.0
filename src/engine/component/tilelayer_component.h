@@ -27,12 +27,13 @@ namespace engine::component
      */
     struct TileInfo
     {
-        render::Sprite sprite; // 假设 Sprite 内部自持纹理句柄或引用计数
+        glm::vec4 uv_rect;
         TileType type;         // 瓦片类型
+        std::string texture_id; // 新增：如果是多图片模式，存储独立 ID
 
+        TileInfo() = default; // 默认构造函数
         // 建议使用初始化列表，并修复参数名冲突
-        TileInfo(const render::Sprite &s = render::Sprite(), TileType t = TileType::Empty)
-            : sprite(s), type(t) {}
+        TileInfo(glm::vec4 uv_rect, TileType type, std::string texture_id) : uv_rect(uv_rect), type(type), texture_id(texture_id) {} // 默认构造函数
     };
     class TilelayerComponent : public Component
     {

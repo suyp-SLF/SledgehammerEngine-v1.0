@@ -5,6 +5,10 @@ namespace engine::resource
 {
     class ResourceManager;
 }
+namespace engine::component
+{
+    class TileInfo;
+}
 namespace engine::render
 {
     class Camera;
@@ -26,8 +30,12 @@ namespace engine::render
         }
 
         // --- 核心绘图接口 (System 必须调用的) ---
-        virtual void drawSprite(const Camera &camera, const Sprite &sprite,
-                                const glm::vec2 &position, const glm::vec2 &scale = {1.0f, 1.0f}, double angle = 0.0f) = 0;
+        virtual void drawSprite(const Camera &camera,
+                                const Sprite &sprite,
+                                const glm::vec2 &position,
+                                const glm::vec2 &scale = {1.0f, 1.0f},
+                                double angle = 0.0f,
+                                const glm::vec4 &uv_rect = {0.0f, 0.0f, 1.0f, 1.0f}) = 0;
 
         // --- 帧生命周期管理 ---
         virtual void clearScreen() = 0;
@@ -40,6 +48,11 @@ namespace engine::render
         virtual void drawParallax(const Camera &camera, const Sprite &sprite, const glm::vec2 &position,
                                   const glm::vec2 &scroll_factor, const glm::bvec2 &repeat,
                                   const glm::vec2 &scale, double angle) = 0;
+        virtual void drawTileMap(const Camera &camera,
+                                      const glm::ivec2 &map_size,
+                                      const glm::vec2 &tile_size,
+                                      const std::vector<engine::component::TileInfo> &tiles,
+                                      const glm::vec2 &layer_offset) = 0;
         virtual void clean() = 0;
     };
 }

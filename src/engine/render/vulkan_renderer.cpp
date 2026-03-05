@@ -10,7 +10,20 @@ namespace engine::render
     VulkanRenderer::~VulkanRenderer()
     {
     }
-    void VulkanRenderer::drawSprite(const Camera &camera, const Sprite &sprite, const glm::vec2 &position, const glm::vec2 &scale, double angle)
+    void VulkanRenderer::drawSprite(const Camera &camera,
+                                    const Sprite &sprite,
+                                    const glm::vec2 &position,
+                                    const glm::vec2 &scale,
+                                    double angle,
+                                    const glm::vec4 &uv_rect)
+    {
+    }
+
+    void VulkanRenderer::drawTileMap(const Camera &camera,
+                                     const glm::ivec2 &map_size,
+                                     const glm::vec2 &tile_size,
+                                     const std::vector<engine::component::TileInfo> &tiles,
+                                     const glm::vec2 &layer_offset)
     {
     }
 

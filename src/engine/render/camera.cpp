@@ -69,7 +69,8 @@ namespace engine::render
     }
     glm::vec2 Camera::worldToScreen(const glm::vec2 &world_pos) const
     {
-        return world_pos - _position;
+        // ⚡️ 必须与 getViewMatrix 保持一致，使用 floor 防止瓦片抖动和错位
+        return world_pos - glm::floor(_position);
     }
 
     glm::vec2 Camera::worldToScreenWithParallax(const glm::vec2 &world_pos, const glm::vec2 &parallax_factor) const
