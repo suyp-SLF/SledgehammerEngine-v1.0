@@ -6,7 +6,7 @@
 #include <spdlog/spdlog.h>
 namespace engine::component
 {
-    TilelayerComponent::TilelayerComponent(glm::ivec2 tile_size, glm::ivec2 map_size, std::vector<TileInfo> &&tiles)
+    TilelayerComponent::TilelayerComponent(glm::ivec2 tile_size, glm::ivec2 map_size, std::vector<TileData> &&tiles)
         : _tile_size(tile_size),
           _map_size(map_size),
           _tiles(std::move(tiles))
@@ -59,7 +59,7 @@ namespace engine::component
             return;
     }
 
-    const TileInfo *TilelayerComponent::getTileInfoAt(glm::ivec2 position) const
+    const TileData *TilelayerComponent::getTileDataAt(glm::ivec2 position) const
     {
         if (position.x < 0 || position.y < 0 || position.x >= _map_size.x || position.y >= _map_size.y)
         {
@@ -77,7 +77,7 @@ namespace engine::component
     }
     TileType TilelayerComponent::getTileTypeAt(glm::ivec2 position) const
     {
-        const TileInfo *tile_info = getTileInfoAt(position);
+        const TileData *tile_info = getTileDataAt(position);
         return tile_info ? tile_info->type : TileType::Empty;
     }
 

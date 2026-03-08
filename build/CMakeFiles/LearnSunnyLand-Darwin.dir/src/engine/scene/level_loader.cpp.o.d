@@ -1315,6 +1315,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/level_loader.cpp.o: \
   /opt/homebrew/include/glm/integer.hpp \
   /opt/homebrew/include/glm/detail/func_integer.inl \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/scene/../component/tilelayer_component.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/scene/../component/../world/tile_info.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/scene/../component/sprite_component.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/scene/../component/../utils/alignment.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/scene/../component/../utils/math.h \

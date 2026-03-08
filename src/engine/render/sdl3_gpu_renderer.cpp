@@ -297,7 +297,7 @@ namespace engine::render
     void SDL3GPURenderer::drawTileMap(const Camera &camera,
                                       const glm::ivec2 &map_size,
                                       const glm::vec2 &tile_size,
-                                      const std::vector<engine::component::TileInfo> &tiles,
+                                      const std::vector<engine::component::TileData> &tiles,
                                       const glm::vec2 &layer_offset)
     {
         if (!_current_cmd || tiles.empty() || !_res_mgr)

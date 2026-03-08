@@ -38,7 +38,7 @@ namespace engine::render
         void drawTileMap(const Camera &camera,
                          const glm::ivec2 &map_size,
                          const glm::vec2 &tile_size,
-                         const std::vector<engine::component::TileInfo> &tiles,
+                         const std::vector<engine::component::TileData> &tiles,
                          const glm::vec2 &layer_offset) override;
         // 将窗口坐标（像素）转换为游戏内的逻辑坐标
         virtual glm::vec2 windowToLogical(float window_x, float window_y) const override;

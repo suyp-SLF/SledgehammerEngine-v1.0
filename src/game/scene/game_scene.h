@@ -1,10 +1,10 @@
 #pragma once
 #include "../../engine/scene/scene.h"
+#include "../../engine/world/chunk_manager.h"
 namespace engine::object
 {
     class GameObject;
 }
-
 namespace game::scene
 {
     class GameScene : public engine::scene::Scene
@@ -20,6 +20,7 @@ namespace game::scene
         void clean() override;
 
     private:
+        std::unique_ptr<engine::world::ChunkManager> chunk_manager; // 管理区块
         // 测试函数
         void createTestObject();
         void testCamera();

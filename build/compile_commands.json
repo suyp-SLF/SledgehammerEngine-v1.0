@@ -127,6 +127,30 @@
 },
 {
   "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/clang++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -g -std=gnu++20 -arch arm64 -fsanitize=address -fno-omit-frame-pointer -g -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/perlin_noise_generator.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/perlin_noise_generator.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/perlin_noise_generator.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/perlin_noise_generator.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/clang++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -g -std=gnu++20 -arch arm64 -fsanitize=address -fno-omit-frame-pointer -g -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/chunk_manager.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/chunk_manager.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/chunk_manager.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/chunk_manager.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/clang++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -g -std=gnu++20 -arch arm64 -fsanitize=address -fno-omit-frame-pointer -g -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/world_config.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/world_config.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/world_config.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/world_config.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/clang++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -g -std=gnu++20 -arch arm64 -fsanitize=address -fno-omit-frame-pointer -g -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/terrain_generator.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/terrain_generator.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/terrain_generator.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/terrain_generator.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
   "command": "/usr/bin/clang++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -g -std=gnu++20 -arch arm64 -fsanitize=address -fno-omit-frame-pointer -g -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/scene.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/scene/scene.cpp",
   "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/scene/scene.cpp",
   "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/scene.cpp.o"

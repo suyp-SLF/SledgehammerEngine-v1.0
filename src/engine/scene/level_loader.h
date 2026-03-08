@@ -9,7 +9,7 @@ namespace engine::render
 }
 namespace engine::component
 {
-    class TileInfo;
+    class TileData;
 }
 namespace engine::scene
 {
@@ -28,7 +28,7 @@ namespace engine::scene
         void loadTileLayer(const nlohmann::json& layer_json, Scene* scene);
         void loadObjectLayer(const nlohmann::json& layer_json, Scene* scene);
         void loadTileset(const std::string_view tileset_path, int first_gid);
-        engine::component::TileInfo getTileInfoByGid(int gid) const;
+        engine::component::TileData getTileDataByGid(int gid) const;
         engine::render::Sprite getSpriteByGid(int gid) const;
 
         std::string resolvePath(const std::string_view image_path, const std::string_view file_path) const;

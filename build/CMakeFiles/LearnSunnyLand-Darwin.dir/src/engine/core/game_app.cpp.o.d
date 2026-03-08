@@ -1276,4 +1276,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/core/game_app.cpp.o: \
   /opt/homebrew/include/spdlog/details/log_msg.h \
   /opt/homebrew/include/spdlog/version.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/game_scene.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/scene/scene.h
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/scene/scene.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/world/chunk_manager.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/world/chunk.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/world/tile_info.h

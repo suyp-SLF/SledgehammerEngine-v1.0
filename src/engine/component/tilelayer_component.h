@@ -1,5 +1,6 @@
 #pragma once
 #include "../render/sprite.h"
+#include "../world/tile_info.h"
 #include "component.h"
 #include <vector>
 #include <glm/glm.hpp>
@@ -13,28 +14,6 @@ namespace engine::core
 }
 namespace engine::component
 {
-    /**
-     * @brief 定义瓦片类型
-     */
-    enum class TileType
-    {
-        Empty = 0,  // 空瓦片
-        Normal = 1, // 普通瓦片
-        SOLID = 2,  // 固体瓦片
-    };
-    /**
-     * @brief 单个瓦片的渲染和逻辑信息
-     */
-    struct TileInfo
-    {
-        glm::vec4 uv_rect;
-        TileType type;         // 瓦片类型
-        std::string texture_id; // 新增：如果是多图片模式，存储独立 ID
-
-        TileInfo() = default; // 默认构造函数
-        // 建议使用初始化列表，并修复参数名冲突
-        TileInfo(glm::vec4 uv_rect, TileType type, std::string texture_id) : uv_rect(uv_rect), type(type), texture_id(texture_id) {} // 默认构造函数
-    };
     class TilelayerComponent : public Component
     {
         friend class engine::object::GameObject;
@@ -58,7 +37,7 @@ namespace engine::component
          * @param tiles 瓦片信息 （会被移动）
          * @note tiles 会被移动，因此调用者不应再使用该参数
          */
-        TilelayerComponent(glm::ivec2 tile_size, glm::ivec2 map_size, std::vector<TileInfo> &&tiles);
+        TilelayerComponent(glm::ivec2 tile_size, glm::ivec2 map_size, std::vector<TileData> &&tiles);
         /**
          * @brief 析构函数
          */
@@ -70,7 +49,7 @@ namespace engine::component
          *  @note 如果位置超出地图范围，返回 nullptr
          * @note 返回的指针指向的是 TilelayerComponent 内部的数据，不应被修改
          */
-        const TileInfo *getTileInfoAt(glm::ivec2 position) const;
+        const TileData *getTileDataAt(glm::ivec2 position) const;
         /**
          * @brief 获取指定位置的瓦片类型
          * @param position 瓦片位置
@@ -89,7 +68,7 @@ namespace engine::component
         const glm::ivec2 &getTileSize() const { return _tile_size; }
         const glm::ivec2 &getMapSize() const { return _map_size; }
         const glm::vec2 &getOffset() const { return _offset; }
-        const std::vector<TileInfo> &getTiles() const { return _tiles; }
+        const std::vector<TileData> &getTiles() const { return _tiles; }
         bool isHidden() const { return _is_hidden; }
         const glm::ivec2 getWorldSize() const
         {
@@ -114,7 +93,7 @@ namespace engine::component
     private:
         glm::ivec2 _tile_size;            // 瓦片大小
         glm::ivec2 _map_size;             // 地图大小
-        std::vector<TileInfo> _tiles;     // 瓦片信息
+        std::vector<TileData> _tiles;     // 瓦片信息
         glm::vec2 _offset = {0.0f, 0.0f}; // 地图偏移量
 
         // --- 状态追踪 ---

@@ -33,6 +33,10 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/scene/level_loader.cpp" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/level_loader.cpp.o" "gcc" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/level_loader.cpp.o.d"
   "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/scene/scene.cpp" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/scene.cpp.o" "gcc" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/scene.cpp.o.d"
   "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/scene/scene_manager.cpp" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/scene_manager.cpp.o" "gcc" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/scene_manager.cpp.o.d"
+  "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/chunk_manager.cpp" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/chunk_manager.cpp.o" "gcc" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/chunk_manager.cpp.o.d"
+  "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/perlin_noise_generator.cpp" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/perlin_noise_generator.cpp.o" "gcc" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/perlin_noise_generator.cpp.o.d"
+  "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/terrain_generator.cpp" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/terrain_generator.cpp.o" "gcc" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/terrain_generator.cpp.o.d"
+  "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/world_config.cpp" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/world_config.cpp.o" "gcc" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/world_config.cpp.o.d"
   "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/game_scene.cpp" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o" "gcc" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o.d"
   "/Users/suyp/C++/Projects/LearnSunnyLand/src/main.cpp" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/main.cpp.o" "gcc" "CMakeFiles/LearnSunnyLand-Darwin.dir/src/main.cpp.o.d"
   )

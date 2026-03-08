@@ -133,7 +133,7 @@ namespace engine::scene
             spdlog::error("图层：{} 缺少 data 属性，或者非数组类型", layer_json.value("name", "Unnamed"));
             return;
         }
-        std::vector<engine::component::TileInfo> tiles;
+        std::vector<engine::component::TileData> tiles;
         std::string main_texture_id = "";
 
         for (const auto &gid_raw : layer_json["data"])
@@ -142,11 +142,11 @@ namespace engine::scene
 
             if (gid == 0)
             {
-                tiles.push_back(engine::component::TileInfo()); // 默认构造函数应设置 type = Empty
+                tiles.push_back(engine::component::TileData()); // 默认构造函数应设置 type = Empty
             }
             else
             {
-                auto info = getTileInfoByGid(gid);
+                auto info = getTileDataByGid(gid);
                 tiles.push_back(info);
 
                 // 自动拾取该层的第一个有效纹理作为层纹理
@@ -242,20 +242,20 @@ namespace engine::scene
             return;
         }
 
-        // 必须确保这两个字段存在，因为 getTileInfoByGid 强依赖它们
+        // 必须确保这两个字段存在，因为 getTileDataByGid 强依赖它们
         tileset_data["firstgid"] = first_gid;
         tileset_data["file_path"] = std::string(tileset_path);
 
         _tileset_data[first_gid] = std::move(tileset_data);
     }
-    engine::component::TileInfo LevelLoader::getTileInfoByGid(int gid) const
+    engine::component::TileData LevelLoader::getTileDataByGid(int gid) const
     {
         if (gid == 0)
-            return engine::component::TileInfo();
+            return engine::component::TileData();
 
         auto tileset_it = _tileset_data.upper_bound(gid);
         if (tileset_it == _tileset_data.begin())
-            return engine::component::TileInfo();
+            return engine::component::TileData();
         --tileset_it;
 
         const auto &tileset = tileset_it->second;
@@ -264,7 +264,7 @@ namespace engine::scene
         const std::string file_path = tileset.value("file_path", "");
         auto sprite = getSpriteByGid(gid);
 
-        if (tileset.contains("image"))
+        if (tileset.contains("type") && tileset["type"] == "tileset")// 单图片逻辑
         {
             const std::string texture_id = resolvePath(tileset["image"].get<std::string>(), file_path);
             auto size = sprite.getSize();
@@ -282,7 +282,7 @@ namespace engine::scene
             if (tex_size.x <= 0 || tex_size.y <= 0)
             {
                 spdlog::error("无法获取纹理尺寸，ID: {}", texture_id);
-                return engine::component::TileInfo();
+                return engine::component::TileData();
             }
             // 关键：读取 Tileset 自己的瓦片尺寸
             int ts_tile_w = tileset.value("tilewidth", 0);
@@ -290,7 +290,7 @@ namespace engine::scene
             int columns = tileset.value("columns", 0);
 
             if (columns <= 0)
-                return engine::component::TileInfo();
+                return engine::component::TileData();
 
             // 2. 计算像素坐标
             float pixel_x = static_cast<float>((local_id % columns) * ts_tile_w);
@@ -304,16 +304,16 @@ namespace engine::scene
                 static_cast<float>(ts_tile_w) / tex_size.x,
                 static_cast<float>(ts_tile_h) / tex_size.y};
 
-            // 4. 返回精简后的 TileInfo
-            return engine::component::TileInfo(uv_rect, engine::component::TileType::Normal, texture_id);
+            // 4. 返回精简后的 TileData
+            return engine::component::TileData(uv_rect, engine::component::TileType::Normal, texture_id);
             // --- 核心修改结束 ---
         }
-        else // 多图片逻辑
+        else if (tileset.contains("type") && tileset["type"] == "tileset")
         {
             if (!tileset.contains("tiles"))
             {
                 spdlog::error("Tileset 文件 {} 缺少 tiles 属性", tileset_it->first);
-                return engine::component::TileInfo();
+                return engine::component::TileData();
             }
             // 遍历 _tiles 数组， 根据id查找对应的瓦片
             const auto &tiles_json = tileset["tiles"];
@@ -327,7 +327,7 @@ namespace engine::scene
                     if (!tile_json.contains("image"))
                     {
                         spdlog::error("Tileset 文件 {} 中 瓦片 {} 缺少 image 属性", tileset_it->first, tile_id);
-                        return engine::component::TileInfo();
+                        return engine::component::TileData();
                     }
                     // 获取图片路径
                     const std::string texture_id = resolvePath(tile_json["image"].get<std::string>(), file_path);
@@ -340,12 +340,12 @@ namespace engine::scene
                         glm::vec2{w, h}};
                     engine::render::Sprite sprite{texture_id, source_rect};
                     glm::vec4 uv_rect{0.0f, 0.0f, 1.0f, 1.0f};
-                    return engine::component::TileInfo(uv_rect, engine::component::TileType::Normal, texture_id);
+                    return engine::component::TileData(uv_rect, engine::component::TileType::Normal, texture_id);
                 }
             }
         }
         spdlog::error("图块集 {} 无法找到 GID: {} 对应的 瓦片", tileset_it->first, gid);
-        return engine::component::TileInfo();
+        return engine::component::TileData();
     }
     engine::render::Sprite LevelLoader::getSpriteByGid(int gid) const
     {

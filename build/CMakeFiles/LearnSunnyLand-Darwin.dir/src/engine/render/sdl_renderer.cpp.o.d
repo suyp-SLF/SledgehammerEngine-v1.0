@@ -1169,6 +1169,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/sdl_renderer.cpp.o: \
   /opt/homebrew/include/SDL3/SDL_oldnames.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../component/tilelayer_component.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../component/../render/sprite.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../component/../world/tile_info.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../component/component.h \
   /opt/homebrew/include/SDL3_image/SDL_image.h \
   /opt/homebrew/include/spdlog/spdlog.h \

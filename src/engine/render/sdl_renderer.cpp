@@ -148,7 +148,7 @@ namespace engine::render
     void SDLRenderer::drawTileMap(const Camera &camera,
                                   const glm::ivec2 &map_size,
                                   const glm::vec2 &tile_size,
-                                  const std::vector<engine::component::TileInfo> &tiles,
+                                  const std::vector<engine::component::TileData> &tiles,
                                   const glm::vec2 &layer_offset)
     {
         if (!_res_mgr || tiles.empty())
@@ -185,7 +185,7 @@ namespace engine::render
                     continue;
 
                 // 获取该瓦片的纹理
-                // 注意：LevelLoader 必须在 getTileInfoByGid 中为多图模式填充了 texture_id
+                // 注意：LevelLoader 必须在 getTileDataByGid 中为多图模式填充了 texture_id
                 SDL_Texture *current_tex = _res_mgr->getTexture(tile.texture_id);
                 if (!current_tex)
                     continue;

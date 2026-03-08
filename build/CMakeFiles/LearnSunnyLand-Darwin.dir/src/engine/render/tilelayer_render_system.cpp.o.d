@@ -1099,6 +1099,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/tilelayer_render_system.c
   /opt/homebrew/include/glm/vector_relational.hpp \
   /opt/homebrew/include/glm/integer.hpp \
   /opt/homebrew/include/glm/detail/func_integer.inl \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../component/../world/tile_info.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../component/component.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../core/context.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \

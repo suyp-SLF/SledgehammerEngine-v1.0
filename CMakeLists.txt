@@ -73,11 +73,17 @@ add_executable(
     src/engine/render/parallax_render_system.cpp
     src/engine/render/tilelayer_render_system.cpp
 
-
     src/engine/component/sprite_component.cpp
     src/engine/component/transform_component.cpp
     src/engine/component/parallax_component.cpp
     src/engine/component/tilelayer_component.cpp
+
+    src/engine/world/tile_info.h
+    src/engine/world/chunk.h
+    src/engine/world/perlin_noise_generator.cpp
+    src/engine/world/chunk_manager.cpp
+    src/engine/world/world_config.cpp
+    src/engine/world/terrain_generator.cpp
 
     src/engine/scene/scene.cpp
     src/engine/scene/scene_manager.cpp

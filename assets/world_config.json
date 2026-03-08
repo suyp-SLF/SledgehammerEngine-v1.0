@@ -1,0 +1,9 @@
+{
+    "seed": 12345,
+    "seaLevel": 64,
+    "noiseScale": 0.01,
+    "amplitude": 30,
+    "grassDepth": 2,
+    "dirtDepth": 5,
+    "stoneStart": 50
+}
