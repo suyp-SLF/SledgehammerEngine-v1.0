@@ -1,4 +1,5 @@
 #include "chunk_manager.h"
+#include "../core/context.h"
 #include "tile_info.h"
 #include <algorithm>
 
@@ -125,17 +126,20 @@ namespace engine::world
         chunk->buildMesh(m_atlasTextureId, m_tileSize); // 初始生成
         m_chunks[encodeChunkKey(chunkX, chunkY)] = std::move(chunk);
     }
-
+    void ChunkManager::setTerrainGenerator(std::unique_ptr<TerrainGenerator> generator)
+    {
+        // 例如：m_generator = std::move(generator);
+    }
     void ChunkManager::unloadChunk(int chunkX, int chunkY)
     {
         m_chunks.erase(encodeChunkKey(chunkX, chunkY));
     }
 
-    void ChunkManager::renderAll() const
+    void ChunkManager::renderAll(engine::core::Context &ctx) const
     {
         for (const auto &[_, chunk] : m_chunks)
         {
-            chunk->render();
+            chunk->render(ctx);
         }
     }
 } // namespace engine::world

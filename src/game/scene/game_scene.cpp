@@ -90,7 +90,7 @@ namespace game::scene
         Scene::render();
 
         // 在渲染其他对象之前或之后渲染瓦片
-        chunk_manager->renderAll();
+        chunk_manager->renderAll(_context);
 
         // 2. 核心：驱动渲染系统绘制所有已注册的 SpriteComponent
         // 这里才是真正去调 Renderer -> SDL_Render/SDL_GPU 的地方

@@ -1,4 +1,7 @@
 #include "chunk.h"
+#include "../render/renderer.h"
+#include "../world/world_config.h"
+#include "../core/context.h"
 #include <glm/glm.hpp>
 
 namespace engine::world
@@ -27,21 +30,28 @@ namespace engine::world
         return true;
     }
 
-    void Chunk::render(const engine::render::Camera &camera, engine::render::Renderer &renderer) const
+    void Chunk::render(engine::core::Context &ctx)
+    {
+        // 判断是否需要渲染
+        draw(ctx);
+    }
+
+    void Chunk::draw(engine::core::Context &ctx)
     {
         // 将 std::array<TileData, TILE_COUNT> 转换为 std::vector<TileData>
         // 注意：这里会复制数据，如果性能敏感，可以考虑修改 drawTileMap 接受数组指针
         std::vector<engine::world::TileData> tileVec(m_tiles.begin(), m_tiles.end());
 
         // 计算该区块的世界偏移（单位：像素）
-        glm::vec2 worldOffset = glm::vec2(m_chunkX * SIZE * TILE_SIZE,
-                                          m_chunkY * SIZE * TILE_SIZE);
+        glm::vec2 worldOffset = glm::vec2(m_chunkX * SIZE * WorldConfig::TILE_SIZE,
+                                          m_chunkY * SIZE * WorldConfig::TILE_SIZE);
         // 假设 TILE_SIZE 是一个全局常量，表示每个瓦片的像素尺寸（例如 16）
 
-        renderer.drawTileMap(camera,
-                             glm::ivec2(SIZE, SIZE), // 区块尺寸（瓦片个数）
-                             glm::vec2(TILE_SIZE),   // 每个瓦片的大小
-                             tileVec,                // 瓦片数据
-                             worldOffset);           // 区块世界偏移
+        ctx.getRenderer().drawTileMap(ctx.getCamera(),
+                                      glm::ivec2(SIZE, SIZE),            // 区块尺寸（瓦片个数）
+                                      glm::vec2(WorldConfig::TILE_SIZE), // 每个瓦片的大小
+                                      tileVec,                           // 瓦片数据
+                                      worldOffset);                      // 区块世界偏移
     }
+
 } // namespace engine::world

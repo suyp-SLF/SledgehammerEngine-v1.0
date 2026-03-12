@@ -1096,4 +1096,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/chunk.cpp.o: \
   /opt/homebrew/include/glm/matrix.hpp \
   /opt/homebrew/include/glm/vector_relational.hpp \
   /opt/homebrew/include/glm/integer.hpp \
-  /opt/homebrew/include/glm/detail/func_integer.inl
+  /opt/homebrew/include/glm/detail/func_integer.inl \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/../render/renderer.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/../world/world_config.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/../core/context.h

@@ -18,6 +18,7 @@ struct WorldConfig {
 
     // 编译期常量
     static constexpr int CHUNK_SIZE = 16;   // 或者 32、64，根据你的需求
+    static constexpr int TILE_SIZE = 16;
     // 可加载配置文件
     bool loadFromFile(const std::string& path);
 };

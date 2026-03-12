@@ -25,7 +25,7 @@ namespace engine::world
         void updateVisibleChunks(const glm::vec2 &cameraPos, int viewDistanceInChunks);
 
         // 渲染所有已加载的块
-        void renderAll() const;
+        void renderAll(engine::core::Context &ctx) const;
 
         // 加载/卸载块（内部调用）
         void loadChunk(int chunkX, int chunkY);

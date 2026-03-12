@@ -27,7 +27,7 @@ namespace engine::world
     void PerlinNoiseGenerator::generateChunk(int chunkX, int chunkY, std::vector<TileData> &outTiles) const
     {
         // 确保输出缓冲区大小正确
-        outTiles.resize(WorldConfig::WorldConfig::CHUNK_SIZE * WorldConfig::CHUNK_SIZE);
+        outTiles.resize(WorldConfig::CHUNK_SIZE * WorldConfig::CHUNK_SIZE);
 
         // 计算该区块的世界坐标原点（左下角，取决于你的坐标系）
         int baseX = chunkX * WorldConfig::CHUNK_SIZE;

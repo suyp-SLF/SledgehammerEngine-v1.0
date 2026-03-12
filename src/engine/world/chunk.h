@@ -6,6 +6,10 @@
 #include <memory>
 
 // 假设你有一个渲染接口（如 VertexBuffer, IndexBuffer），这里用伪代码
+namespace engine::core
+{
+    class Context;
+}
 namespace engine::render
 {
     class Camera;
@@ -33,7 +37,8 @@ namespace engine::world
         bool buildMesh(const std::string &atlasTextureId, const glm::ivec2 &tileSize);
 
         // 渲染该块（绑定缓冲并绘制）
-        void render(const engine::render::Camera& camera, engine::render::Renderer& renderer) const;
+        void render(engine::core::Context &ctx);
+        void draw(engine::core::Context &ctx);
 
         // 获取块的世界位置（左下角坐标，单位：瓦片）
         glm::ivec2 getPosition() const { return glm::ivec2(m_chunkX * SIZE, m_chunkY * SIZE); }
@@ -51,8 +56,6 @@ namespace engine::world
         std::array<engine::world::TileData, TILE_COUNT> m_tiles;
 
         bool m_dirty = true; // 是否需要重新生成网格
-        std::unique_ptr<engine::render::VertexBuffer> m_vbo;
-        std::unique_ptr<engine::render::IndexBuffer> m_ibo;
         size_t m_indexCount = 0; // 索引数量
 
         // 纹理图集ID（每个块使用同一个图集，实际可以全局统一）
