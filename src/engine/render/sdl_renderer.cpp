@@ -144,89 +144,39 @@ namespace engine::render
             }
         }
     }
-
-    void SDLRenderer::drawTileMap(const Camera &camera,
-                                  const glm::ivec2 &map_size,
-                                  const glm::vec2 &tile_size,
-                                  const std::string &textureId,
-                                  const std::vector<engine::world::TileData> &tiles,
-                                  const glm::vec2 &layer_offset)
+    void SDLRenderer::drawChunkVertices(const Camera &camera,
+                                        const std::unordered_map<SDL_GPUTexture *, std::vector<GPUVertex>> &verticesPerTexture,
+                                        const glm::vec2 &worldOffset)
     {
-        if (!_res_mgr || tiles.empty())
-            return;
+        // for (const auto &[texture, vertices] : verticesPerTexture)
+        // {
+        //     if (vertices.empty())
+        //         continue;
 
-        // 1. 视口裁剪：计算当前摄像机能看到的瓦片范围
-        glm::vec2 view_size = camera.getViewportSize();
-        glm::vec2 cam_pos = camera.getPosition();
+        //     // 将顶点从世界坐标转换为屏幕坐标（应用相机变换）
+        //     // 这里我们复制一份顶点并转换，或者可以预先在 Chunk 中存储世界坐标，这里实时转换
+        //     std::vector<SDL_Vertex> sdlVertices;
+        //     sdlVertices.reserve(vertices.size());
+        //     for (const auto &v : vertices)
+        //     {
+        //         glm::vec2 worldPos = v.pos + worldOffset; // v.pos 是 glm::vec2
+        //         glm::vec2 screenPos = camera.worldToScreen(worldPos);
+        //         // 将 glm::vec4 转换为 SDL_FColor（直接 reinterpret_cast 是安全的，因为布局相同）
+        //         const SDL_FColor *colorPtr = reinterpret_cast<const SDL_FColor *>(&v.color);
+        //         sdlVertices.push_back({
+        //             {screenPos.x, screenPos.y}, // 位置
+        //             *colorPtr,                    // 颜色（白色）
+        //             {v.uv.x, v.uv.y}            // 纹理坐标
+        //         });
+        //     }
 
-        int start_col = std::max(0, (int)std::floor((cam_pos.x - layer_offset.x) / tile_size.x));
-        int end_col = std::min(map_size.x, (int)std::ceil((cam_pos.x + view_size.x - layer_offset.x) / tile_size.x));
-        int start_row = std::max(0, (int)std::floor((cam_pos.y - layer_offset.y) / tile_size.y));
-        int end_row = std::min(map_size.y, (int)std::ceil((cam_pos.y + view_size.y - layer_offset.y) / tile_size.y));
-
-        // 2. 准备分组容器 (按 SDL_Texture* 指针分组)
-        // 使用 std::map 将拥有相同纹理的顶点收集到一起
-        static std::map<SDL_Texture *, std::vector<SDL_Vertex>> batch_map;
-        for (auto &pair : batch_map)
-            pair.second.clear(); // 清理旧数据，保留预分配内存
-
-        SDL_FColor white = {1.0f, 1.0f, 1.0f, 1.0f};
-
-        // 3. 填充数据
-        for (int y = start_row; y < end_row; ++y)
-        {
-            for (int x = start_col; x < end_col; ++x)
-            {
-                size_t index = static_cast<size_t>(y) * map_size.x + x;
-                if (index >= tiles.size())
-                    continue;
-
-                const auto &tile = tiles[index];
-                if (tile.uv_rect.z <= 0.0f)
-                    continue;
-
-                // 获取该瓦片的纹理
-                // 注意：LevelLoader 必须在 getTileDataByGid 中为多图模式填充了 texture_id
-                SDL_Texture *current_tex = _res_mgr->getTexture(tile.texture_id);
-                if (!current_tex)
-                    continue;
-
-                // 计算位置与对齐
-                glm::vec2 world_pos = glm::vec2(x, y) * tile_size + layer_offset;
-                glm::vec2 screen_pos = camera.worldToScreen(world_pos);
-
-                float left = std::floor(screen_pos.x);
-                float top = std::floor(screen_pos.y);
-                float right = std::floor(screen_pos.x + tile_size.x);
-                float bottom = std::floor(screen_pos.y + tile_size.y);
-
-                float u_min = tile.uv_rect.x;
-                float v_min = tile.uv_rect.y;
-                float u_max = u_min + tile.uv_rect.z;
-                float v_max = v_min + tile.uv_rect.w;
-
-                // 获取当前纹理对应的顶点数组
-                auto &vertices = batch_map[current_tex];
-
-                // 填充两个三角形 (6个顶点)
-                vertices.push_back(SDL_Vertex{{left, top}, white, {u_min, v_min}});
-                vertices.push_back(SDL_Vertex{{right, top}, white, {u_max, v_min}});
-                vertices.push_back(SDL_Vertex{{left, bottom}, white, {u_min, v_max}});
-
-                vertices.push_back(SDL_Vertex{{left, bottom}, white, {u_min, v_max}});
-                vertices.push_back(SDL_Vertex{{right, top}, white, {u_max, v_min}});
-                vertices.push_back(SDL_Vertex{{right, bottom}, white, {u_max, v_max}});
-            }
-        }
-
-        // 4. 分组提交：每个不同的纹理执行一次 Draw Call
-        for (const auto &[texture, vertices] : batch_map)
-        {
-            if (!vertices.empty())
-            {
-                SDL_RenderGeometry(_sdl_renderer, texture, vertices.data(), (int)vertices.size(), nullptr, 0);
-            }
-        }
+        //     SDL_RenderGeometry(_sdl_renderer, texture,
+        //                        sdlVertices.data(), (int)sdlVertices.size(),
+        //                        nullptr, 0);
+        // }
+    }
+    void SDLRenderer::drawChunkBatches(const Camera &camera, const std::unordered_map<SDL_GPUTexture *, engine::world::TextureBatch> &batches, const glm::vec2 &worldOffset)
+    {
     }
     /**
      * @brief 在UI上绘制一个精灵

@@ -9,7 +9,9 @@ namespace engine::world
     class ChunkManager
     {
     public:
-        ChunkManager(const std::string &atlasTextureId, const glm::ivec2 &tileSize);
+        ChunkManager(const std::string &atlasTextureId,
+                     const glm::ivec2 &tileSize,
+                     engine::resource::ResourceManager *resMgr);
         ~ChunkManager();
 
         void setTerrainGenerator(std::unique_ptr<engine::world::TerrainGenerator> generator);
@@ -32,6 +34,8 @@ namespace engine::world
         void unloadChunk(int chunkX, int chunkY);
 
     private:
+        engine::resource::ResourceManager *m_resMgr; // 资源管理器指针（非拥有）
+
         std::unordered_map<uint64_t, std::unique_ptr<Chunk>> m_chunks;
         std::string m_atlasTextureId;
         glm::ivec2 m_tileSize;

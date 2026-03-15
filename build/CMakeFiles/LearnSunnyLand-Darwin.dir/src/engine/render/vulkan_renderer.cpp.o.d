@@ -3,6 +3,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/vulkan_renderer.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/vulkan_renderer.cpp \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/vulkan_renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /opt/homebrew/include/glm/glm.hpp \
   /opt/homebrew/include/glm/detail/_fixes.hpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cmath \

@@ -1100,6 +1100,22 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o: \
   /opt/homebrew/include/glm/vector_relational.hpp \
   /opt/homebrew/include/glm/integer.hpp \
   /opt/homebrew/include/glm/detail/func_integer.inl \
+  /opt/homebrew/include/SDL3/SDL_gpu.h \
+  /opt/homebrew/include/SDL3/SDL_stdinc.h \
+  /opt/homebrew/include/SDL3/SDL_platform_defines.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityMacros.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
+  /opt/homebrew/include/SDL3/SDL_begin_code.h \
+  /opt/homebrew/include/SDL3/SDL_close_code.h \
+  /opt/homebrew/include/SDL3/SDL_pixels.h \
+  /opt/homebrew/include/SDL3/SDL_error.h \
+  /opt/homebrew/include/SDL3/SDL_endian.h \
+  /opt/homebrew/include/SDL3/SDL_properties.h \
+  /opt/homebrew/include/SDL3/SDL_rect.h \
+  /opt/homebrew/include/SDL3/SDL_surface.h \
+  /opt/homebrew/include/SDL3/SDL_blendmode.h \
+  /opt/homebrew/include/SDL3/SDL_iostream.h \
+  /opt/homebrew/include/SDL3/SDL_video.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/object/game_object.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/object/../component/component.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/typeindex \
@@ -1206,22 +1222,6 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/parallax_render_system.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/tilelayer_render_system.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/resource/resource_manager.h \
-  /opt/homebrew/include/SDL3/SDL_gpu.h \
-  /opt/homebrew/include/SDL3/SDL_stdinc.h \
-  /opt/homebrew/include/SDL3/SDL_platform_defines.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityMacros.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
-  /opt/homebrew/include/SDL3/SDL_begin_code.h \
-  /opt/homebrew/include/SDL3/SDL_close_code.h \
-  /opt/homebrew/include/SDL3/SDL_pixels.h \
-  /opt/homebrew/include/SDL3/SDL_error.h \
-  /opt/homebrew/include/SDL3/SDL_endian.h \
-  /opt/homebrew/include/SDL3/SDL_properties.h \
-  /opt/homebrew/include/SDL3/SDL_rect.h \
-  /opt/homebrew/include/SDL3/SDL_surface.h \
-  /opt/homebrew/include/SDL3/SDL_blendmode.h \
-  /opt/homebrew/include/SDL3/SDL_iostream.h \
-  /opt/homebrew/include/SDL3/SDL_video.h \
   /opt/homebrew/include/SDL3_ttf/SDL_ttf.h \
   /opt/homebrew/include/SDL3/SDL.h \
   /opt/homebrew/include/SDL3/SDL_assert.h \

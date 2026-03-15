@@ -1169,10 +1169,13 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/core/game_app.cpp.o: \
   /opt/homebrew/include/SDL3/SDL_oldnames.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../scene/scene_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/renderer.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/sdl_renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/sprite.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/../utils/math.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/sdl3_gpu_renderer.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/../world/chunk.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/../world/tile_info.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/camera.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../input/input_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../component/transform_component.h \
@@ -1278,5 +1281,4 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/core/game_app.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/game_scene.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/scene/scene.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/world/chunk_manager.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/world/chunk.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/world/tile_info.h
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/world/chunk.h

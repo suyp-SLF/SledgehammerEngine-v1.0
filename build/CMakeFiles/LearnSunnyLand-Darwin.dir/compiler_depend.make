@@ -992,6 +992,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/component/parallax_component.cpp
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/object/game_object.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/utils/math.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/parallax_render_system.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/sprite.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/resource/resource_manager.h \
@@ -2256,6 +2257,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/component/sprite_component.cpp.o
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/component/component.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/object/game_object.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/utils/math.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/sprite.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/sprite_render_system.h \
@@ -3520,6 +3522,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/component/tilelayer_component.cp
   /Library/Developer/CommandLineTools/usr/lib/clang/17/share/asan_ignorelist.txt \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/context.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/utils/math.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/sprite.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/tilelayer_render_system.h \
@@ -6923,6 +6926,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/core/context.cpp.o: /Users/suyp/
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/utils/math.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/camera.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/parallax_render_system.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/sprite_render_system.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/tilelayer_render_system.h \
@@ -8186,7 +8190,6 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/core/game_app.cpp.o: /Users/suyp
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/scene/scene.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/chunk.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/chunk_manager.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/tile_info.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/game_scene.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/sprite.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/utils/alignment.h \
@@ -8198,7 +8201,10 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/core/game_app.cpp.o: /Users/suyp
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/component/component.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/object/game_object.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/utils/math.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/chunk.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/tile_info.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/camera.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/sdl3_gpu_renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/sdl_renderer.h \
@@ -10471,6 +10477,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/input/input_manager.cpp.o: /User
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdint.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/share/asan_ignorelist.txt \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/config.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/input/input_manager.h \
   /opt/homebrew/include/SDL3/SDL.h \
@@ -13159,7 +13166,9 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/parallax_render_system.cp
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Availability.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternal.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternalLegacy.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityMacros.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityVersions.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/___wctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/__wctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/__xlocale.h \
@@ -14072,7 +14081,68 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/parallax_render_system.cp
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/utils/math.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/camera.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/parallax_render_system.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
+  /opt/homebrew/include/SDL3/SDL.h \
+  /opt/homebrew/include/SDL3/SDL_assert.h \
+  /opt/homebrew/include/SDL3/SDL_asyncio.h \
+  /opt/homebrew/include/SDL3/SDL_atomic.h \
+  /opt/homebrew/include/SDL3/SDL_audio.h \
+  /opt/homebrew/include/SDL3/SDL_begin_code.h \
+  /opt/homebrew/include/SDL3/SDL_bits.h \
+  /opt/homebrew/include/SDL3/SDL_blendmode.h \
+  /opt/homebrew/include/SDL3/SDL_camera.h \
+  /opt/homebrew/include/SDL3/SDL_clipboard.h \
+  /opt/homebrew/include/SDL3/SDL_close_code.h \
+  /opt/homebrew/include/SDL3/SDL_cpuinfo.h \
+  /opt/homebrew/include/SDL3/SDL_dialog.h \
+  /opt/homebrew/include/SDL3/SDL_dlopennote.h \
+  /opt/homebrew/include/SDL3/SDL_endian.h \
+  /opt/homebrew/include/SDL3/SDL_error.h \
+  /opt/homebrew/include/SDL3/SDL_events.h \
+  /opt/homebrew/include/SDL3/SDL_filesystem.h \
+  /opt/homebrew/include/SDL3/SDL_gamepad.h \
+  /opt/homebrew/include/SDL3/SDL_gpu.h \
+  /opt/homebrew/include/SDL3/SDL_guid.h \
+  /opt/homebrew/include/SDL3/SDL_haptic.h \
+  /opt/homebrew/include/SDL3/SDL_hidapi.h \
+  /opt/homebrew/include/SDL3/SDL_hints.h \
+  /opt/homebrew/include/SDL3/SDL_init.h \
+  /opt/homebrew/include/SDL3/SDL_iostream.h \
+  /opt/homebrew/include/SDL3/SDL_joystick.h \
+  /opt/homebrew/include/SDL3/SDL_keyboard.h \
+  /opt/homebrew/include/SDL3/SDL_keycode.h \
+  /opt/homebrew/include/SDL3/SDL_loadso.h \
+  /opt/homebrew/include/SDL3/SDL_locale.h \
+  /opt/homebrew/include/SDL3/SDL_log.h \
+  /opt/homebrew/include/SDL3/SDL_messagebox.h \
+  /opt/homebrew/include/SDL3/SDL_metal.h \
+  /opt/homebrew/include/SDL3/SDL_misc.h \
+  /opt/homebrew/include/SDL3/SDL_mouse.h \
+  /opt/homebrew/include/SDL3/SDL_mutex.h \
+  /opt/homebrew/include/SDL3/SDL_oldnames.h \
+  /opt/homebrew/include/SDL3/SDL_pen.h \
+  /opt/homebrew/include/SDL3/SDL_pixels.h \
+  /opt/homebrew/include/SDL3/SDL_platform.h \
+  /opt/homebrew/include/SDL3/SDL_platform_defines.h \
+  /opt/homebrew/include/SDL3/SDL_power.h \
+  /opt/homebrew/include/SDL3/SDL_process.h \
+  /opt/homebrew/include/SDL3/SDL_properties.h \
+  /opt/homebrew/include/SDL3/SDL_rect.h \
+  /opt/homebrew/include/SDL3/SDL_render.h \
+  /opt/homebrew/include/SDL3/SDL_scancode.h \
+  /opt/homebrew/include/SDL3/SDL_sensor.h \
+  /opt/homebrew/include/SDL3/SDL_stdinc.h \
+  /opt/homebrew/include/SDL3/SDL_storage.h \
+  /opt/homebrew/include/SDL3/SDL_surface.h \
+  /opt/homebrew/include/SDL3/SDL_system.h \
+  /opt/homebrew/include/SDL3/SDL_thread.h \
+  /opt/homebrew/include/SDL3/SDL_time.h \
+  /opt/homebrew/include/SDL3/SDL_timer.h \
+  /opt/homebrew/include/SDL3/SDL_touch.h \
+  /opt/homebrew/include/SDL3/SDL_tray.h \
+  /opt/homebrew/include/SDL3/SDL_version.h \
+  /opt/homebrew/include/SDL3/SDL_video.h \
   /opt/homebrew/include/glm/common.hpp \
   /opt/homebrew/include/glm/common.hpp \
   /opt/homebrew/include/glm/vector_relational.hpp \
@@ -15257,6 +15327,8 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/sdl3_gpu_renderer.cpp.o: 
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/context.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/resource/resource_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/utils/math.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/chunk.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/tile_info.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/camera.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
@@ -16551,6 +16623,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/sdl_renderer.cpp.o: /User
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/resource/resource_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/utils/math.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/camera.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/sdl_renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/sprite.h \
@@ -16826,7 +16899,9 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/sprite_render_system.cpp.
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Availability.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternal.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternalLegacy.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityMacros.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityVersions.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/___wctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/__wctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/__xlocale.h \
@@ -17739,8 +17814,69 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/sprite_render_system.cpp.
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/context.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/utils/math.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/camera.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/sprite_render_system.h \
+  /opt/homebrew/include/SDL3/SDL.h \
+  /opt/homebrew/include/SDL3/SDL_assert.h \
+  /opt/homebrew/include/SDL3/SDL_asyncio.h \
+  /opt/homebrew/include/SDL3/SDL_atomic.h \
+  /opt/homebrew/include/SDL3/SDL_audio.h \
+  /opt/homebrew/include/SDL3/SDL_begin_code.h \
+  /opt/homebrew/include/SDL3/SDL_bits.h \
+  /opt/homebrew/include/SDL3/SDL_blendmode.h \
+  /opt/homebrew/include/SDL3/SDL_camera.h \
+  /opt/homebrew/include/SDL3/SDL_clipboard.h \
+  /opt/homebrew/include/SDL3/SDL_close_code.h \
+  /opt/homebrew/include/SDL3/SDL_cpuinfo.h \
+  /opt/homebrew/include/SDL3/SDL_dialog.h \
+  /opt/homebrew/include/SDL3/SDL_dlopennote.h \
+  /opt/homebrew/include/SDL3/SDL_endian.h \
+  /opt/homebrew/include/SDL3/SDL_error.h \
+  /opt/homebrew/include/SDL3/SDL_events.h \
+  /opt/homebrew/include/SDL3/SDL_filesystem.h \
+  /opt/homebrew/include/SDL3/SDL_gamepad.h \
+  /opt/homebrew/include/SDL3/SDL_gpu.h \
+  /opt/homebrew/include/SDL3/SDL_guid.h \
+  /opt/homebrew/include/SDL3/SDL_haptic.h \
+  /opt/homebrew/include/SDL3/SDL_hidapi.h \
+  /opt/homebrew/include/SDL3/SDL_hints.h \
+  /opt/homebrew/include/SDL3/SDL_init.h \
+  /opt/homebrew/include/SDL3/SDL_iostream.h \
+  /opt/homebrew/include/SDL3/SDL_joystick.h \
+  /opt/homebrew/include/SDL3/SDL_keyboard.h \
+  /opt/homebrew/include/SDL3/SDL_keycode.h \
+  /opt/homebrew/include/SDL3/SDL_loadso.h \
+  /opt/homebrew/include/SDL3/SDL_locale.h \
+  /opt/homebrew/include/SDL3/SDL_log.h \
+  /opt/homebrew/include/SDL3/SDL_messagebox.h \
+  /opt/homebrew/include/SDL3/SDL_metal.h \
+  /opt/homebrew/include/SDL3/SDL_misc.h \
+  /opt/homebrew/include/SDL3/SDL_mouse.h \
+  /opt/homebrew/include/SDL3/SDL_mutex.h \
+  /opt/homebrew/include/SDL3/SDL_oldnames.h \
+  /opt/homebrew/include/SDL3/SDL_pen.h \
+  /opt/homebrew/include/SDL3/SDL_pixels.h \
+  /opt/homebrew/include/SDL3/SDL_platform.h \
+  /opt/homebrew/include/SDL3/SDL_platform_defines.h \
+  /opt/homebrew/include/SDL3/SDL_power.h \
+  /opt/homebrew/include/SDL3/SDL_process.h \
+  /opt/homebrew/include/SDL3/SDL_properties.h \
+  /opt/homebrew/include/SDL3/SDL_rect.h \
+  /opt/homebrew/include/SDL3/SDL_render.h \
+  /opt/homebrew/include/SDL3/SDL_scancode.h \
+  /opt/homebrew/include/SDL3/SDL_sensor.h \
+  /opt/homebrew/include/SDL3/SDL_stdinc.h \
+  /opt/homebrew/include/SDL3/SDL_storage.h \
+  /opt/homebrew/include/SDL3/SDL_surface.h \
+  /opt/homebrew/include/SDL3/SDL_system.h \
+  /opt/homebrew/include/SDL3/SDL_thread.h \
+  /opt/homebrew/include/SDL3/SDL_time.h \
+  /opt/homebrew/include/SDL3/SDL_timer.h \
+  /opt/homebrew/include/SDL3/SDL_touch.h \
+  /opt/homebrew/include/SDL3/SDL_tray.h \
+  /opt/homebrew/include/SDL3/SDL_version.h \
+  /opt/homebrew/include/SDL3/SDL_video.h \
   /opt/homebrew/include/glm/common.hpp \
   /opt/homebrew/include/glm/common.hpp \
   /opt/homebrew/include/glm/vector_relational.hpp \
@@ -17935,7 +18071,9 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/tilelayer_render_system.c
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Availability.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternal.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternalLegacy.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityMacros.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityVersions.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/___wctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/__wctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/__xlocale.h \
@@ -18846,8 +18984,69 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/tilelayer_render_system.c
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/context.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/utils/math.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/camera.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/tilelayer_render_system.h \
+  /opt/homebrew/include/SDL3/SDL.h \
+  /opt/homebrew/include/SDL3/SDL_assert.h \
+  /opt/homebrew/include/SDL3/SDL_asyncio.h \
+  /opt/homebrew/include/SDL3/SDL_atomic.h \
+  /opt/homebrew/include/SDL3/SDL_audio.h \
+  /opt/homebrew/include/SDL3/SDL_begin_code.h \
+  /opt/homebrew/include/SDL3/SDL_bits.h \
+  /opt/homebrew/include/SDL3/SDL_blendmode.h \
+  /opt/homebrew/include/SDL3/SDL_camera.h \
+  /opt/homebrew/include/SDL3/SDL_clipboard.h \
+  /opt/homebrew/include/SDL3/SDL_close_code.h \
+  /opt/homebrew/include/SDL3/SDL_cpuinfo.h \
+  /opt/homebrew/include/SDL3/SDL_dialog.h \
+  /opt/homebrew/include/SDL3/SDL_dlopennote.h \
+  /opt/homebrew/include/SDL3/SDL_endian.h \
+  /opt/homebrew/include/SDL3/SDL_error.h \
+  /opt/homebrew/include/SDL3/SDL_events.h \
+  /opt/homebrew/include/SDL3/SDL_filesystem.h \
+  /opt/homebrew/include/SDL3/SDL_gamepad.h \
+  /opt/homebrew/include/SDL3/SDL_gpu.h \
+  /opt/homebrew/include/SDL3/SDL_guid.h \
+  /opt/homebrew/include/SDL3/SDL_haptic.h \
+  /opt/homebrew/include/SDL3/SDL_hidapi.h \
+  /opt/homebrew/include/SDL3/SDL_hints.h \
+  /opt/homebrew/include/SDL3/SDL_init.h \
+  /opt/homebrew/include/SDL3/SDL_iostream.h \
+  /opt/homebrew/include/SDL3/SDL_joystick.h \
+  /opt/homebrew/include/SDL3/SDL_keyboard.h \
+  /opt/homebrew/include/SDL3/SDL_keycode.h \
+  /opt/homebrew/include/SDL3/SDL_loadso.h \
+  /opt/homebrew/include/SDL3/SDL_locale.h \
+  /opt/homebrew/include/SDL3/SDL_log.h \
+  /opt/homebrew/include/SDL3/SDL_messagebox.h \
+  /opt/homebrew/include/SDL3/SDL_metal.h \
+  /opt/homebrew/include/SDL3/SDL_misc.h \
+  /opt/homebrew/include/SDL3/SDL_mouse.h \
+  /opt/homebrew/include/SDL3/SDL_mutex.h \
+  /opt/homebrew/include/SDL3/SDL_oldnames.h \
+  /opt/homebrew/include/SDL3/SDL_pen.h \
+  /opt/homebrew/include/SDL3/SDL_pixels.h \
+  /opt/homebrew/include/SDL3/SDL_platform.h \
+  /opt/homebrew/include/SDL3/SDL_platform_defines.h \
+  /opt/homebrew/include/SDL3/SDL_power.h \
+  /opt/homebrew/include/SDL3/SDL_process.h \
+  /opt/homebrew/include/SDL3/SDL_properties.h \
+  /opt/homebrew/include/SDL3/SDL_rect.h \
+  /opt/homebrew/include/SDL3/SDL_render.h \
+  /opt/homebrew/include/SDL3/SDL_scancode.h \
+  /opt/homebrew/include/SDL3/SDL_sensor.h \
+  /opt/homebrew/include/SDL3/SDL_stdinc.h \
+  /opt/homebrew/include/SDL3/SDL_storage.h \
+  /opt/homebrew/include/SDL3/SDL_surface.h \
+  /opt/homebrew/include/SDL3/SDL_system.h \
+  /opt/homebrew/include/SDL3/SDL_thread.h \
+  /opt/homebrew/include/SDL3/SDL_time.h \
+  /opt/homebrew/include/SDL3/SDL_timer.h \
+  /opt/homebrew/include/SDL3/SDL_touch.h \
+  /opt/homebrew/include/SDL3/SDL_tray.h \
+  /opt/homebrew/include/SDL3/SDL_version.h \
+  /opt/homebrew/include/SDL3/SDL_video.h \
   /opt/homebrew/include/glm/common.hpp \
   /opt/homebrew/include/glm/common.hpp \
   /opt/homebrew/include/glm/vector_relational.hpp \
@@ -19947,6 +20146,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/vulkan_renderer.cpp.o: /U
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stddef.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdint.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/share/asan_ignorelist.txt \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/vulkan_renderer.h \
   /opt/homebrew/include/SDL3/SDL.h \
@@ -27867,7 +28067,9 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/chunk.cpp.o: /Users/suyp/C
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Availability.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternal.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternalLegacy.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityMacros.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityVersions.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/___wctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/__wctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/__xlocale.h \
@@ -28771,10 +28973,73 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/chunk.cpp.o: /Users/suyp/C
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdint.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/share/asan_ignorelist.txt \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/context.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/renderer.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/resource/resource_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/world_config.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/chunk.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/tile_info.h \
+  /opt/homebrew/include/SDL3/SDL.h \
+  /opt/homebrew/include/SDL3/SDL_assert.h \
+  /opt/homebrew/include/SDL3/SDL_asyncio.h \
+  /opt/homebrew/include/SDL3/SDL_atomic.h \
+  /opt/homebrew/include/SDL3/SDL_audio.h \
+  /opt/homebrew/include/SDL3/SDL_begin_code.h \
+  /opt/homebrew/include/SDL3/SDL_bits.h \
+  /opt/homebrew/include/SDL3/SDL_blendmode.h \
+  /opt/homebrew/include/SDL3/SDL_camera.h \
+  /opt/homebrew/include/SDL3/SDL_clipboard.h \
+  /opt/homebrew/include/SDL3/SDL_close_code.h \
+  /opt/homebrew/include/SDL3/SDL_cpuinfo.h \
+  /opt/homebrew/include/SDL3/SDL_dialog.h \
+  /opt/homebrew/include/SDL3/SDL_dlopennote.h \
+  /opt/homebrew/include/SDL3/SDL_endian.h \
+  /opt/homebrew/include/SDL3/SDL_error.h \
+  /opt/homebrew/include/SDL3/SDL_events.h \
+  /opt/homebrew/include/SDL3/SDL_filesystem.h \
+  /opt/homebrew/include/SDL3/SDL_gamepad.h \
+  /opt/homebrew/include/SDL3/SDL_gpu.h \
+  /opt/homebrew/include/SDL3/SDL_guid.h \
+  /opt/homebrew/include/SDL3/SDL_haptic.h \
+  /opt/homebrew/include/SDL3/SDL_hidapi.h \
+  /opt/homebrew/include/SDL3/SDL_hints.h \
+  /opt/homebrew/include/SDL3/SDL_init.h \
+  /opt/homebrew/include/SDL3/SDL_iostream.h \
+  /opt/homebrew/include/SDL3/SDL_joystick.h \
+  /opt/homebrew/include/SDL3/SDL_keyboard.h \
+  /opt/homebrew/include/SDL3/SDL_keycode.h \
+  /opt/homebrew/include/SDL3/SDL_loadso.h \
+  /opt/homebrew/include/SDL3/SDL_locale.h \
+  /opt/homebrew/include/SDL3/SDL_log.h \
+  /opt/homebrew/include/SDL3/SDL_messagebox.h \
+  /opt/homebrew/include/SDL3/SDL_metal.h \
+  /opt/homebrew/include/SDL3/SDL_misc.h \
+  /opt/homebrew/include/SDL3/SDL_mouse.h \
+  /opt/homebrew/include/SDL3/SDL_mutex.h \
+  /opt/homebrew/include/SDL3/SDL_oldnames.h \
+  /opt/homebrew/include/SDL3/SDL_pen.h \
+  /opt/homebrew/include/SDL3/SDL_pixels.h \
+  /opt/homebrew/include/SDL3/SDL_platform.h \
+  /opt/homebrew/include/SDL3/SDL_platform_defines.h \
+  /opt/homebrew/include/SDL3/SDL_power.h \
+  /opt/homebrew/include/SDL3/SDL_process.h \
+  /opt/homebrew/include/SDL3/SDL_properties.h \
+  /opt/homebrew/include/SDL3/SDL_rect.h \
+  /opt/homebrew/include/SDL3/SDL_render.h \
+  /opt/homebrew/include/SDL3/SDL_scancode.h \
+  /opt/homebrew/include/SDL3/SDL_sensor.h \
+  /opt/homebrew/include/SDL3/SDL_stdinc.h \
+  /opt/homebrew/include/SDL3/SDL_storage.h \
+  /opt/homebrew/include/SDL3/SDL_surface.h \
+  /opt/homebrew/include/SDL3/SDL_system.h \
+  /opt/homebrew/include/SDL3/SDL_thread.h \
+  /opt/homebrew/include/SDL3/SDL_time.h \
+  /opt/homebrew/include/SDL3/SDL_timer.h \
+  /opt/homebrew/include/SDL3/SDL_touch.h \
+  /opt/homebrew/include/SDL3/SDL_tray.h \
+  /opt/homebrew/include/SDL3/SDL_version.h \
+  /opt/homebrew/include/SDL3/SDL_video.h \
+  /opt/homebrew/include/SDL3_ttf/SDL_ttf.h \
   /opt/homebrew/include/glm/common.hpp \
   /opt/homebrew/include/glm/common.hpp \
   /opt/homebrew/include/glm/vector_relational.hpp \
@@ -28969,7 +29234,9 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/chunk_manager.cpp.o: /User
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Availability.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternal.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternalLegacy.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityMacros.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityVersions.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/___wctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/__wctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/__xlocale.h \
@@ -29876,6 +30143,20 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/chunk_manager.cpp.o: /User
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/chunk.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/chunk_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/world/tile_info.h \
+  /opt/homebrew/include/SDL3/SDL_begin_code.h \
+  /opt/homebrew/include/SDL3/SDL_blendmode.h \
+  /opt/homebrew/include/SDL3/SDL_close_code.h \
+  /opt/homebrew/include/SDL3/SDL_endian.h \
+  /opt/homebrew/include/SDL3/SDL_error.h \
+  /opt/homebrew/include/SDL3/SDL_gpu.h \
+  /opt/homebrew/include/SDL3/SDL_iostream.h \
+  /opt/homebrew/include/SDL3/SDL_pixels.h \
+  /opt/homebrew/include/SDL3/SDL_platform_defines.h \
+  /opt/homebrew/include/SDL3/SDL_properties.h \
+  /opt/homebrew/include/SDL3/SDL_rect.h \
+  /opt/homebrew/include/SDL3/SDL_stdinc.h \
+  /opt/homebrew/include/SDL3/SDL_surface.h \
+  /opt/homebrew/include/SDL3/SDL_video.h \
   /opt/homebrew/include/glm/common.hpp \
   /opt/homebrew/include/glm/common.hpp \
   /opt/homebrew/include/glm/vector_relational.hpp \

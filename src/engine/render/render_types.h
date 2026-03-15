@@ -11,6 +11,7 @@ namespace engine::render
     struct GPUVertex
     {
         glm::vec2 pos; // 位置
+        glm::vec4 color; // 颜色
         glm::vec2 uv;  // 纹理坐标
     };
     #pragma pack(pop)

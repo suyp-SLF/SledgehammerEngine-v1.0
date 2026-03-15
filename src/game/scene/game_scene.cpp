@@ -53,7 +53,9 @@ namespace game::scene
     void GameScene::init()
     {
         // 创建 ChunkManager（纹理图集ID需提前加载）
-        chunk_manager = std::make_unique<engine::world::ChunkManager>("assets/dimensions/tileset_atlas.svg", glm::ivec2(16, 16));
+        chunk_manager = std::make_unique<engine::world::ChunkManager>("assets/dimensions/tileset_atlas.svg",
+                                                                      glm::ivec2(16, 16),
+                                                                      &_context.getResourceManager());
         // 加载世界配置
         engine::world::WorldConfig config;
         config.loadFromFile("assets/world_config.json");
@@ -70,7 +72,7 @@ namespace game::scene
         Scene::update(delta_time);
 
         // 根据玩家位置更新可见块
-        glm::vec2 playerPos = {0.0, 0.0}; // 需要实现
+        glm::vec2 playerPos = {0.0, 0.0};                 // 需要实现
         chunk_manager->updateVisibleChunks(playerPos, 8); // 视距8个块
 
         // 可以在这里处理瓦片变化（例如挖掘）

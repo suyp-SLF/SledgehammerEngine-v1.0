@@ -1,5 +1,6 @@
 #pragma once
 #include "renderer.h"
+#include "render_types.h"
 #include "sprite.h"
 #include <optional>
 #include <glm/glm.hpp>
@@ -41,12 +42,12 @@ namespace engine::render
                           double angle = 0.0f);
 
         void drawUISprite(const Sprite &sprite, const glm::vec2 &position, const std::optional<glm::vec2> &size = std::nullopt);
-        void drawTileMap(const Camera &camera,
-                                      const glm::ivec2 &map_size,
-                                      const glm::vec2 &tile_size,
-                                      const std::string &textureId,
-                                      const std::vector<engine::world::TileData> &tiles,
-                                      const glm::vec2 &layer_offset) override;
+        void drawChunkVertices(const Camera &camera,
+                               const std::unordered_map<SDL_GPUTexture *, std::vector<GPUVertex>> &verticesPerTexture,
+                               const glm::vec2 &worldOffset) override;
+        void drawChunkBatches(const Camera &camera,
+                              const std::unordered_map<SDL_GPUTexture *, engine::world::TextureBatch> &batches,
+                              const glm::vec2 &worldOffset);
         void present();
         void clearScreen();
 
@@ -65,7 +66,7 @@ namespace engine::render
         SDLRenderer &operator=(SDLRenderer &&) = delete;
 
     private:
-        std::map<SDL_Texture*, std::vector<SDL_Vertex>> _batch_map = {};
+        std::map<SDL_Texture *, std::vector<SDL_Vertex>> _batch_map = {};
 
         void init();
         std::optional<SDL_FRect> getSpriteRect(const Sprite &sprite);

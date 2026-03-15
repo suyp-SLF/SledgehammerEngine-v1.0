@@ -1134,11 +1134,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/core/context.cpp.o: \
   /opt/homebrew/include/glm/integer.hpp \
   /opt/homebrew/include/glm/detail/func_integer.inl \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/renderer.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/sprite_render_system.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/parallax_render_system.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/tilelayer_render_system.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../resource/resource_manager.h \
-  /opt/homebrew/include/SDL3_ttf/SDL_ttf.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/render_types.h \
   /opt/homebrew/include/SDL3/SDL.h \
   /opt/homebrew/include/SDL3/SDL_assert.h \
   /opt/homebrew/include/SDL3/SDL_asyncio.h \
@@ -1167,6 +1163,11 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/core/context.cpp.o: \
   /opt/homebrew/include/SDL3/SDL_tray.h \
   /opt/homebrew/include/SDL3/SDL_version.h \
   /opt/homebrew/include/SDL3/SDL_oldnames.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/sprite_render_system.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/parallax_render_system.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/tilelayer_render_system.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../resource/resource_manager.h \
+  /opt/homebrew/include/SDL3_ttf/SDL_ttf.h \
   /opt/homebrew/include/spdlog/spdlog.h \
   /opt/homebrew/include/spdlog/common.h \
   /opt/homebrew/include/spdlog/details/null_mutex.h \

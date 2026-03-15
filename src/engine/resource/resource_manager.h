@@ -77,6 +77,8 @@ namespace engine::resource
         /** @brief 从内存中手动卸载特定纹理 */
         void unloadTexture(const std::string &path);
 
+        SDL_GPUDevice* getGPUDevice() const { return _gpu_device; }
+
         // --- 音频资源接口 ---
 
         /** @brief 获取音效数据 (WAV/Chunk) */

@@ -36,6 +36,7 @@ namespace engine::core
         engine::render::SpriteRenderSystem &getSpriteRenderSystem() { return *_sprite_render_system; }
         engine::render::ParallaxRenderSystem &getParallaxRenderSystem() { return *_parallax_render_system; }
         engine::render::TilelayerRenderSystem &getTilelayerRenderSystem() { return *_tilelayer_render_system; }
+
     private:
         engine::input::InputManager &_input_manager;
         engine::render::Renderer &_renderer;

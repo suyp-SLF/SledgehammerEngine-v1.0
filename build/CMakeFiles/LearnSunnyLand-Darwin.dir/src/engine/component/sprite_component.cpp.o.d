@@ -1263,4 +1263,5 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/component/sprite_component.cpp.o
   /opt/homebrew/include/spdlog/version.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/component/../core/context.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/component/../render/renderer.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/component/../render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/component/../render/sprite_render_system.h

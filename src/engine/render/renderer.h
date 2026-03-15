@@ -1,5 +1,7 @@
 #pragma once
+#include "render_types.h"
 #include <glm/glm.hpp>
+#include <SDL3/SDL.h>
 #include <cstdint>
 namespace engine::resource
 {
@@ -7,7 +9,7 @@ namespace engine::resource
 }
 namespace engine::world
 {
-    class TileData;
+    class TextureBatch;
 }
 namespace engine::render
 {
@@ -48,12 +50,12 @@ namespace engine::render
         virtual void drawParallax(const Camera &camera, const Sprite &sprite, const glm::vec2 &position,
                                   const glm::vec2 &scroll_factor, const glm::bvec2 &repeat,
                                   const glm::vec2 &scale, double angle) = 0;
-        virtual void drawTileMap(const Camera &camera,
-                                      const glm::ivec2 &map_size,
-                                      const glm::vec2 &tile_size,
-                                      const std::string &textureId,
-                                      const std::vector<engine::world::TileData> &tiles,
-                                      const glm::vec2 &layer_offset) = 0;
+        virtual void drawChunkVertices(const Camera &camera,
+                                       const std::unordered_map<SDL_GPUTexture *, std::vector<GPUVertex>> &verticesPerTexture,
+                                       const glm::vec2 &worldOffset) = 0;
+        virtual void drawChunkBatches(const Camera &camera,
+                                      const std::unordered_map<SDL_GPUTexture *, engine::world::TextureBatch> &batches,
+                                      const glm::vec2 &worldOffset) = 0;
         virtual void clean() = 0;
     };
 }

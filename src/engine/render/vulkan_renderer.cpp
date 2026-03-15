@@ -19,12 +19,19 @@ namespace engine::render
     {
     }
 
-    void VulkanRenderer::drawTileMap(const Camera &camera,
-                                     const glm::ivec2 &map_size,
-                                     const glm::vec2 &tile_size,
-                                     const std::string &textureId,
-                                     const std::vector<engine::world::TileData> &tiles,
-                                     const glm::vec2 &layer_offset)
+    void VulkanRenderer::drawChunkVertices(const Camera &camera,
+                                           const std::unordered_map<SDL_GPUTexture *, std::vector<GPUVertex>> &verticesPerTexture,
+                                           const glm::vec2 &worldOffset)
+    {
+    }
+
+    void VulkanRenderer::drawChunkBatches(const Camera &camera, const std::unordered_map<SDL_GPUTexture *, engine::world::TextureBatch> &batches, const glm::vec2 &worldOffset)
+    {
+    }
+
+    void drawChunkVertices(const Camera &camera,
+                           const std::unordered_map<SDL_Texture *, std::vector<GPUVertex>> &verticesPerTexture,
+                           const glm::vec2 &worldOffset)
     {
     }
 

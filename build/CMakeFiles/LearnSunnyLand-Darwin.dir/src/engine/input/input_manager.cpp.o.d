@@ -942,6 +942,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/input/input_manager.cpp.o: \
   /opt/homebrew/include/glm/./ext/../ext/vector_uint2.hpp \
   /opt/homebrew/include/glm/./ext/../ext/scalar_uint_sized.hpp \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/input/../render/renderer.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/input/../render/render_types.h \
   /opt/homebrew/include/glm/glm.hpp \
   /opt/homebrew/include/glm/detail/_fixes.hpp \
   /opt/homebrew/include/glm/detail/setup.hpp \
@@ -1131,11 +1132,6 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/input/input_manager.cpp.o: \
   /opt/homebrew/include/glm/vector_relational.hpp \
   /opt/homebrew/include/glm/integer.hpp \
   /opt/homebrew/include/glm/detail/func_integer.inl \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/input/../core/config.h \
-  /opt/homebrew/include/nlohmann/json_fwd.hpp \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/map \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__tree \
-  /opt/homebrew/include/nlohmann/detail/abi_macros.hpp \
   /opt/homebrew/include/SDL3/SDL.h \
   /opt/homebrew/include/SDL3/SDL_assert.h \
   /opt/homebrew/include/SDL3/SDL_asyncio.h \
@@ -1164,6 +1160,11 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/input/input_manager.cpp.o: \
   /opt/homebrew/include/SDL3/SDL_tray.h \
   /opt/homebrew/include/SDL3/SDL_version.h \
   /opt/homebrew/include/SDL3/SDL_oldnames.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/input/../core/config.h \
+  /opt/homebrew/include/nlohmann/json_fwd.hpp \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/map \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__tree \
+  /opt/homebrew/include/nlohmann/detail/abi_macros.hpp \
   /opt/homebrew/include/spdlog/spdlog.h \
   /opt/homebrew/include/spdlog/common.h \
   /opt/homebrew/include/spdlog/details/null_mutex.h \

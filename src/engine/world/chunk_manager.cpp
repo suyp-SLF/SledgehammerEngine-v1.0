@@ -5,8 +5,12 @@
 
 namespace engine::world
 {
-    ChunkManager::ChunkManager(const std::string &atlasTextureId, const glm::ivec2 &tileSize)
-        : m_atlasTextureId(atlasTextureId), m_tileSize(tileSize) {}
+    ChunkManager::ChunkManager(const std::string &atlasTextureId,
+                               const glm::ivec2 &tileSize,
+                               engine::resource::ResourceManager *resMgr)
+        : m_atlasTextureId(atlasTextureId),
+          m_tileSize(tileSize),
+          m_resMgr(resMgr) {}
 
     ChunkManager::~ChunkManager() = default;
 
@@ -109,21 +113,21 @@ namespace engine::world
             {
                 // 生成简单地形：地面以下为石头，地面为草
                 int worldY = chunkY * Chunk::SIZE + ly;
-                if (worldY < -5)
+                if (worldY == -8)
                 {
                     chunk->tileAt(lx, ly) = engine::world::TileData(engine::world::TileType::Stone);
                 }
-                else if (worldY < 0)
+                else if (worldY == 0)
                 {
                     chunk->tileAt(lx, ly) = engine::world::TileData(engine::world::TileType::Dirt);
                 }
                 else
                 {
-                    chunk->tileAt(lx, ly) = engine::world::TileData(engine::world::TileType::Air);
+                    chunk->tileAt(lx, ly) = engine::world::TileData(engine::world::TileType::Stone);
                 }
             }
         }
-        chunk->buildMesh(m_atlasTextureId, m_tileSize); // 初始生成
+        chunk->buildMesh(m_tileSize, m_resMgr); // 初始生成
         m_chunks[encodeChunkKey(chunkX, chunkY)] = std::move(chunk);
     }
     void ChunkManager::setTerrainGenerator(std::unique_ptr<TerrainGenerator> generator)
