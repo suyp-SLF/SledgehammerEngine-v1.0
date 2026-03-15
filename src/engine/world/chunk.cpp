@@ -25,9 +25,11 @@ namespace engine::world
         // 析构函数（智能指针会自动释放）
     }
 
-    bool Chunk::buildMesh(const glm::ivec2 &tileSize,
-               engine::resource::ResourceManager *resMgr)
+    bool Chunk::buildMesh(const std::string &textureId,
+                          const glm::ivec2 &tileSize,
+                          engine::resource::ResourceManager *resMgr)
     {
+        m_textureId = textureId;
         // 获取设备指针
         SDL_GPUDevice *device = resMgr->getGPUDevice();
 
@@ -50,7 +52,7 @@ namespace engine::world
                 if (tile.type == TileType::Air)
                     continue;
 
-                SDL_GPUTexture *texture = resMgr->getGPUTexture(tile.texture_id);
+                SDL_GPUTexture *texture = resMgr->getGPUTexture(m_textureId);
                 if (!texture)
                     continue;
 
@@ -130,7 +132,7 @@ namespace engine::world
             // 需要传入 device 和 resMgr，可以从 ctx 获取
             auto *device = ctx.getResourceManager().getGPUDevice();
             auto *resMgr = &ctx.getResourceManager();
-            buildMesh(glm::vec2(WorldConfig::TILE_SIZE), &ctx.getResourceManager());
+            buildMesh(m_textureId, glm::vec2(WorldConfig::TILE_SIZE), &ctx.getResourceManager());
         }
 
         glm::vec2 worldOffset = glm::vec2(m_chunkX * SIZE * WorldConfig::TILE_SIZE,

@@ -46,7 +46,8 @@ namespace engine::world
         bool isDirty() const { return m_dirty; }
 
         // 生成或更新顶点数据（基于当前瓦片状态）
-        bool buildMesh(const glm::ivec2 &tileSize,
+        bool buildMesh(const std::string &textureId,
+                       const glm::ivec2 &tileSize,
                        engine::resource::ResourceManager *resMgr);
 
         // 渲染该块（绑定缓冲并绘制）

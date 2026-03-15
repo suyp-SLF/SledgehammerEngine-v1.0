@@ -123,11 +123,11 @@ namespace engine::world
                 }
                 else
                 {
-                    chunk->tileAt(lx, ly) = engine::world::TileData(engine::world::TileType::Stone);
+                    chunk->tileAt(lx, ly) = engine::world::TileData(engine::world::TileType::Air);
                 }
             }
         }
-        chunk->buildMesh(m_tileSize, m_resMgr); // 初始生成
+        chunk->buildMesh("assets/dimensions/tileset_atlas.svg", m_tileSize, m_resMgr); // 初始生成
         m_chunks[encodeChunkKey(chunkX, chunkY)] = std::move(chunk);
     }
     void ChunkManager::setTerrainGenerator(std::unique_ptr<TerrainGenerator> generator)
