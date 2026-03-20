@@ -114,6 +114,10 @@ add_executable(
     src/game/scene/game_scene.cpp
     src/game/scene/menu_scene.cpp
 
+    src/game/inventory/inventory.cpp
+
+    src/game/locale/locale_manager.cpp
+
     # ImGui源文件
     ${imgui_SOURCE_DIR}/imgui.cpp
     ${imgui_SOURCE_DIR}/imgui_draw.cpp

@@ -35,6 +35,9 @@
         "pause": [
             "P",
             "Escape"
+        ],
+        "open_inventory": [
+            "E"
         ]
     },
     "performance": {

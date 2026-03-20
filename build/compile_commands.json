@@ -229,6 +229,18 @@
 },
 {
   "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/backends -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/inventory/inventory.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/game/inventory/inventory.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/inventory/inventory.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/inventory/inventory.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/backends -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/locale/locale_manager.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/game/locale/locale_manager.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/locale/locale_manager.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/locale/locale_manager.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
   "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/backends -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/_deps/imgui-src/imgui.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/imgui.cpp",
   "file": "/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/imgui.cpp",
   "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/_deps/imgui-src/imgui.cpp.o"

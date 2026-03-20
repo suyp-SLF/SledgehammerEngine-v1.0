@@ -1,0 +1,18 @@
+{
+    "lang.name": "English",
+    "menu.title": "SunnyLand",
+    "menu.start_game": "Start Game",
+    "menu.settings": "Settings",
+    "menu.quit": "Quit",
+    "settings.title": "Settings",
+    "settings.language": "Language",
+    "settings.save": "Save",
+    "settings.back": "Back",
+    "inventory.title": "Inventory",
+    "inventory.quantity": "Qty",
+    "game.camera": "Camera",
+    "game.zoom": "Zoom",
+    "game.weapon": "Weapon",
+    "game.weapon_name": "Dig Gun",
+    "game.dig_hint": "LMB: Dig"
+}

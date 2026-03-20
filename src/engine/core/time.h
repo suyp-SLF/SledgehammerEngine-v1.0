@@ -16,6 +16,7 @@ namespace engine::core
 
         int _target_fps = 0;             // 目标帧率，0表示不限制帧率
         double _target_frame_time = 0.0; // 目标帧时间（毫秒），根据目标帧率计算得出
+        bool _frame_limit_enabled = true;
 
     public:
         Time();                            // 构造函数，初始化时间管理器
@@ -25,6 +26,7 @@ namespace engine::core
         float getTimerScale() const;       // 获取当前时间缩放因子
         void setTimerScale(float scale);   // 设置时间缩放因子
         void setTargetFPS(int fps);        // 设置目标帧率
+        void setFrameLimitEnabled(bool enabled);
         int getTargetFPS() const;          // 获取当前设置的目标帧率
 
     private:

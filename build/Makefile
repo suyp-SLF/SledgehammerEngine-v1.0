@@ -1113,6 +1113,54 @@ src/engine/world/world_config.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/world/world_config.cpp.s
 .PHONY : src/engine/world/world_config.cpp.s
 
+src/game/inventory/inventory.o: src/game/inventory/inventory.cpp.o
+.PHONY : src/game/inventory/inventory.o
+
+# target to build an object file
+src/game/inventory/inventory.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/inventory/inventory.cpp.o
+.PHONY : src/game/inventory/inventory.cpp.o
+
+src/game/inventory/inventory.i: src/game/inventory/inventory.cpp.i
+.PHONY : src/game/inventory/inventory.i
+
+# target to preprocess a source file
+src/game/inventory/inventory.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/inventory/inventory.cpp.i
+.PHONY : src/game/inventory/inventory.cpp.i
+
+src/game/inventory/inventory.s: src/game/inventory/inventory.cpp.s
+.PHONY : src/game/inventory/inventory.s
+
+# target to generate assembly for a file
+src/game/inventory/inventory.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/inventory/inventory.cpp.s
+.PHONY : src/game/inventory/inventory.cpp.s
+
+src/game/locale/locale_manager.o: src/game/locale/locale_manager.cpp.o
+.PHONY : src/game/locale/locale_manager.o
+
+# target to build an object file
+src/game/locale/locale_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/locale/locale_manager.cpp.o
+.PHONY : src/game/locale/locale_manager.cpp.o
+
+src/game/locale/locale_manager.i: src/game/locale/locale_manager.cpp.i
+.PHONY : src/game/locale/locale_manager.i
+
+# target to preprocess a source file
+src/game/locale/locale_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/locale/locale_manager.cpp.i
+.PHONY : src/game/locale/locale_manager.cpp.i
+
+src/game/locale/locale_manager.s: src/game/locale/locale_manager.cpp.s
+.PHONY : src/game/locale/locale_manager.s
+
+# target to generate assembly for a file
+src/game/locale/locale_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/locale/locale_manager.cpp.s
+.PHONY : src/game/locale/locale_manager.cpp.s
+
 src/game/scene/game_scene.o: src/game/scene/game_scene.cpp.o
 .PHONY : src/game/scene/game_scene.o
 
@@ -1317,6 +1365,12 @@ help:
 	@echo "... src/engine/world/world_config.o"
 	@echo "... src/engine/world/world_config.i"
 	@echo "... src/engine/world/world_config.s"
+	@echo "... src/game/inventory/inventory.o"
+	@echo "... src/game/inventory/inventory.i"
+	@echo "... src/game/inventory/inventory.s"
+	@echo "... src/game/locale/locale_manager.o"
+	@echo "... src/game/locale/locale_manager.i"
+	@echo "... src/game/locale/locale_manager.s"
 	@echo "... src/game/scene/game_scene.o"
 	@echo "... src/game/scene/game_scene.i"
 	@echo "... src/game/scene/game_scene.s"

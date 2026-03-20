@@ -6,9 +6,9 @@ file(REMOVE_RECURSE
   "imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-download"
   "imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-install"
   "imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-mkdir"
-  "imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch"
+  "imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch_disconnected"
   "imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-test"
-  "imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update"
+  "imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update_disconnected"
 )
 
 # Per-language clean rules from dependency scanning.

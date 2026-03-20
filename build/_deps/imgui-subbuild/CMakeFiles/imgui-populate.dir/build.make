@@ -71,8 +71,8 @@ CMakeFiles/imgui-populate: CMakeFiles/imgui-populate-complete
 CMakeFiles/imgui-populate-complete: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-install
 CMakeFiles/imgui-populate-complete: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-mkdir
 CMakeFiles/imgui-populate-complete: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-download
-CMakeFiles/imgui-populate-complete: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update
-CMakeFiles/imgui-populate-complete: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch
+CMakeFiles/imgui-populate-complete: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update_disconnected
+CMakeFiles/imgui-populate-complete: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch_disconnected
 CMakeFiles/imgui-populate-complete: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-configure
 CMakeFiles/imgui-populate-complete: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-build
 CMakeFiles/imgui-populate-complete: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-install
@@ -82,16 +82,13 @@ CMakeFiles/imgui-populate-complete: imgui-populate-prefix/src/imgui-populate-sta
 	/opt/homebrew/bin/cmake -E touch /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/CMakeFiles/imgui-populate-complete
 	/opt/homebrew/bin/cmake -E touch /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-done
 
-imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update:
-.PHONY : imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update
-
 imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-build: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-configure
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "No build step for 'imgui-populate'"
 	cd /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-build && /opt/homebrew/bin/cmake -E echo_append
 	cd /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-build && /opt/homebrew/bin/cmake -E touch /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-build
 
 imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-configure: imgui-populate-prefix/tmp/imgui-populate-cfgcmd.txt
-imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-configure: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch
+imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-configure: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch_disconnected
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "No configure step for 'imgui-populate'"
 	cd /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-build && /opt/homebrew/bin/cmake -E echo_append
 	cd /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-build && /opt/homebrew/bin/cmake -E touch /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-configure
@@ -112,25 +109,23 @@ imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-mkdir:
 	/opt/homebrew/bin/cmake -Dcfgdir= -P /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/tmp/imgui-populate-mkdirs.cmake
 	/opt/homebrew/bin/cmake -E touch /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-mkdir
 
-imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch-info.txt
-imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "No patch step for 'imgui-populate'"
+imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch_disconnected: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch-info.txt
+imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch_disconnected: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update_disconnected
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "No patch_disconnected step for 'imgui-populate'"
 	/opt/homebrew/bin/cmake -E echo_append
-	/opt/homebrew/bin/cmake -E touch /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch
-
-imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update:
-.PHONY : imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update
+	/opt/homebrew/bin/cmake -E touch /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch_disconnected
 
 imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-test: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-install
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "No test step for 'imgui-populate'"
 	cd /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-build && /opt/homebrew/bin/cmake -E echo_append
 	cd /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-build && /opt/homebrew/bin/cmake -E touch /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-test
 
-imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update: imgui-populate-prefix/tmp/imgui-populate-gitupdate.cmake
-imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update-info.txt
-imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-download
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Performing update step for 'imgui-populate'"
-	cd /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src && /opt/homebrew/bin/cmake -Dcan_fetch=YES -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/tmp/imgui-populate-gitupdate.cmake
+imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update_disconnected: imgui-populate-prefix/tmp/imgui-populate-gitupdate.cmake
+imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update_disconnected: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update-info.txt
+imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update_disconnected: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-download
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Performing disconnected update step for 'imgui-populate'"
+	cd /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src && /opt/homebrew/bin/cmake -Dcan_fetch=NO -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/tmp/imgui-populate-gitupdate.cmake
+	cd /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src && /opt/homebrew/bin/cmake -E touch /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update_disconnected
 
 CMakeFiles/imgui-populate.dir/codegen:
 .PHONY : CMakeFiles/imgui-populate.dir/codegen
@@ -142,9 +137,9 @@ imgui-populate: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-co
 imgui-populate: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-download
 imgui-populate: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-install
 imgui-populate: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-mkdir
-imgui-populate: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch
+imgui-populate: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch_disconnected
 imgui-populate: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-test
-imgui-populate: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update
+imgui-populate: imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update_disconnected
 imgui-populate: CMakeFiles/imgui-populate.dir/build.make
 .PHONY : imgui-populate
 

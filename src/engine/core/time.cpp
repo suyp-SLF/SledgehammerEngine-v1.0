@@ -29,7 +29,7 @@ namespace engine::core
         Uint64 frame_ns = _frame_start_time - _last_time;
         double current_delta = static_cast<double>(frame_ns) / 1e9;
 
-        if (_target_frame_time > 0 && current_delta < _target_frame_time)
+        if (_frame_limit_enabled && _target_frame_time > 0 && current_delta < _target_frame_time)
         {
             double time_to_wait = _target_frame_time - current_delta;
             SDL_DelayNS(static_cast<Uint64>(time_to_wait * 1e9));
@@ -97,6 +97,11 @@ namespace engine::core
         {
             _target_frame_time = 0;
         }
+    }
+
+    void Time::setFrameLimitEnabled(bool enabled)
+    {
+        _frame_limit_enabled = enabled;
     }
 
     /**

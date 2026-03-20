@@ -9,6 +9,6 @@
 /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-download.rule
 /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-install.rule
 /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-mkdir.rule
-/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch.rule
+/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch_disconnected.rule
 /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-test.rule
-/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update.rule
+/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update_disconnected.rule

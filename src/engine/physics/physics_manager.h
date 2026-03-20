@@ -2,6 +2,7 @@
 #pragma once
 #include <box2d/box2d.h> // 引入Box2D库
 #include <unordered_map>
+#include <vector>
 
 namespace engine::render
 {
@@ -44,6 +45,7 @@ namespace engine::physics
 
     private:
         b2WorldId m_worldId = b2_nullWorldId;
+        std::vector<b2BodyId> m_bodies;
         std::unordered_map<void *, b2BodyId> m_userDataToBody; // 用于快速查找
     };
 

@@ -4,11 +4,12 @@
 #include <array>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 #include <SDL3/SDL_gpu.h>
+#include <box2d/id.h>
 
 // 假设你有一个渲染接口（如 VertexBuffer, IndexBuffer），这里用伪代码
 struct SDL_GPUTexture;
-struct b2BodyId;
 namespace engine::core{ class Context;}
 namespace engine::resource{class ResourceManager;}
 namespace engine::physics{class PhysicsManager;}
@@ -62,6 +63,11 @@ namespace engine::world
             return glm::ivec2(m_chunkX * SIZE, m_chunkY * SIZE);
         }
 
+        glm::vec2 getWorldPosition(const glm::ivec2 &tileSize) const
+        {
+            return glm::vec2(m_chunkX * SIZE * tileSize.x, m_chunkY * SIZE * tileSize.y);
+        }
+
         // 检查块是否包含该世界瓦片坐标
         bool contains(int worldX, int worldY) const
         {
@@ -73,13 +79,13 @@ namespace engine::world
         // 新增：创建/销毁物理体, 与物理管理器交互
         void createPhysicsBodies(engine::physics::PhysicsManager *physicsMgr, glm::vec2 m_tileSize, float pixelsPerMeter);
         void destroyPhysicsBodies(engine::physics::PhysicsManager *physicsMgr);
-        void updatePhysicsBody(int localX, int localY, engine::physics::PhysicsManager *physicsMgr, float pixelsPerMeter);
+        void rebuildPhysicsBodies(engine::physics::PhysicsManager *physicsMgr, float pixelsPerMeter);
 
     private:
         int m_chunkX, m_chunkY;
         glm::vec2 m_tileSize;
         std::array<engine::world::TileData, TILE_COUNT> m_tiles;
-        std::unordered_map<int, b2BodyId> m_physicsBodies; // 瓦片索引 -> bodyId
+        std::vector<b2BodyId> m_physicsBodies;
 
         bool m_dirty = true;     // 是否需要重新生成网格
         size_t m_indexCount = 0; // 索引数量

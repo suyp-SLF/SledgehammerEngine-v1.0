@@ -274,6 +274,7 @@ namespace engine::core
             return false;
         }
         _time->setTargetFPS(_config->_target_fps);
+        _time->setFrameLimitEnabled(!_config->_vsync_enabled);
         spdlog::trace("初始化时间管理器成功");
         return true;
     }
@@ -319,6 +320,8 @@ namespace engine::core
             if (_config->_render_type == 1)
             {
                 auto opengl_renderer = std::make_unique<engine::render::OpenGLRenderer>(_window);
+                opengl_renderer->setLogicalSize(glm::vec2(_config->_logical_width, _config->_logical_height));
+                SDL_GL_SetSwapInterval(_config->_vsync_enabled ? 1 : 0);
 
                 // OpenGL 模式：通知 ResourceManager 使用 OpenGL 纹理路径
                 if (_resource_manager)
@@ -345,7 +348,9 @@ namespace engine::core
                 SDL_SetRenderLogicalPresentation(sdl_renderer, _config->_logical_width, _config->_logical_height, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
                 // SDL 渲染器逻辑...
-                _renderer = std::make_unique<engine::render::SDLRenderer>(sdl_renderer);
+                auto renderer = std::make_unique<engine::render::SDLRenderer>(sdl_renderer);
+                renderer->setLogicalSize(glm::vec2(_config->_logical_width, _config->_logical_height));
+                _renderer = std::move(renderer);
 
                 if (_resource_manager)
                 {

@@ -12,9 +12,6 @@ namespace engine::render
     class SDL3GPURenderer final : public Renderer
     {
     public:
-        float _logical_w = 640.0f;
-        float _logical_h = 360.0f;
-
         SDL3GPURenderer(SDL_Window *window);
         ~SDL3GPURenderer() override;
 
@@ -42,7 +39,7 @@ namespace engine::render
                                const glm::vec2 &worldOffset) override;
         void drawChunkBatches(const Camera &camera,
                               const std::unordered_map<SDL_GPUTexture *, engine::world::TextureBatch> &batches,
-                              const glm::vec2 &worldOffset);
+                              const glm::vec2 &worldOffset) override;
         void drawTexture(SDL_GPUTexture* texture, float x, float y, float w, float h) override;
         void drawRect(const Camera &camera, float x, float y, float w, float h, const glm::vec4 &color) override;
         // 将窗口坐标（像素）转换为游戏内的逻辑坐标

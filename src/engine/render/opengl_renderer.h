@@ -36,22 +36,25 @@ namespace engine::render
     private:
         SDL_Window *_window = nullptr;
         SDL_GLContext _glContext = nullptr;
-        float _logical_w = 1280.0f;
-        float _logical_h = 720.0f;
 
         // Tile shader
         unsigned int _tileShader = 0;
         int _tileUniformMVP = -1;
+        int _tileUniformColor = -1;
 
         // Sprite quad (dynamic VBO, reused every draw call)
         unsigned int _quadVAO = 0;
         unsigned int _quadVBO = 0;
+        unsigned int _whiteTex = 0;
 
         // glDrawArrays function pointer (loaded via SDL)
         using PFNGLDRAWARRAYSPROC = void(*)(unsigned int, int, int);
+        using PFNGLUNIFORM4FPROC = void(*)(int, float, float, float, float);
         PFNGLDRAWARRAYSPROC _glDrawArrays = nullptr;
+        PFNGLUNIFORM4FPROC _glUniform4f = nullptr;
 
         void initTileShader();
-        void drawQuad(unsigned int glTex, const glm::mat4 &mvp, const glm::vec4 &uvRect, float w, float h, bool flipped);
+        void drawQuad(unsigned int glTex, const glm::mat4 &mvp, const glm::vec4 &uvRect, float w, float h, bool flipped,
+                      const glm::vec4 &color);
     };
 }

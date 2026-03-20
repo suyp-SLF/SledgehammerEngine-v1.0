@@ -27,7 +27,7 @@ set_property(GLOBAL PROPERTY _CMAKE_FindGit_GIT_EXECUTABLE_VERSION
 
 include(ExternalProject)
 ExternalProject_Add(imgui-populate
-                     "UPDATE_DISCONNECTED" "False" "GIT_REPOSITORY" "https://github.com/ocornut/imgui.git" "EXTERNALPROJECT_INTERNAL_ARGUMENT_SEPARATOR" "GIT_TAG" "docking"
+                     "UPDATE_DISCONNECTED" "True" "GIT_REPOSITORY" "https://github.com/ocornut/imgui.git" "EXTERNALPROJECT_INTERNAL_ARGUMENT_SEPARATOR" "GIT_TAG" "docking"
                     SOURCE_DIR          "/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src"
                     BINARY_DIR          "/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-build"
                     CONFIGURE_COMMAND   ""

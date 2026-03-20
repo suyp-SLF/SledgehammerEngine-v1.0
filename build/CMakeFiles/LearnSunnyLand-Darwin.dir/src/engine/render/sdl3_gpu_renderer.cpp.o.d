@@ -1161,6 +1161,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/render/sdl3_gpu_renderer.cpp.o: 
   /opt/homebrew/include/SDL3/SDL_oldnames.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../world/chunk.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../world/tile_info.h \
+  /opt/homebrew/include/box2d/id.h /opt/homebrew/include/box2d/base.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/sprite.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../utils/math.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/render/../core/context.h \

@@ -1115,13 +1115,14 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o: \
   /opt/homebrew/include/SDL3/SDL_blendmode.h \
   /opt/homebrew/include/SDL3/SDL_iostream.h \
   /opt/homebrew/include/SDL3/SDL_video.h \
+  /opt/homebrew/include/box2d/id.h /opt/homebrew/include/box2d/base.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/physics/physics_manager.h \
-  /opt/homebrew/include/box2d/box2d.h /opt/homebrew/include/box2d/base.h \
+  /opt/homebrew/include/box2d/box2d.h \
   /opt/homebrew/include/box2d/collision.h \
   /opt/homebrew/include/box2d/math_functions.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/stdbool.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdbool.h \
-  /opt/homebrew/include/box2d/id.h /opt/homebrew/include/box2d/types.h \
+  /opt/homebrew/include/box2d/types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/actor/actor_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/text_renderer.h \
   /opt/homebrew/include/freetype2/ft2build.h \
@@ -1212,6 +1213,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/ecs/registry.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/ecs/entity.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/typeindex \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../inventory/inventory.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/object/game_object.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/object/../component/component.h \
   /opt/homebrew/include/spdlog/spdlog.h \
@@ -1331,6 +1333,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/ecs/components.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../locale/locale_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/imgui.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/imconfig.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/backends/imgui_impl_sdl3.h \

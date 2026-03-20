@@ -17,6 +17,7 @@
 #include "../../engine/world/chunk_manager.h"
 #include "../../engine/render/renderer.h"
 #include "../../engine/ecs/components.h"
+#include "../locale/locale_manager.h"
 #include <spdlog/spdlog.h>
 #include <imgui.h>
 #include <imgui_impl_sdl3.h>
@@ -70,9 +71,17 @@ namespace game::scene
             {
                 IMGUI_CHECKVERSION();
                 ImGui::CreateContext();
+
+                // 加载支持中文的字体，解决中文显示为问号的问题
+                ImGuiIO &io = ImGui::GetIO();
+                io.Fonts->AddFontFromFileTTF(
+                    "assets/fonts/VonwaonBitmap-16px.ttf",
+                    16.0f, nullptr,
+                    io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+
                 ImGui_ImplSDL3_InitForOpenGL(window, m_glContext);
                 ImGui_ImplOpenGL3_Init("#version 330");
-                spdlog::info("ImGui initialized with OpenGL3");
+                spdlog::info("ImGui initialized with OpenGL3 + 中文字体");
             }
             else
             {
@@ -92,6 +101,13 @@ namespace game::scene
             ecs_registry.add<engine::ecs::Velocity>(entity, glm::vec2(10.0f + i * 5.0f, 0.0f));
         }
         spdlog::info("ECS: 创建了5个测试实体");
+
+        // 背包测试物品
+        m_inventory.addItem({"iron_sword", "铁剑", 1}, 1);
+        m_inventory.addItem({"gold_coin", "金币", 99}, 42);
+        m_inventory.addItem({"apple", "苹果", 20}, 5);
+        m_inventory.addItem({"wood", "木材", 64}, 64);
+        m_inventory.addItem({"stone", "石头", 64}, 31);
     }
     void GameScene::update(float delta_time)
     {
@@ -156,9 +172,17 @@ namespace game::scene
             actor_manager->render();
         }
 
-        if (physics_manager)
+        if (physics_manager && m_showPhysicsDebug)
         {
             physics_manager->debugDraw(_context.getRenderer(), _context.getCamera());
+        }
+
+        if (m_hasHoveredTile)
+        {
+            glm::vec2 tileWorldPos = chunk_manager->tileToWorld(m_hoveredTile);
+            const auto &tileSize = chunk_manager->getTileSize();
+            _context.getRenderer().drawRect(_context.getCamera(), tileWorldPos.x, tileWorldPos.y, tileSize.x, tileSize.y,
+                                            glm::vec4(1.0f, 0.9f, 0.2f, 0.35f));
         }
 
         // 渲染UI文字
@@ -193,20 +217,22 @@ namespace game::scene
 
             // 相机缩放
             ImGui::SetNextWindowPos(ImVec2(displayW - 250, 20), ImGuiCond_Always);
-            ImGui::Begin("Camera", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-            if (ImGui::SliderFloat("Zoom", &m_zoomSliderValue, 0.5f, 3.0f))
+            ImGui::Begin(locale::T("game.camera").c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+            if (ImGui::SliderFloat(locale::T("game.zoom").c_str(), &m_zoomSliderValue, 0.5f, 3.0f))
                 _context.getCamera().setZoom(m_zoomSliderValue);
             ImGui::End();
 
             // 武器显示
             ImGui::SetNextWindowPos(ImVec2(displayW - 130, 70), ImGuiCond_Always);
             ImGui::SetNextWindowSize(ImVec2(120, 50), ImGuiCond_Always);
-            ImGui::Begin("Weapon", nullptr,
+            ImGui::Begin(locale::T("game.weapon").c_str(), nullptr,
                 ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
-            ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.2f, 1.0f), "[ 挖掘枪 ]");
-            ImGui::TextDisabled("LMB: 挖掘");
+            ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.2f, 1.0f), "[ %s ]", locale::T("game.weapon_name").c_str());
+            ImGui::TextDisabled("%s", locale::T("game.dig_hint").c_str());
             ImGui::End();
+
+            renderInventoryUI();
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -220,18 +246,21 @@ namespace game::scene
         if (actor_manager)
             actor_manager->handleInput();
 
-        // 鼠标左键点击摧毁瓦片
         auto &input = _context.getInputManager();
+        glm::vec2 mousePos = input.getLogicalMousePosition();
+        glm::vec2 worldPos = _context.getCamera().screenToWorld(mousePos);
+        m_hoveredTile = chunk_manager->worldToTile(worldPos);
+        m_hasHoveredTile = true;
+
+        // 鼠标左键点击摧毁瓦片
         if (input.isActionPressed("attack"))
         {
-            glm::vec2 mousePos = input.getLogicalMousePosition();
-            glm::vec2 worldPos = _context.getCamera().screenToWorld(mousePos);
-
-            int tileX = static_cast<int>(std::floor(worldPos.x / engine::world::WorldConfig::TILE_SIZE.x));
-            int tileY = static_cast<int>(std::floor(worldPos.y / engine::world::WorldConfig::TILE_SIZE.y));
-
-            chunk_manager->setTile(tileX, tileY, engine::world::TileData(engine::world::TileType::Air));
+            chunk_manager->setTile(m_hoveredTile.x, m_hoveredTile.y, engine::world::TileData(engine::world::TileType::Air));
         }
+
+        // E键切换背包
+        if (input.isActionPressed("open_inventory"))
+            m_showInventory = !m_showInventory;
     }
 
     void GameScene::clean()
@@ -272,6 +301,63 @@ namespace game::scene
             camera.move(glm::vec2(-1, 0));
         if (input_manager.isActionDown("move_right"))
             camera.move(glm::vec2(1, 0));
+    }
+
+    void GameScene::renderInventoryUI()
+    {
+        if (!m_showInventory) return;
+
+        constexpr int   COLS  = game::inventory::Inventory::COLS;
+        constexpr int   ROWS  = game::inventory::Inventory::ROWS;
+        constexpr float SLOT  = 50.0f;
+        constexpr float GAP   = 4.0f;
+
+        const float WIN_W = COLS * SLOT + (COLS - 1) * GAP + 16.0f;
+        const float WIN_H = ROWS * SLOT + (ROWS - 1) * GAP + 50.0f;
+
+        ImVec2 disp = ImGui::GetIO().DisplaySize;
+        ImGui::SetNextWindowPos({(disp.x - WIN_W) * 0.5f, (disp.y - WIN_H) * 0.5f}, ImGuiCond_Always);
+        ImGui::SetNextWindowSize({WIN_W, WIN_H}, ImGuiCond_Always);
+
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,  {GAP, GAP});
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {2.0f, 2.0f});
+        ImGui::PushStyleColor(ImGuiCol_Button,        {0.18f, 0.18f, 0.28f, 1.0f});
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, {0.30f, 0.30f, 0.50f, 1.0f});
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive,  {0.45f, 0.45f, 0.65f, 1.0f});
+
+        ImGui::Begin(locale::T("inventory.title").c_str(), &m_showInventory,
+            ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
+
+        for (int row = 0; row < ROWS; ++row)
+        {
+            for (int col = 0; col < COLS; ++col)
+            {
+                if (col > 0) ImGui::SameLine();
+
+                int idx = row * COLS + col;
+                const auto &slot = m_inventory.getSlot(idx);
+
+                char label[32];
+                if (slot.isEmpty())
+                    snprintf(label, sizeof(label), "##s%d", idx);
+                else
+                    snprintf(label, sizeof(label), "x%d##s%d", slot.count, idx);
+
+                ImGui::Button(label, {SLOT, SLOT});
+
+                if (!slot.isEmpty() && ImGui::IsItemHovered())
+                {
+                    ImGui::BeginTooltip();
+                    ImGui::TextUnformatted(slot.item->name.c_str());
+                    ImGui::TextDisabled("%s: %d / %d", locale::T("inventory.quantity").c_str(), slot.count, slot.item->max_stack);
+                    ImGui::EndTooltip();
+                }
+            }
+        }
+
+        ImGui::End();
+        ImGui::PopStyleColor(3);
+        ImGui::PopStyleVar(2);
     }
 
     void GameScene::createPlayer()

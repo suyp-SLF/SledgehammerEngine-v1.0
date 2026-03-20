@@ -1174,6 +1174,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/core/game_app.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/sdl3_gpu_renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/../world/chunk.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/../world/tile_info.h \
+  /opt/homebrew/include/box2d/id.h /opt/homebrew/include/box2d/base.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/opengl_renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../render/camera.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../input/input_manager.h \
@@ -1282,12 +1283,12 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/core/game_app.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/world/chunk_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/world/chunk.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/physics/physics_manager.h \
-  /opt/homebrew/include/box2d/box2d.h /opt/homebrew/include/box2d/base.h \
+  /opt/homebrew/include/box2d/box2d.h \
   /opt/homebrew/include/box2d/collision.h \
   /opt/homebrew/include/box2d/math_functions.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/stdbool.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdbool.h \
-  /opt/homebrew/include/box2d/id.h /opt/homebrew/include/box2d/types.h \
+  /opt/homebrew/include/box2d/types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/actor/actor_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/render/text_renderer.h \
   /opt/homebrew/include/freetype2/ft2build.h \
@@ -1331,4 +1332,5 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/core/game_app.cpp.o: \
   /opt/homebrew/include/harfbuzz/hb-ft.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/ecs/registry.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../../engine/ecs/entity.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/../inventory/inventory.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/core/../../game/scene/menu_scene.h

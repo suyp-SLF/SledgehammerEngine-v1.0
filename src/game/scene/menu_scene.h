@@ -19,6 +19,12 @@ namespace game::scene
     private:
         engine::ecs::Registry ecs_registry;
         SDL_GLContext m_glContext = nullptr;
+
+        bool m_showSettings = false;
+        int m_selectedLangIndex = 0;
+
         void startGame();
+        void renderMainMenu();
+        void renderSettings();
     };
 }

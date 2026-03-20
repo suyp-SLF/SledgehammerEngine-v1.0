@@ -26,13 +26,13 @@
 			"file" : "/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-mkdir.rule"
 		},
 		{
-			"file" : "/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch.rule"
+			"file" : "/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-patch_disconnected.rule"
 		},
 		{
 			"file" : "/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-test.rule"
 		},
 		{
-			"file" : "/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update.rule"
+			"file" : "/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/imgui-populate-update_disconnected.rule"
 		}
 	],
 	"target" : 

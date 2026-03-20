@@ -439,14 +439,7 @@ namespace engine::render
 
     glm::vec2 SDL3GPURenderer::windowToLogical(float window_x, float window_y) const
     {
-        int win_w, win_h;
-        SDL_GetWindowSize(_window, &win_w, &win_h);
-
-        float scale = std::min((float)win_w / _logical_w, (float)win_h / _logical_h);
-        float offset_x = (win_w - _logical_w * scale) * 0.5f;
-        float offset_y = (win_h - _logical_h * scale) * 0.5f;
-
-        return {(window_x - offset_x) / scale, (window_y - offset_y) / scale};
+        return windowToLogicalByScaling(window_x, window_y);
     }
 
     void SDL3GPURenderer::clean()
@@ -471,8 +464,10 @@ namespace engine::render
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f));
         model = glm::scale(model, glm::vec3(w, h, 1.0f));
 
+        const glm::vec2 &logical_size = getLogicalSize();
+
         SpritePushConstants constants;
-        constants.mvp = glm::ortho(0.0f, _logical_w, _logical_h, 0.0f) * model;
+        constants.mvp = glm::ortho(0.0f, logical_size.x, logical_size.y, 0.0f) * model;
         constants.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         constants.uv_rect = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 
@@ -513,7 +508,7 @@ namespace engine::render
 
         SpritePushConstants constants;
         constants.mvp = camera.getProjectionMatrix() * camera.getViewMatrix() * model;
-        constants.color = glm::vec4(1.0f);
+        constants.color = color;
         constants.uv_rect = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 
         SDL_PushGPUVertexUniformData(_current_cmd, 0, &constants, sizeof(constants));

@@ -1165,13 +1165,14 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/menu_scene.cpp.o: \
   /opt/homebrew/include/glm/vector_relational.hpp \
   /opt/homebrew/include/glm/integer.hpp \
   /opt/homebrew/include/glm/detail/func_integer.inl \
+  /opt/homebrew/include/box2d/id.h /opt/homebrew/include/box2d/base.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/physics/physics_manager.h \
-  /opt/homebrew/include/box2d/box2d.h /opt/homebrew/include/box2d/base.h \
+  /opt/homebrew/include/box2d/box2d.h \
   /opt/homebrew/include/box2d/collision.h \
   /opt/homebrew/include/box2d/math_functions.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/stdbool.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdbool.h \
-  /opt/homebrew/include/box2d/id.h /opt/homebrew/include/box2d/types.h \
+  /opt/homebrew/include/box2d/types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/actor/actor_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/text_renderer.h \
   /opt/homebrew/include/freetype2/ft2build.h \
@@ -1213,11 +1214,13 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/menu_scene.cpp.o: \
   /opt/homebrew/include/harfbuzz/hb-style.h \
   /opt/homebrew/include/harfbuzz/hb-version.h \
   /opt/homebrew/include/harfbuzz/hb-ft.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../inventory/inventory.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/core/context.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/scene/scene_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/input/input_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/render_types.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../locale/locale_manager.h \
   /opt/homebrew/include/spdlog/spdlog.h \
   /opt/homebrew/include/spdlog/common.h \
   /opt/homebrew/include/spdlog/details/null_mutex.h \

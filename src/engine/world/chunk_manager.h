@@ -23,6 +23,10 @@ namespace engine::world
         // 设置瓦片并标记对应块为脏
         void setTile(int worldX, int worldY, TileData tile);
 
+        glm::ivec2 worldToTile(const glm::vec2 &worldPos) const;
+        glm::vec2 tileToWorld(const glm::ivec2 &tilePos) const;
+        const glm::ivec2 &getTileSize() const { return m_tileSize; }
+
         // 更新可见块（根据相机位置和视距）
         void updateVisibleChunks(const glm::vec2 &cameraPos, int viewDistanceInChunks);
 
@@ -41,6 +45,8 @@ namespace engine::world
         std::string m_atlasTextureId;
         glm::ivec2 m_tileSize;
         std::unique_ptr<TerrainGenerator> m_terrainGenerator; // 地形生成器
+
+        void rebuildChunkMesh(Chunk &chunk);
 
         // 辅助函数：将 (chunkX, chunkY) 编码为 uint64_t 键
         static uint64_t encodeChunkKey(int x, int y)

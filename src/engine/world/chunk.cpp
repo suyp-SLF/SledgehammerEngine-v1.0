@@ -48,7 +48,17 @@ namespace engine::world
         }
         m_batches.clear();
 
+        SDL_GPUTexture *texture = resMgr->getGPUTexture(m_textureId);
+        glm::vec2 texture_size = resMgr->getTextureSize(m_textureId);
+        if (!texture || texture_size.x <= 0.0f || texture_size.y <= 0.0f)
+            return false;
+
         std::unordered_map<SDL_GPUTexture *, std::vector<engine::render::GPUVertex>> tempVertices;
+        auto &vertices = tempVertices[texture];
+        vertices.reserve(SIZE * SIZE * 6);
+
+        float inv_w = 1.0f / texture_size.x;
+        float inv_h = 1.0f / texture_size.y;
 
         for (int ly = 0; ly < SIZE; ++ly)
         {
@@ -58,25 +68,17 @@ namespace engine::world
                 if (tile.type == TileType::Air)
                     continue;
 
-                SDL_GPUTexture *texture = resMgr->getGPUTexture(m_textureId);
-                glm::vec2 texture_size = resMgr->getTextureSize(m_textureId);
-                if (!texture)
-                    continue;
-
                 float x0 = lx * tileSize.x;
                 float y0 = ly * tileSize.y;
                 float x1 = x0 + tileSize.x;
                 float y1 = y0 + tileSize.y;
 
-                float inv_w = 1.0f / texture_size.x;
-                float inv_h = 1.0f / texture_size.y;
                 float u0 = tile.uv_rect.x * inv_w;
                 float v0 = tile.uv_rect.y * inv_h;
                 float u1 = u0 + tile.uv_rect.z * inv_w;
                 float v1 = v0 + tile.uv_rect.w * inv_h;
 
                 glm::vec4 white = {1.0f, 1.0f, 1.0f, 1.0f};
-                auto &vertices = tempVertices[texture];
                 vertices.push_back({{x0, y0}, white, {u0, v0}});
                 vertices.push_back({{x1, y0}, white, {u1, v0}});
                 vertices.push_back({{x0, y1}, white, {u0, v1}});
@@ -86,12 +88,12 @@ namespace engine::world
             }
         }
 
-        for (const auto &[texture, vertices] : tempVertices)
+        for (const auto &[batchTexture, batchVertices] : tempVertices)
         {
-            if (vertices.empty())
+            if (batchVertices.empty())
                 continue;
 
-            size_t dataSize = vertices.size() * sizeof(engine::render::GPUVertex);
+            size_t dataSize = batchVertices.size() * sizeof(engine::render::GPUVertex);
             SDL_GPUBufferCreateInfo bufInfo{};
             bufInfo.usage = SDL_GPU_BUFFERUSAGE_VERTEX;
             bufInfo.size = dataSize;
@@ -104,7 +106,7 @@ namespace engine::world
             tbInfo.size = dataSize;
             SDL_GPUTransferBuffer *staging = SDL_CreateGPUTransferBuffer(device, &tbInfo);
             void *mapped = SDL_MapGPUTransferBuffer(device, staging, false);
-            memcpy(mapped, vertices.data(), dataSize);
+            memcpy(mapped, batchVertices.data(), dataSize);
             SDL_UnmapGPUTransferBuffer(device, staging);
 
             SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(device);
@@ -116,7 +118,7 @@ namespace engine::world
             SDL_SubmitGPUCommandBuffer(cmd);
 
             SDL_ReleaseGPUTransferBuffer(device, staging);
-            m_batches[texture] = {buffer, (Uint32)vertices.size()};
+            m_batches[batchTexture] = {buffer, (Uint32)batchVertices.size()};
         }
 
         m_dirty = false;
@@ -179,21 +181,10 @@ namespace engine::world
 
     void Chunk::draw(engine::core::Context &ctx)
     {
-        auto *resMgr = &ctx.getResourceManager();
-        bool useGL = (resMgr->getGPUDevice() == nullptr);
-
-        if (m_dirty)
-        {
-            if (useGL)
-                buildMeshGL(m_textureId, glm::ivec2(WorldConfig::TILE_SIZE), resMgr, ctx.getRenderer());
-            else
-                buildMesh(m_textureId, glm::ivec2(WorldConfig::TILE_SIZE), resMgr);
-        }
-
         glm::vec2 worldOffset = glm::vec2(m_chunkX * SIZE * WorldConfig::TILE_SIZE.x,
                                           m_chunkY * SIZE * WorldConfig::TILE_SIZE.y);
 
-        if (useGL)
+        if (ctx.getResourceManager().getGPUDevice() == nullptr)
             ctx.getRenderer().drawChunkGL(ctx.getCamera(), m_gl_vao, m_gl_vbo, m_gl_vertex_count, m_gl_tex, worldOffset);
         else
             ctx.getRenderer().drawChunkBatches(ctx.getCamera(), m_batches, worldOffset);
@@ -202,50 +193,63 @@ namespace engine::world
     void Chunk::createPhysicsBodies(engine::physics::PhysicsManager *physicsMgr, glm::vec2 tileSize, float pixelsPerMeter)
     {
         m_tileSize = tileSize;
-        for (int ly = 0; ly < SIZE; ++ly)
-        {
-            for (int lx = 0; lx < SIZE; ++lx)
-            {
-                const auto &tile = m_tiles[ly * SIZE + lx];
-                if (tile.type == TileType::Air)
-                    continue;
-
-                float worldX = (m_chunkX * SIZE + lx) * tileSize.x + tileSize.x * 0.5f;
-                float worldY = (m_chunkY * SIZE + ly) * tileSize.y + tileSize.y * 0.5f;
-                b2Vec2 physPos = {worldX / pixelsPerMeter, worldY / pixelsPerMeter};
-                b2Vec2 halfSize = {tileSize.x * 0.5f / pixelsPerMeter, tileSize.y * 0.5f / pixelsPerMeter};
-
-                int tileIndex = ly * SIZE + lx;
-                b2BodyId bodyId = physicsMgr->createStaticBody(physPos, halfSize, reinterpret_cast<void *>(tileIndex));
-                m_physicsBodies[tileIndex] = bodyId;
-            }
-        }
+        rebuildPhysicsBodies(physicsMgr, pixelsPerMeter);
     }
 
     void Chunk::destroyPhysicsBodies(engine::physics::PhysicsManager *physicsMgr)
     {
+        if (!physicsMgr)
+        {
+            m_physicsBodies.clear();
+            return;
+        }
+
+        for (const auto &bodyId : m_physicsBodies)
+        {
+            physicsMgr->destroyBody(bodyId);
+        }
+        m_physicsBodies.clear();
     }
 
-    void Chunk::updatePhysicsBody(int localX, int localY, engine::physics::PhysicsManager *physicsMgr, float pixelsPerMeter)
+    void Chunk::rebuildPhysicsBodies(engine::physics::PhysicsManager *physicsMgr, float pixelsPerMeter)
     {
-        int index = localY * SIZE + localX;
-        const auto &tile = m_tiles[index];
-        bool isSolid = (tile.type != TileType::Air);
+        destroyPhysicsBodies(physicsMgr);
 
-        auto it = m_physicsBodies.find(index);
-        if (!isSolid && it != m_physicsBodies.end())
+        if (!physicsMgr)
+            return;
+
+        for (int ly = 0; ly < SIZE; ++ly)
         {
-            physicsMgr->destroyBody(it->second);
-            m_physicsBodies.erase(it);
-        }
-        else if (isSolid && it == m_physicsBodies.end())
-        {
-            float worldX = (m_chunkX * SIZE + localX) * m_tileSize.x + m_tileSize.x * 0.5f;
-            float worldY = (m_chunkY * SIZE + localY) * m_tileSize.y + m_tileSize.y * 0.5f;
-            b2Vec2 physPos = {worldX / pixelsPerMeter, worldY / pixelsPerMeter};
-            b2Vec2 halfSize = {m_tileSize.x * 0.5f / pixelsPerMeter, m_tileSize.y * 0.5f / pixelsPerMeter};
-            b2BodyId bodyId = physicsMgr->createStaticBody(physPos, halfSize, reinterpret_cast<void *>(index));
-            m_physicsBodies[index] = bodyId;
+            int lx = 0;
+            while (lx < SIZE)
+            {
+                while (lx < SIZE && m_tiles[ly * SIZE + lx].type == TileType::Air)
+                {
+                    ++lx;
+                }
+
+                if (lx >= SIZE)
+                    break;
+
+                int runStart = lx;
+                while (lx < SIZE && m_tiles[ly * SIZE + lx].type != TileType::Air)
+                {
+                    ++lx;
+                }
+
+                int runLength = lx - runStart;
+                float runWidth = runLength * m_tileSize.x;
+                float worldX = (m_chunkX * SIZE + runStart) * m_tileSize.x + runWidth * 0.5f;
+                float worldY = (m_chunkY * SIZE + ly) * m_tileSize.y + m_tileSize.y * 0.5f;
+                b2Vec2 physPos = {worldX / pixelsPerMeter, worldY / pixelsPerMeter};
+                b2Vec2 halfSize = {runWidth * 0.5f / pixelsPerMeter, m_tileSize.y * 0.5f / pixelsPerMeter};
+
+                b2BodyId bodyId = physicsMgr->createStaticBody(physPos, halfSize, nullptr);
+                if (b2Body_IsValid(bodyId))
+                {
+                    m_physicsBodies.push_back(bodyId);
+                }
+            }
         }
     }
 

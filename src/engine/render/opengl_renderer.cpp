@@ -13,6 +13,9 @@
 #ifndef GL_DYNAMIC_DRAW
 #define GL_DYNAMIC_DRAW 0x88E8
 #endif
+#ifndef GL_RGBA8
+#define GL_RGBA8 0x8058
+#endif
 
 namespace engine::render
 {
@@ -67,16 +70,20 @@ namespace engine::render
 
     glm::vec2 OpenGLRenderer::windowToLogical(float window_x, float window_y) const
     {
-        int win_w, win_h;
-        SDL_GetWindowSize(_window, &win_w, &win_h);
-        float scale = std::min((float)win_w / _logical_w, (float)win_h / _logical_h);
-        float offset_x = (win_w - _logical_w * scale) * 0.5f;
-        float offset_y = (win_h - _logical_h * scale) * 0.5f;
-        return {(window_x - offset_x) / scale, (window_y - offset_y) / scale};
+        return windowToLogicalByScaling(window_x, window_y);
     }
 
-    void OpenGLRenderer::drawRect(const Camera &, float, float, float, float, const glm::vec4 &)
+    void OpenGLRenderer::drawRect(const Camera &camera, float x, float y, float w, float h, const glm::vec4 &color)
     {
+        if (!_tileShader || !_whiteTex || w <= 0.0f || h <= 0.0f)
+            return;
+
+        glm::mat4 proj = camera.getProjectionMatrix();
+        glm::mat4 view = camera.getViewMatrix();
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f));
+        glm::mat4 mvp = proj * view * model;
+
+        drawQuad(_whiteTex, mvp, {0.0f, 0.0f, 1.0f, 1.0f}, w, h, false, color);
     }
 
     void OpenGLRenderer::drawTexture(SDL_GPUTexture*, float, float, float, float)
@@ -90,6 +97,7 @@ namespace engine::render
             if (_tileShader) { glDeleteProgram(_tileShader); _tileShader = 0; }
             if (_quadVAO)    { glDeleteVertexArrays(1, &_quadVAO); _quadVAO = 0; }
             if (_quadVBO)    { glDeleteBuffers(1, &_quadVBO); _quadVBO = 0; }
+            if (_whiteTex)   { glDeleteTextures(1, &_whiteTex); _whiteTex = 0; }
         }
     }
 
@@ -111,8 +119,9 @@ void main() {
 in vec2 vUV;
 out vec4 FragColor;
 uniform sampler2D uTex;
+uniform vec4 uColor;
 void main() {
-    FragColor = texture(uTex, vUV);
+    FragColor = texture(uTex, vUV) * uColor;
 }
 )";
         auto compile = [](GLenum type, const char *src) -> GLuint {
@@ -135,13 +144,19 @@ void main() {
         glDeleteShader(vs);
         glDeleteShader(fs);
         _tileUniformMVP = glGetUniformLocation(_tileShader, "uMVP");
+        _tileUniformColor = glGetUniformLocation(_tileShader, "uColor");
         glUseProgram(_tileShader);
         glUniform1i(glGetUniformLocation(_tileShader, "uTex"), 0);
+        if (_glUniform4f)
+            _glUniform4f(_tileUniformColor, 1.0f, 1.0f, 1.0f, 1.0f);
         glUseProgram(0);
 
         _glDrawArrays = (PFNGLDRAWARRAYSPROC)SDL_GL_GetProcAddress("glDrawArrays");
+        _glUniform4f = (PFNGLUNIFORM4FPROC)SDL_GL_GetProcAddress("glUniform4f");
         if (!_glDrawArrays)
             spdlog::error("OpenGLRenderer: failed to load glDrawArrays");
+        if (!_glUniform4f)
+            spdlog::error("OpenGLRenderer: failed to load glUniform4f");
 
         glGenVertexArrays(1, &_quadVAO);
         glGenBuffers(1, &_quadVBO);
@@ -153,6 +168,16 @@ void main() {
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
         glBindVertexArray(0);
+
+        unsigned int white_pixel = 0xFFFFFFFFu;
+        glGenTextures(1, &_whiteTex);
+        glBindTexture(GL_TEXTURE_2D, _whiteTex);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &white_pixel);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         spdlog::info("OpenGLRenderer: tile shader compiled");
     }
@@ -197,6 +222,8 @@ void main() {
 
         glUseProgram(_tileShader);
         glUniformMatrix4fv(_tileUniformMVP, 1, GL_FALSE, glm::value_ptr(mvp));
+        if (_glUniform4f)
+            _glUniform4f(_tileUniformColor, 1.0f, 1.0f, 1.0f, 1.0f);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, glTex);
@@ -229,11 +256,12 @@ void main() {
             model = glm::rotate(model, (float)glm::radians(angle), glm::vec3(0, 0, 1));
         glm::mat4 mvp = proj * view * model;
 
-        drawQuad(glTex, mvp, uv_rect, size.x, size.y, sprite.isFlipped());
+        drawQuad(glTex, mvp, uv_rect, size.x, size.y, sprite.isFlipped(), glm::vec4(1.0f));
     }
 
     void OpenGLRenderer::drawQuad(unsigned int glTex, const glm::mat4 &mvp,
-                                   const glm::vec4 &uvRect, float w, float h, bool flipped)
+                                   const glm::vec4 &uvRect, float w, float h, bool flipped,
+                                   const glm::vec4 &color)
     {
         float u0 = uvRect.x;
         float v0 = uvRect.y;
@@ -252,6 +280,8 @@ void main() {
 
         glUseProgram(_tileShader);
         glUniformMatrix4fv(_tileUniformMVP, 1, GL_FALSE, glm::value_ptr(mvp));
+        if (_glUniform4f)
+            _glUniform4f(_tileUniformColor, color.r, color.g, color.b, color.a);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, glTex);
 

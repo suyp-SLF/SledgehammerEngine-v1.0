@@ -1,0 +1,18 @@
+{
+    "lang.name": "\u7b80\u4f53\u4e2d\u6587",
+    "menu.title": "SunnyLand",
+    "menu.start_game": "\u5f00\u59cb\u6e38\u620f",
+    "menu.settings": "\u8bbe\u7f6e",
+    "menu.quit": "\u9000\u51fa",
+    "settings.title": "\u8bbe\u7f6e",
+    "settings.language": "\u8bed\u8a00",
+    "settings.save": "\u4fdd\u5b58",
+    "settings.back": "\u8fd4\u56de",
+    "inventory.title": "\u80cc\u5305",
+    "inventory.quantity": "\u6570\u91cf",
+    "game.camera": "\u6444\u50cf\u673a",
+    "game.zoom": "\u7f29\u653e",
+    "game.weapon": "\u6b66\u5668",
+    "game.weapon_name": "\u6316\u6398\u67aa",
+    "game.dig_hint": "LMB: \u6316\u6398"
+}

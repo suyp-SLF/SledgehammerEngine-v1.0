@@ -20,6 +20,24 @@ namespace engine::render
     {
     protected:
         engine::resource::ResourceManager *_res_mgr = nullptr;
+        glm::vec2 _logical_size = {1280.0f, 720.0f};
+
+        glm::vec2 windowToLogicalByScaling(float window_x, float window_y) const
+        {
+            SDL_Window *window = getWindow();
+            if (!window || _logical_size.x <= 0.0f || _logical_size.y <= 0.0f)
+                return {window_x, window_y};
+
+            int win_w = 0;
+            int win_h = 0;
+            SDL_GetWindowSize(window, &win_w, &win_h);
+            if (win_w <= 0 || win_h <= 0)
+                return {window_x, window_y};
+
+            return {
+                window_x * (_logical_size.x / static_cast<float>(win_w)),
+                window_y * (_logical_size.y / static_cast<float>(win_h))};
+        }
 
     public:
         virtual ~Renderer() = default;
@@ -30,6 +48,12 @@ namespace engine::render
         {
             _res_mgr = mgr;
         }
+        void setLogicalSize(const glm::vec2 &logical_size)
+        {
+            if (logical_size.x > 0.0f && logical_size.y > 0.0f)
+                _logical_size = logical_size;
+        }
+        const glm::vec2 &getLogicalSize() const { return _logical_size; }
 
         virtual SDL_GPUDevice* getDevice() const { return nullptr; }
         virtual SDL_Window* getWindow() const { return nullptr; }

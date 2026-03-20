@@ -60,7 +60,6 @@ namespace engine::object
             // 这里的 _context 是 GameObject 构造时存入的成员变量
             ptr->attach(this, this->_context);
             _components[type_index] = std::move(new_component);
-            ptr->init();
             spdlog::debug(" GameObject {} 添加组件: {}", _name, typeid(T).name());
             return ptr;
         }
