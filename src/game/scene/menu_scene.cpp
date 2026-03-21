@@ -1,4 +1,5 @@
 #include "menu_scene.h"
+#include "route_select_scene.h"
 #include "game_scene.h"
 #include "../../engine/core/context.h"
 #include "../../engine/scene/scene_manager.h"
@@ -19,6 +20,8 @@ namespace game::scene
 
     void MenuScene::init()
     {
+        Scene::init(); // 设置 _is_initialized = true
+
         // 初始化多语言系统，读取上次保存的语言
         auto &lm = locale::LocaleManager::getInstance();
         const auto &langs = locale::LocaleManager::SUPPORTED_LANGUAGES;
@@ -158,8 +161,8 @@ namespace game::scene
 
     void MenuScene::startGame()
     {
-        spdlog::info("开始游戏按钮被点击");
-        auto gameScene = std::make_unique<GameScene>("GameScene123", _context, _scene_manager);
-        _scene_manager.requestReplaceScene(std::move(gameScene));
+        spdlog::info("开始游戏 → 路线选择场景");
+        auto scene = std::make_unique<RouteSelectScene>("RouteSelectScene", _context, _scene_manager);
+        _scene_manager.requestReplaceScene(std::move(scene));
     }
 }

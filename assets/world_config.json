@@ -5,5 +5,10 @@
     "amplitude": 30,
     "grassDepth": 2,
     "dirtDepth": 5,
-    "stoneStart": 50
+    "stoneStart": 50,
+
+    "treeMinTrunkHeight": 8,
+    "treeMaxTrunkHeight": 18,
+    "treeSpacing": 5,
+    "treeCrownRadius": 3
 }

@@ -59,4 +59,13 @@ namespace game::inventory
         std::swap(_slots[a], _slots[b]);
     }
 
+    int Inventory::countItem(const std::string &id) const
+    {
+        int total = 0;
+        for (const auto &slot : _slots)
+            if (!slot.isEmpty() && slot.item->id == id)
+                total += slot.count;
+        return total;
+    }
+
 } // namespace game::inventory

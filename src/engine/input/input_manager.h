@@ -36,6 +36,7 @@ namespace engine::input
 
         bool _should_quit = false;
         glm::vec2 _mouse_position;
+        float _mouse_wheel_delta = 0.0f;  // 本帧鼠标滚轮偏移，每帧重置
 
     public:
         InputManager(engine::render::Renderer *_renderer, const engine::core::Config *config);
@@ -54,6 +55,9 @@ namespace engine::input
         // 获取鼠标位置
         glm::vec2 getMousePosition() const;
         glm::vec2 getLogicalMousePosition() const;
+
+        // 获取本帧鼠标滚轮偏移（向上为正，向下为负）
+        float getMouseWheelDelta() const { return _mouse_wheel_delta; }
 
     private:
         void processEvent(const SDL_Event &event);

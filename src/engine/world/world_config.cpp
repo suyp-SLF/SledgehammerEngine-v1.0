@@ -24,6 +24,12 @@ bool engine::world::WorldConfig::loadFromFile(const std::string &path) {
         dirtDepth = config_json.at("dirtDepth").get<int>();
         stoneStart = config_json.at("stoneStart").get<int>();
 
+        // 树木星球参数（可选，有默认值）
+        treeMinTrunkHeight = config_json.value("treeMinTrunkHeight", 8);
+        treeMaxTrunkHeight = config_json.value("treeMaxTrunkHeight", 18);
+        treeSpacing        = config_json.value("treeSpacing",        5);
+        treeCrownRadius    = config_json.value("treeCrownRadius",    3);
+
         return true;
     } catch (const nlohmann::json::parse_error &e) {
         spdlog::error("解析世界配置文件 JSON 失败: {}，错误: {}", path, e.what());

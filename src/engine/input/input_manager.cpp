@@ -48,6 +48,9 @@ namespace engine::input
      */
     void InputManager::update()
     {
+        // 每帧重置滚轮偏移
+        _mouse_wheel_delta = 0.0f;
+
         // 更新动作状态
         for (auto &[button, state] : _action_states)
         {
@@ -248,6 +251,9 @@ namespace engine::input
         }
         case SDL_EVENT_MOUSE_MOTION:
             _mouse_position = {event.motion.x, event.motion.y};
+            break;
+        case SDL_EVENT_MOUSE_WHEEL:
+            _mouse_wheel_delta += event.wheel.y;
             break;
         case SDL_EVENT_QUIT:
             _should_quit = true;

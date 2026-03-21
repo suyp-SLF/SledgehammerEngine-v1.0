@@ -5,11 +5,14 @@
 
 namespace game::inventory
 {
+    enum class ItemCategory { Misc, Weapon, Consumable, Material };
+
     struct Item
     {
         std::string id;
         std::string name;
         int max_stack = 99;
+        ItemCategory category = ItemCategory::Misc;
     };
 
     struct InventorySlot
@@ -34,6 +37,9 @@ namespace game::inventory
 
         // 移除指定ID物品，返回是否完全移除
         bool removeItem(const std::string &id, int count = 1);
+
+        // 统计指定ID物品的总数量
+        int countItem(const std::string &id) const;
 
         // 交换两个格子
         void swapSlots(int a, int b);

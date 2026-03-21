@@ -71,7 +71,9 @@ namespace engine::core
             {"move_down", {"S", "Down"}},
             {"jump", {"J", "Space"}},
             {"attack", {"K", "MouseLeft"}},
-            {"pause", {"P", "Escape"}}};
+            {"pause", {"P", "Escape"}},
+            {"open_inventory", {"E"}},
+            {"open_map", {"M"}}};
         explicit Config(const std::string &json_path);
         // 删除拷贝和移动
         Config(const Config &) = delete;

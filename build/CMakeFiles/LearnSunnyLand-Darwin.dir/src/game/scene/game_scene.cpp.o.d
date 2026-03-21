@@ -1116,6 +1116,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o: \
   /opt/homebrew/include/SDL3/SDL_iostream.h \
   /opt/homebrew/include/SDL3/SDL_video.h \
   /opt/homebrew/include/box2d/id.h /opt/homebrew/include/box2d/base.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/world/world_config.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/physics/physics_manager.h \
   /opt/homebrew/include/box2d/box2d.h \
   /opt/homebrew/include/box2d/collision.h \
@@ -1214,6 +1215,21 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/ecs/entity.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/typeindex \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../inventory/inventory.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../weapon/weapon.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../weapon/../inventory/inventory.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../world/tree_manager.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../world/../../engine/world/tile_info.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../world/../../engine/world/chunk_manager.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../world/../../engine/world/world_config.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../world/../inventory/inventory.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/unordered_set \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../weather/weather_system.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../mission/planet_mission_ui.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../mission/../../engine/world/chunk_manager.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../mission/../inventory/inventory.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../route/route_data.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/menu_scene.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/scene/scene_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/object/game_object.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/object/../component/component.h \
   /opt/homebrew/include/spdlog/spdlog.h \
@@ -1327,13 +1343,30 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/game_scene.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/input/input_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/camera.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/../utils/math.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/world/world_config.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/world/perlin_noise_generator.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/world/terrain_generator.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/renderer.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/render/render_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/ecs/components.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../locale/locale_manager.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/filesystem \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/copy_options.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/directory_entry.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/file_status.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/file_type.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/perms.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/file_time_type.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/filesystem_error.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/path.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iomanip \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/operations.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/perm_options.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/space_info.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/directory_iterator.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/directory_options.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/path_iterator.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/recursive_directory_iterator.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/u8path.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/imgui.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/imconfig.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/backends/imgui_impl_sdl3.h \

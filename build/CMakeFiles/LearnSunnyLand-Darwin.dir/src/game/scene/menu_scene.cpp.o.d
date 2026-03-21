@@ -945,10 +945,8 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/menu_scene.cpp.o: \
   /opt/homebrew/include/SDL3/SDL_tray.h \
   /opt/homebrew/include/SDL3/SDL_version.h \
   /opt/homebrew/include/SDL3/SDL_oldnames.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/game_scene.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/world/chunk_manager.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/world/chunk.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/world/tile_info.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/route_select_scene.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../route/route_data.h \
   /opt/homebrew/include/glm/glm.hpp \
   /opt/homebrew/include/glm/detail/_fixes.hpp \
   /opt/homebrew/include/glm/detail/setup.hpp \
@@ -1165,7 +1163,12 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/menu_scene.cpp.o: \
   /opt/homebrew/include/glm/vector_relational.hpp \
   /opt/homebrew/include/glm/integer.hpp \
   /opt/homebrew/include/glm/detail/func_integer.inl \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/game_scene.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/world/chunk_manager.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/world/chunk.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/world/tile_info.h \
   /opt/homebrew/include/box2d/id.h /opt/homebrew/include/box2d/base.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/world/world_config.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/physics/physics_manager.h \
   /opt/homebrew/include/box2d/box2d.h \
   /opt/homebrew/include/box2d/collision.h \
@@ -1215,6 +1218,18 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/menu_scene.cpp.o: \
   /opt/homebrew/include/harfbuzz/hb-version.h \
   /opt/homebrew/include/harfbuzz/hb-ft.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../inventory/inventory.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../weapon/weapon.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../weapon/../inventory/inventory.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../world/tree_manager.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../world/../../engine/world/tile_info.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../world/../../engine/world/chunk_manager.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../world/../../engine/world/world_config.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../world/../inventory/inventory.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/unordered_set \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../weather/weather_system.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../mission/planet_mission_ui.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../mission/../../engine/world/chunk_manager.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../mission/../inventory/inventory.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/core/context.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/scene/scene_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/input/input_manager.h \

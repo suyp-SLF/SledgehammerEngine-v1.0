@@ -1067,34 +1067,4 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/component/controller_component.c
   /opt/homebrew/include/SDL3/SDL_mouse.h \
   /opt/homebrew/include/SDL3/SDL_pen.h \
   /opt/homebrew/include/SDL3/SDL_touch.h \
-  /opt/homebrew/include/SDL3/SDL_gpu.h \
-  /opt/homebrew/include/glm/geometric.hpp \
-  /opt/homebrew/include/glm/detail/type_vec3.hpp \
-  /opt/homebrew/include/glm/detail/qualifier.hpp \
-  /opt/homebrew/include/glm/detail/type_vec3.inl \
-  /opt/homebrew/include/glm/detail/compute_vector_relational.hpp \
-  /opt/homebrew/include/glm/detail/compute_vector_decl.hpp \
-  /opt/homebrew/include/glm/detail/_vectorize.hpp \
-  /opt/homebrew/include/glm/detail/func_geometric.inl \
-  /opt/homebrew/include/glm/detail/../exponential.hpp \
-  /opt/homebrew/include/glm/detail/../detail/type_vec1.hpp \
-  /opt/homebrew/include/glm/detail/../detail/qualifier.hpp \
-  /opt/homebrew/include/glm/detail/../detail/type_vec1.inl \
-  /opt/homebrew/include/glm/detail/../detail/./compute_vector_relational.hpp \
-  /opt/homebrew/include/glm/detail/../detail/type_vec2.hpp \
-  /opt/homebrew/include/glm/detail/../detail/type_vec3.hpp \
-  /opt/homebrew/include/glm/detail/../detail/type_vec4.hpp \
-  /opt/homebrew/include/glm/detail/../detail/type_vec4.inl \
-  /opt/homebrew/include/glm/detail/../detail/compute_vector_relational.hpp \
-  /opt/homebrew/include/glm/detail/../detail/compute_vector_decl.hpp \
-  /opt/homebrew/include/glm/detail/../detail/func_exponential.inl \
-  /opt/homebrew/include/glm/detail/../detail/../vector_relational.hpp \
-  /opt/homebrew/include/glm/detail/../detail/../detail/qualifier.hpp \
-  /opt/homebrew/include/glm/detail/../detail/../detail/setup.hpp \
-  /opt/homebrew/include/glm/detail/../detail/../detail/func_vector_relational.inl \
-  /opt/homebrew/include/glm/detail/../detail/_vectorize.hpp \
-  /opt/homebrew/include/glm/detail/../common.hpp \
-  /opt/homebrew/include/glm/detail/../detail/_fixes.hpp \
-  /opt/homebrew/include/glm/detail/../detail/func_common.inl \
-  /opt/homebrew/include/glm/detail/../detail/compute_common.hpp \
-  /opt/homebrew/include/glm/detail/../detail/setup.hpp
+  /opt/homebrew/include/SDL3/SDL_gpu.h

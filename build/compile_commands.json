@@ -241,6 +241,42 @@
 },
 {
   "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/backends -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weapon/weapon.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/game/weapon/weapon.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/weapon/weapon.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weapon/weapon.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/backends -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/world/tree_manager.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/game/world/tree_manager.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/world/tree_manager.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/world/tree_manager.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/backends -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weather/weather_system.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/game/weather/weather_system.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/weather/weather_system.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weather/weather_system.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/backends -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/mission/planet_mission_ui.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/game/mission/planet_mission_ui.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/mission/planet_mission_ui.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/mission/planet_mission_ui.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/backends -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/route/route_data.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/game/route/route_data.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/route/route_data.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/route/route_data.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/backends -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/route_select_scene.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/route_select_scene.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/route_select_scene.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/route_select_scene.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
   "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/backends -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/_deps/imgui-src/imgui.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/imgui.cpp",
   "file": "/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/imgui-src/imgui.cpp",
   "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/_deps/imgui-src/imgui.cpp.o"

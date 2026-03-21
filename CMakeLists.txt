@@ -118,6 +118,17 @@ add_executable(
 
     src/game/locale/locale_manager.cpp
 
+    src/game/weapon/weapon.cpp
+
+    src/game/world/tree_manager.cpp
+
+    src/game/weather/weather_system.cpp
+
+    src/game/mission/planet_mission_ui.cpp
+
+    src/game/route/route_data.cpp
+    src/game/scene/route_select_scene.cpp
+
     # ImGui源文件
     ${imgui_SOURCE_DIR}/imgui.cpp
     ${imgui_SOURCE_DIR}/imgui_draw.cpp

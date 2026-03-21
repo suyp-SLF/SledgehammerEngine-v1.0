@@ -15,7 +15,21 @@ namespace engine::world
         Stone = 1,
         Dirt = 2,
         Grass = 3,
+        Wood = 4,   // 树木木头
+        Leaves = 5, // 树叶
+        Ore = 6,    // 矿石
+        Gravel = 7, // 砾石（岩地生物群系表面）
     };
+
+    /**
+     * @brief 瓦片是否为固体（参与碰撞检测）
+     */
+    inline bool isSolid(TileType t)
+    {
+        return t == TileType::Stone || t == TileType::Dirt ||
+               t == TileType::Grass || t == TileType::Wood ||
+               t == TileType::Ore   || t == TileType::Gravel;
+    }
 
     /**
      * @brief 单个瓦片的渲染和逻辑信息
@@ -44,6 +58,18 @@ namespace engine::world
                 break;
             case TileType::Grass:
                 uv_rect = glm::vec4(32.0f, 0.0f, 16.0f, 16.0f);
+                break;
+            case TileType::Wood:
+                uv_rect = glm::vec4(48.0f, 0.0f, 16.0f, 16.0f);
+                break;
+            case TileType::Leaves:
+                uv_rect = glm::vec4(64.0f, 0.0f, 16.0f, 16.0f);
+                break;
+            case TileType::Ore:
+                uv_rect = glm::vec4(80.0f, 0.0f, 16.0f, 16.0f);
+                break;
+            case TileType::Gravel:
+                uv_rect = glm::vec4(96.0f, 0.0f, 16.0f, 16.0f);
                 break;
             default:
                 uv_rect = glm::vec4(0.0f, 0.0f, 16.0f, 16.0f);

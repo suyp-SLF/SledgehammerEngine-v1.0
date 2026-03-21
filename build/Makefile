@@ -1161,6 +1161,54 @@ src/game/locale/locale_manager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/locale/locale_manager.cpp.s
 .PHONY : src/game/locale/locale_manager.cpp.s
 
+src/game/mission/planet_mission_ui.o: src/game/mission/planet_mission_ui.cpp.o
+.PHONY : src/game/mission/planet_mission_ui.o
+
+# target to build an object file
+src/game/mission/planet_mission_ui.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/mission/planet_mission_ui.cpp.o
+.PHONY : src/game/mission/planet_mission_ui.cpp.o
+
+src/game/mission/planet_mission_ui.i: src/game/mission/planet_mission_ui.cpp.i
+.PHONY : src/game/mission/planet_mission_ui.i
+
+# target to preprocess a source file
+src/game/mission/planet_mission_ui.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/mission/planet_mission_ui.cpp.i
+.PHONY : src/game/mission/planet_mission_ui.cpp.i
+
+src/game/mission/planet_mission_ui.s: src/game/mission/planet_mission_ui.cpp.s
+.PHONY : src/game/mission/planet_mission_ui.s
+
+# target to generate assembly for a file
+src/game/mission/planet_mission_ui.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/mission/planet_mission_ui.cpp.s
+.PHONY : src/game/mission/planet_mission_ui.cpp.s
+
+src/game/route/route_data.o: src/game/route/route_data.cpp.o
+.PHONY : src/game/route/route_data.o
+
+# target to build an object file
+src/game/route/route_data.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/route/route_data.cpp.o
+.PHONY : src/game/route/route_data.cpp.o
+
+src/game/route/route_data.i: src/game/route/route_data.cpp.i
+.PHONY : src/game/route/route_data.i
+
+# target to preprocess a source file
+src/game/route/route_data.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/route/route_data.cpp.i
+.PHONY : src/game/route/route_data.cpp.i
+
+src/game/route/route_data.s: src/game/route/route_data.cpp.s
+.PHONY : src/game/route/route_data.s
+
+# target to generate assembly for a file
+src/game/route/route_data.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/route/route_data.cpp.s
+.PHONY : src/game/route/route_data.cpp.s
+
 src/game/scene/game_scene.o: src/game/scene/game_scene.cpp.o
 .PHONY : src/game/scene/game_scene.o
 
@@ -1208,6 +1256,102 @@ src/game/scene/menu_scene.s: src/game/scene/menu_scene.cpp.s
 src/game/scene/menu_scene.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/menu_scene.cpp.s
 .PHONY : src/game/scene/menu_scene.cpp.s
+
+src/game/scene/route_select_scene.o: src/game/scene/route_select_scene.cpp.o
+.PHONY : src/game/scene/route_select_scene.o
+
+# target to build an object file
+src/game/scene/route_select_scene.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/route_select_scene.cpp.o
+.PHONY : src/game/scene/route_select_scene.cpp.o
+
+src/game/scene/route_select_scene.i: src/game/scene/route_select_scene.cpp.i
+.PHONY : src/game/scene/route_select_scene.i
+
+# target to preprocess a source file
+src/game/scene/route_select_scene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/route_select_scene.cpp.i
+.PHONY : src/game/scene/route_select_scene.cpp.i
+
+src/game/scene/route_select_scene.s: src/game/scene/route_select_scene.cpp.s
+.PHONY : src/game/scene/route_select_scene.s
+
+# target to generate assembly for a file
+src/game/scene/route_select_scene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/route_select_scene.cpp.s
+.PHONY : src/game/scene/route_select_scene.cpp.s
+
+src/game/weapon/weapon.o: src/game/weapon/weapon.cpp.o
+.PHONY : src/game/weapon/weapon.o
+
+# target to build an object file
+src/game/weapon/weapon.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weapon/weapon.cpp.o
+.PHONY : src/game/weapon/weapon.cpp.o
+
+src/game/weapon/weapon.i: src/game/weapon/weapon.cpp.i
+.PHONY : src/game/weapon/weapon.i
+
+# target to preprocess a source file
+src/game/weapon/weapon.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weapon/weapon.cpp.i
+.PHONY : src/game/weapon/weapon.cpp.i
+
+src/game/weapon/weapon.s: src/game/weapon/weapon.cpp.s
+.PHONY : src/game/weapon/weapon.s
+
+# target to generate assembly for a file
+src/game/weapon/weapon.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weapon/weapon.cpp.s
+.PHONY : src/game/weapon/weapon.cpp.s
+
+src/game/weather/weather_system.o: src/game/weather/weather_system.cpp.o
+.PHONY : src/game/weather/weather_system.o
+
+# target to build an object file
+src/game/weather/weather_system.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weather/weather_system.cpp.o
+.PHONY : src/game/weather/weather_system.cpp.o
+
+src/game/weather/weather_system.i: src/game/weather/weather_system.cpp.i
+.PHONY : src/game/weather/weather_system.i
+
+# target to preprocess a source file
+src/game/weather/weather_system.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weather/weather_system.cpp.i
+.PHONY : src/game/weather/weather_system.cpp.i
+
+src/game/weather/weather_system.s: src/game/weather/weather_system.cpp.s
+.PHONY : src/game/weather/weather_system.s
+
+# target to generate assembly for a file
+src/game/weather/weather_system.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weather/weather_system.cpp.s
+.PHONY : src/game/weather/weather_system.cpp.s
+
+src/game/world/tree_manager.o: src/game/world/tree_manager.cpp.o
+.PHONY : src/game/world/tree_manager.o
+
+# target to build an object file
+src/game/world/tree_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/world/tree_manager.cpp.o
+.PHONY : src/game/world/tree_manager.cpp.o
+
+src/game/world/tree_manager.i: src/game/world/tree_manager.cpp.i
+.PHONY : src/game/world/tree_manager.i
+
+# target to preprocess a source file
+src/game/world/tree_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/world/tree_manager.cpp.i
+.PHONY : src/game/world/tree_manager.cpp.i
+
+src/game/world/tree_manager.s: src/game/world/tree_manager.cpp.s
+.PHONY : src/game/world/tree_manager.s
+
+# target to generate assembly for a file
+src/game/world/tree_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/world/tree_manager.cpp.s
+.PHONY : src/game/world/tree_manager.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
@@ -1371,12 +1515,30 @@ help:
 	@echo "... src/game/locale/locale_manager.o"
 	@echo "... src/game/locale/locale_manager.i"
 	@echo "... src/game/locale/locale_manager.s"
+	@echo "... src/game/mission/planet_mission_ui.o"
+	@echo "... src/game/mission/planet_mission_ui.i"
+	@echo "... src/game/mission/planet_mission_ui.s"
+	@echo "... src/game/route/route_data.o"
+	@echo "... src/game/route/route_data.i"
+	@echo "... src/game/route/route_data.s"
 	@echo "... src/game/scene/game_scene.o"
 	@echo "... src/game/scene/game_scene.i"
 	@echo "... src/game/scene/game_scene.s"
 	@echo "... src/game/scene/menu_scene.o"
 	@echo "... src/game/scene/menu_scene.i"
 	@echo "... src/game/scene/menu_scene.s"
+	@echo "... src/game/scene/route_select_scene.o"
+	@echo "... src/game/scene/route_select_scene.i"
+	@echo "... src/game/scene/route_select_scene.s"
+	@echo "... src/game/weapon/weapon.o"
+	@echo "... src/game/weapon/weapon.i"
+	@echo "... src/game/weapon/weapon.s"
+	@echo "... src/game/weather/weather_system.o"
+	@echo "... src/game/weather/weather_system.i"
+	@echo "... src/game/weather/weather_system.s"
+	@echo "... src/game/world/tree_manager.o"
+	@echo "... src/game/world/tree_manager.i"
+	@echo "... src/game/world/tree_manager.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

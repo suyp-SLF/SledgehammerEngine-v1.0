@@ -38,6 +38,12 @@
         ],
         "open_inventory": [
             "E"
+        ],
+        "open_map": [
+            "M"
+        ],
+        "evacuate": [
+            "B"
         ]
     },
     "performance": {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<svg version="1.1" width="48" height="16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+<svg version="1.1" width="112" height="16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
 <!-- 石头瓦片 (0-15, 0-15) -->
 <rect x="0" y="0" width="16" height="16" fill="#808080" />
 <rect x="1" y="2" width="3" height="3" fill="#6A6A6A" />
@@ -23,4 +23,57 @@
 <rect x="37" y="0" width="1" height="3" fill="#6AB83F" />
 <rect x="41" y="1" width="1" height="2" fill="#6AB83F" />
 <rect x="45" y="0" width="1" height="3" fill="#6AB83F" />
+
+<!-- 木头瓦片 (48-63, 0-15) -->
+<rect x="48" y="0" width="16" height="16" fill="#7B4F2E" />
+<rect x="49" y="1" width="14" height="2" fill="#6B3F1E" />
+<rect x="49" y="5" width="14" height="2" fill="#6B3F1E" />
+<rect x="49" y="9" width="14" height="2" fill="#6B3F1E" />
+<rect x="49" y="13" width="14" height="2" fill="#6B3F1E" />
+<rect x="48" y="0" width="2" height="16" fill="#5A3019" />
+<rect x="62" y="0" width="2" height="16" fill="#5A3019" />
+
+<!-- 树叶瓦片 (64-79, 0-15) -->
+<rect x="64" y="0" width="16" height="16" fill="#3A8C2A" />
+<rect x="65" y="1" width="2" height="2" fill="#2E7020" />
+<rect x="70" y="0" width="3" height="3" fill="#4CA83C" />
+<rect x="67" y="5" width="2" height="2" fill="#2E7020" />
+<rect x="73" y="4" width="2" height="3" fill="#4CA83C" />
+<rect x="66" y="9" width="3" height="2" fill="#2E7020" />
+<rect x="71" y="10" width="2" height="2" fill="#4CA83C" />
+<rect x="76" y="8" width="2" height="2" fill="#2E7020" />
+<rect x="64" y="14" width="16" height="2" fill="#2E7020" />
+
+<!-- 矿石瓦片 (80-95, 0-15) -->
+<rect x="80" y="0" width="16" height="16" fill="#5A5A6A" />
+<rect x="82" y="2" width="4" height="3" fill="#D4A020" />
+<rect x="88" y="1" width="3" height="3" fill="#E8B830" />
+<rect x="84" y="7" width="3" height="3" fill="#D4A020" />
+<rect x="90" y="6" width="2" height="4" fill="#E8B830" />
+<rect x="81" y="10" width="3" height="3" fill="#D4A020" />
+<rect x="87" y="11" width="4" height="3" fill="#E8B830" />
+<rect x="83" y="5" width="2" height="2" fill="#FFD040" />
+<rect x="91" y="10" width="2" height="2" fill="#FFD040" />
+
+<!-- 砾石瓦片 (96-111, 0-15) -->
+<rect x="96" y="0" width="16" height="16" fill="#6E6B5A" />
+<!-- 鹅卵石块 -->
+<rect x="97" y="1" width="4" height="4" fill="#82806E" />
+<rect x="103" y="1" width="4" height="3" fill="#5C5A4A" />
+<rect x="108" y="2" width="3" height="4" fill="#7A786A" />
+<rect x="97" y="7" width="5" height="3" fill="#5C5A4A" />
+<rect x="104" y="6" width="3" height="4" fill="#82806E" />
+<rect x="109" y="7" width="2" height="3" fill="#5C5A4A" />
+<rect x="97" y="11" width="3" height="3" fill="#82806E" />
+<rect x="102" y="11" width="5" height="4" fill="#5C5A4A" />
+<rect x="109" y="11" width="2" height="3" fill="#7A786A" />
+<!-- 缝隙/勾缝线 -->
+<rect x="96" y="5" width="16" height="1" fill="#3E3C2E" />
+<rect x="96" y="10" width="16" height="1" fill="#3E3C2E" />
+<rect x="101" y="1" width="1" height="4" fill="#3E3C2E" />
+<rect x="107" y="1" width="1" height="4" fill="#3E3C2E" />
+<rect x="103" y="6" width="1" height="4" fill="#3E3C2E" />
+<rect x="108" y="6" width="1" height="4" fill="#3E3C2E" />
+<rect x="100" y="11" width="1" height="4" fill="#3E3C2E" />
+<rect x="107" y="11" width="1" height="4" fill="#3E3C2E" />
 </svg>
