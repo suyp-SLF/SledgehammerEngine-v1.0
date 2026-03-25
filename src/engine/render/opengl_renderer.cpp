@@ -113,22 +113,26 @@ namespace engine::render
         const char *vert = R"(
 #version 330 core
 layout(location = 0) in vec2 aPos;
-layout(location = 1) in vec2 aUV;
+layout(location = 1) in vec4 aColor;
+layout(location = 2) in vec2 aUV;
 out vec2 vUV;
+out vec4 vColor;
 uniform mat4 uMVP;
 void main() {
     gl_Position = uMVP * vec4(aPos, 0.0, 1.0);
     vUV = aUV;
+    vColor = aColor;
 }
 )";
         const char *frag = R"(
 #version 330 core
 in vec2 vUV;
+in vec4 vColor;
 out vec4 FragColor;
 uniform sampler2D uTex;
 uniform vec4 uColor;
 void main() {
-    FragColor = texture(uTex, vUV) * uColor;
+    FragColor = texture(uTex, vUV) * vColor * uColor;
 }
 )";
         auto compile = [](GLenum type, const char *src) -> GLuint {
@@ -169,11 +173,13 @@ void main() {
         glGenBuffers(1, &_quadVBO);
         glBindVertexArray(_quadVAO);
         glBindBuffer(GL_ARRAY_BUFFER, _quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, 6 * 4 * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 6 * 8 * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(2 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
         glBindVertexArray(0);
 
         unsigned int white_pixel = 0xFFFFFFFFu;
@@ -206,13 +212,15 @@ void main() {
         // macOS Core Profile: use GL_DYNAMIC_DRAW instead of GL_STATIC_DRAW
         glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(vertices.size() * sizeof(float)), vertices.data(), GL_DYNAMIC_DRAW);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(2 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
         glBindVertexArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        vertexCount = static_cast<int>(vertices.size() / 4);
+        vertexCount = static_cast<int>(vertices.size() / 8);
         return true;
     }
 
@@ -285,13 +293,13 @@ void main() {
         float v1 = v0 + uvRect.w;
         if (flipped) std::swap(u0, u1);
 
-        float verts[6][4] = {
-            {0,  0,  u0, v0},
-            {w,  0,  u1, v0},
-            {0,  h,  u0, v1},
-            {w,  0,  u1, v0},
-            {w,  h,  u1, v1},
-            {0,  h,  u0, v1},
+        float verts[6][8] = {
+            {0,  0,  1, 1, 1, 1,  u0, v0},
+            {w,  0,  1, 1, 1, 1,  u1, v0},
+            {0,  h,  1, 1, 1, 1,  u0, v1},
+            {w,  0,  1, 1, 1, 1,  u1, v0},
+            {w,  h,  1, 1, 1, 1,  u1, v1},
+            {0,  h,  1, 1, 1, 1,  u0, v1},
         };
 
         if (_boundShader != _tileShader)

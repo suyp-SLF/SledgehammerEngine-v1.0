@@ -1401,6 +1401,30 @@ src/game/scene/ship_scene.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/ship_scene.cpp.s
 .PHONY : src/game/scene/ship_scene.cpp.s
 
+src/game/scene/voxel_scene.o: src/game/scene/voxel_scene.cpp.o
+.PHONY : src/game/scene/voxel_scene.o
+
+# target to build an object file
+src/game/scene/voxel_scene.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/voxel_scene.cpp.o
+.PHONY : src/game/scene/voxel_scene.cpp.o
+
+src/game/scene/voxel_scene.i: src/game/scene/voxel_scene.cpp.i
+.PHONY : src/game/scene/voxel_scene.i
+
+# target to preprocess a source file
+src/game/scene/voxel_scene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/voxel_scene.cpp.i
+.PHONY : src/game/scene/voxel_scene.cpp.i
+
+src/game/scene/voxel_scene.s: src/game/scene/voxel_scene.cpp.s
+.PHONY : src/game/scene/voxel_scene.s
+
+# target to generate assembly for a file
+src/game/scene/voxel_scene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/voxel_scene.cpp.s
+.PHONY : src/game/scene/voxel_scene.cpp.s
+
 src/game/weapon/weapon.o: src/game/weapon/weapon.cpp.o
 .PHONY : src/game/weapon/weapon.o
 
@@ -1689,6 +1713,9 @@ help:
 	@echo "... src/game/scene/ship_scene.o"
 	@echo "... src/game/scene/ship_scene.i"
 	@echo "... src/game/scene/ship_scene.s"
+	@echo "... src/game/scene/voxel_scene.o"
+	@echo "... src/game/scene/voxel_scene.i"
+	@echo "... src/game/scene/voxel_scene.s"
 	@echo "... src/game/weapon/weapon.o"
 	@echo "... src/game/weapon/weapon.i"
 	@echo "... src/game/weapon/weapon.s"

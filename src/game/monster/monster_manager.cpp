@@ -1,5 +1,8 @@
 #include "monster_manager.h"
+#include "../../engine/core/context.h"
 #include "../../engine/actor/actor_manager.h"
+#include "../../engine/render/camera.h"
+#include "../../engine/render/renderer.h"
 #include "../../engine/component/physics_component.h"
 #include "../../engine/component/sprite_component.h"
 #include "../../engine/component/transform_component.h"
@@ -41,6 +44,36 @@ namespace game::monster
             case MonsterType::Slime: return {0.48f, 0.38f};
             }
             return {0.5f, 0.5f};
+        }
+
+        glm::vec2 shadowSizeForMonster(MonsterType type)
+        {
+            switch (type)
+            {
+            case MonsterType::WhiteApe: return {26.0f, 8.0f};
+            case MonsterType::Wolf: return {22.0f, 6.5f};
+            case MonsterType::Slime: return {18.0f, 5.5f};
+            }
+            return {18.0f, 6.0f};
+        }
+
+        void drawShadow(engine::core::Context &context, const glm::vec2 &center, const glm::vec2 &size, float alpha)
+        {
+            auto &renderer = context.getRenderer();
+            const auto &camera = context.getCamera();
+
+            renderer.drawRect(camera,
+                              center.x - size.x * 0.5f,
+                              center.y - size.y * 0.5f,
+                              size.x,
+                              size.y,
+                              glm::vec4(0.0f, 0.0f, 0.0f, alpha));
+            renderer.drawRect(camera,
+                              center.x - size.x * 0.35f,
+                              center.y - size.y * 0.38f,
+                              size.x * 0.70f,
+                              size.y * 0.76f,
+                              glm::vec4(0.0f, 0.0f, 0.0f, alpha * 0.55f));
         }
     }
 
@@ -175,6 +208,32 @@ namespace game::monster
         {
             m_spawnTimer = kSpawnInterval;
             spawnMonster();
+        }
+    }
+
+    void MonsterManager::renderGroundShadows(engine::core::Context &context) const
+    {
+        for (const auto &entry : m_monsters)
+        {
+            if (!entry.actor || entry.actor->isNeedRemove())
+                continue;
+
+            auto *transform = entry.actor->getComponent<engine::component::TransformComponent>();
+            auto *physics = entry.actor->getComponent<engine::component::PhysicsComponent>();
+            if (!transform)
+                continue;
+
+            glm::vec2 size = shadowSizeForMonster(entry.type);
+            float alpha = 0.16f;
+            if (physics)
+            {
+                float airFactor = std::min(std::abs(physics->getVelocity().y) / 7.0f, 1.0f);
+                alpha *= 1.0f - airFactor * 0.35f;
+                size *= 1.0f - airFactor * 0.18f;
+            }
+
+            glm::vec2 shadowCenter = transform->getPosition() + glm::vec2(0.0f, 15.0f);
+            drawShadow(context, shadowCenter, size, alpha);
         }
     }
 

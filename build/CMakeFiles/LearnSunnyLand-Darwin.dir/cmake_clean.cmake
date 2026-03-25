@@ -107,6 +107,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/route_select_scene.cpp.o.d"
   "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/ship_scene.cpp.o"
   "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/ship_scene.cpp.o.d"
+  "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/voxel_scene.cpp.o"
+  "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/voxel_scene.cpp.o.d"
   "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weapon/weapon.cpp.o"
   "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weapon/weapon.cpp.o.d"
   "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/weather/weather_system.cpp.o"

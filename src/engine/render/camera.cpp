@@ -64,7 +64,10 @@ namespace engine::render
         glm::vec2 center = _viewport_size * 0.5f;
         glm::mat4 view = glm::mat4(1.0f);
         view = glm::translate(view, glm::vec3(center, 0.0f));
-        view = glm::scale(view, glm::vec3(_zoom, _zoom, 1.0f));
+        float verticalScale = _projection_mode == ProjectionMode::Pseudo3D
+            ? _pseudo3d_vertical_scale
+            : 1.0f;
+        view = glm::scale(view, glm::vec3(_zoom, _zoom * verticalScale, 1.0f));
         view = glm::translate(view, glm::vec3(-center, 0.0f));
         view = glm::translate(view, glm::vec3(-_position.x, -_position.y, 0.0f));
         return view;
@@ -78,19 +81,39 @@ namespace engine::render
     glm::vec2 Camera::worldToScreen(const glm::vec2 &world_pos) const
     {
         glm::vec2 center = _viewport_size * 0.5f;
-        return center + (world_pos - _position - center) * _zoom;
+        glm::vec2 local = world_pos - _position - center;
+        float verticalScale = _projection_mode == ProjectionMode::Pseudo3D
+            ? _pseudo3d_vertical_scale
+            : 1.0f;
+        return {
+            center.x + local.x * _zoom,
+            center.y + local.y * _zoom * verticalScale
+        };
     }
 
     glm::vec2 Camera::worldToScreenWithParallax(const glm::vec2 &world_pos, const glm::vec2 &parallax_factor) const
     {
         glm::vec2 center = _viewport_size * 0.5f;
-        return center + (world_pos - _position * parallax_factor - center) * _zoom;
+        glm::vec2 local = world_pos - _position * parallax_factor - center;
+        float verticalScale = _projection_mode == ProjectionMode::Pseudo3D
+            ? _pseudo3d_vertical_scale
+            : 1.0f;
+        return {
+            center.x + local.x * _zoom,
+            center.y + local.y * _zoom * verticalScale
+        };
     }
 
     glm::vec2 Camera::screenToWorld(const glm::vec2 &screen_pos) const
     {
         glm::vec2 center = _viewport_size * 0.5f;
-        return (screen_pos - center) / _zoom + center + _position;
+        float verticalScale = _projection_mode == ProjectionMode::Pseudo3D
+            ? _pseudo3d_vertical_scale
+            : 1.0f;
+        return {
+            (screen_pos.x - center.x) / _zoom + center.x + _position.x,
+            (screen_pos.y - center.y) / (_zoom * verticalScale) + center.y + _position.y
+        };
     }
 
     void Camera::setPosition(const glm::vec2 &position)
@@ -122,6 +145,11 @@ namespace engine::render
     void Camera::setZoom(float zoom)
     {
         _zoom = glm::clamp(zoom, 0.5f, 3.0f);
+    }
+
+    void Camera::setPseudo3DEnabled(bool enabled)
+    {
+        _projection_mode = enabled ? ProjectionMode::Pseudo3D : ProjectionMode::Flat2D;
     }
 
     float Camera::getZoom() const

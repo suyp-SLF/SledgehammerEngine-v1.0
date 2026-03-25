@@ -22,6 +22,7 @@ namespace game::monster
                        engine::object::GameObject *player);
 
         void update(float delta_time);
+        void renderGroundShadows(engine::core::Context &context) const;
         int crushMonstersInRadius(const glm::vec2 &center, float radius);
         int slashMonsters(const glm::vec2 &origin,
                   float facing,

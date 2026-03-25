@@ -85,12 +85,12 @@ clean: CMakeFiles/LearnSunnyLand-Darwin.dir/clean
 CMakeFiles/LearnSunnyLand-Darwin.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/suyp/C++/Projects/LearnSunnyLand/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59 "Built target LearnSunnyLand-Darwin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/suyp/C++/Projects/LearnSunnyLand/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60 "Built target LearnSunnyLand-Darwin"
 .PHONY : CMakeFiles/LearnSunnyLand-Darwin.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/LearnSunnyLand-Darwin.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/suyp/C++/Projects/LearnSunnyLand/build/CMakeFiles 59
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/suyp/C++/Projects/LearnSunnyLand/build/CMakeFiles 60
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/LearnSunnyLand-Darwin.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/suyp/C++/Projects/LearnSunnyLand/build/CMakeFiles 0
 .PHONY : CMakeFiles/LearnSunnyLand-Darwin.dir/rule
@@ -102,7 +102,7 @@ LearnSunnyLand-Darwin: CMakeFiles/LearnSunnyLand-Darwin.dir/rule
 # codegen rule for target.
 CMakeFiles/LearnSunnyLand-Darwin.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/suyp/C++/Projects/LearnSunnyLand/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59 "Finished codegen for target LearnSunnyLand-Darwin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/suyp/C++/Projects/LearnSunnyLand/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60 "Finished codegen for target LearnSunnyLand-Darwin"
 .PHONY : CMakeFiles/LearnSunnyLand-Darwin.dir/codegen
 
 # clean rule for target.

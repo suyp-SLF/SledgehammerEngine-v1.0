@@ -979,26 +979,17 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/monster/monster_manager.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__random/seed_seq.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__random/student_t_distribution.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__random/weibull_distribution.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/core/context.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/actor/actor_manager.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/physics_component.h \
-  /opt/homebrew/include/box2d/box2d.h /opt/homebrew/include/box2d/base.h \
-  /opt/homebrew/include/box2d/collision.h \
-  /opt/homebrew/include/box2d/math_functions.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/float.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/17/include/float.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/float.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/stdbool.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdbool.h \
-  /opt/homebrew/include/box2d/id.h /opt/homebrew/include/box2d/types.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/sprite_component.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/./component.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/../utils/alignment.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/../render/sprite.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/../render/../utils/math.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/render/camera.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/render/../utils/math.h \
   /opt/homebrew/include/glm/glm.hpp \
   /opt/homebrew/include/glm/detail/_fixes.hpp \
   /opt/homebrew/include/glm/detail/setup.hpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cfloat \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/float.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/17/include/float.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/float.h \
   /opt/homebrew/include/glm/fwd.hpp \
   /opt/homebrew/include/glm/detail/qualifier.hpp \
   /opt/homebrew/include/glm/vec3.hpp \
@@ -1162,6 +1153,82 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/monster/monster_manager.cpp.o: \
   /opt/homebrew/include/glm/vector_relational.hpp \
   /opt/homebrew/include/glm/integer.hpp \
   /opt/homebrew/include/glm/detail/func_integer.inl \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/render/renderer.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/render/render_types.h \
+  /opt/homebrew/include/SDL3/SDL.h \
+  /opt/homebrew/include/SDL3/SDL_stdinc.h \
+  /opt/homebrew/include/SDL3/SDL_platform_defines.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityMacros.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
+  /opt/homebrew/include/SDL3/SDL_begin_code.h \
+  /opt/homebrew/include/SDL3/SDL_close_code.h \
+  /opt/homebrew/include/SDL3/SDL_assert.h \
+  /opt/homebrew/include/SDL3/SDL_asyncio.h \
+  /opt/homebrew/include/SDL3/SDL_atomic.h \
+  /opt/homebrew/include/SDL3/SDL_audio.h \
+  /opt/homebrew/include/SDL3/SDL_endian.h \
+  /opt/homebrew/include/SDL3/SDL_error.h \
+  /opt/homebrew/include/SDL3/SDL_mutex.h \
+  /opt/homebrew/include/SDL3/SDL_thread.h \
+  /opt/homebrew/include/SDL3/SDL_properties.h \
+  /opt/homebrew/include/SDL3/SDL_iostream.h \
+  /opt/homebrew/include/SDL3/SDL_bits.h \
+  /opt/homebrew/include/SDL3/SDL_blendmode.h \
+  /opt/homebrew/include/SDL3/SDL_camera.h \
+  /opt/homebrew/include/SDL3/SDL_pixels.h \
+  /opt/homebrew/include/SDL3/SDL_surface.h \
+  /opt/homebrew/include/SDL3/SDL_rect.h \
+  /opt/homebrew/include/SDL3/SDL_clipboard.h \
+  /opt/homebrew/include/SDL3/SDL_cpuinfo.h \
+  /opt/homebrew/include/SDL3/SDL_dialog.h \
+  /opt/homebrew/include/SDL3/SDL_video.h \
+  /opt/homebrew/include/SDL3/SDL_dlopennote.h \
+  /opt/homebrew/include/SDL3/SDL_events.h \
+  /opt/homebrew/include/SDL3/SDL_gamepad.h \
+  /opt/homebrew/include/SDL3/SDL_guid.h \
+  /opt/homebrew/include/SDL3/SDL_joystick.h \
+  /opt/homebrew/include/SDL3/SDL_power.h \
+  /opt/homebrew/include/SDL3/SDL_sensor.h \
+  /opt/homebrew/include/SDL3/SDL_keyboard.h \
+  /opt/homebrew/include/SDL3/SDL_keycode.h \
+  /opt/homebrew/include/SDL3/SDL_scancode.h \
+  /opt/homebrew/include/SDL3/SDL_mouse.h \
+  /opt/homebrew/include/SDL3/SDL_pen.h \
+  /opt/homebrew/include/SDL3/SDL_touch.h \
+  /opt/homebrew/include/SDL3/SDL_filesystem.h \
+  /opt/homebrew/include/SDL3/SDL_gpu.h \
+  /opt/homebrew/include/SDL3/SDL_haptic.h \
+  /opt/homebrew/include/SDL3/SDL_hidapi.h \
+  /opt/homebrew/include/SDL3/SDL_hints.h \
+  /opt/homebrew/include/SDL3/SDL_init.h \
+  /opt/homebrew/include/SDL3/SDL_loadso.h \
+  /opt/homebrew/include/SDL3/SDL_locale.h \
+  /opt/homebrew/include/SDL3/SDL_log.h \
+  /opt/homebrew/include/SDL3/SDL_messagebox.h \
+  /opt/homebrew/include/SDL3/SDL_metal.h \
+  /opt/homebrew/include/SDL3/SDL_misc.h \
+  /opt/homebrew/include/SDL3/SDL_platform.h \
+  /opt/homebrew/include/SDL3/SDL_process.h \
+  /opt/homebrew/include/SDL3/SDL_render.h \
+  /opt/homebrew/include/SDL3/SDL_storage.h \
+  /opt/homebrew/include/SDL3/SDL_system.h \
+  /opt/homebrew/include/SDL3/SDL_time.h \
+  /opt/homebrew/include/SDL3/SDL_timer.h \
+  /opt/homebrew/include/SDL3/SDL_tray.h \
+  /opt/homebrew/include/SDL3/SDL_version.h \
+  /opt/homebrew/include/SDL3/SDL_oldnames.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/physics_component.h \
+  /opt/homebrew/include/box2d/box2d.h /opt/homebrew/include/box2d/base.h \
+  /opt/homebrew/include/box2d/collision.h \
+  /opt/homebrew/include/box2d/math_functions.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/stdbool.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdbool.h \
+  /opt/homebrew/include/box2d/id.h /opt/homebrew/include/box2d/types.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/sprite_component.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/./component.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/../utils/alignment.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/../render/sprite.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/../render/../utils/math.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/../utils/math.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/component/transform_component.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/object/game_object.h \
@@ -1262,20 +1329,4 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/monster/monster_manager.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/utils/alignment.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/world/chunk_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/world/chunk.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/world/tile_info.h \
-  /opt/homebrew/include/SDL3/SDL_gpu.h \
-  /opt/homebrew/include/SDL3/SDL_stdinc.h \
-  /opt/homebrew/include/SDL3/SDL_platform_defines.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityMacros.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
-  /opt/homebrew/include/SDL3/SDL_begin_code.h \
-  /opt/homebrew/include/SDL3/SDL_close_code.h \
-  /opt/homebrew/include/SDL3/SDL_pixels.h \
-  /opt/homebrew/include/SDL3/SDL_error.h \
-  /opt/homebrew/include/SDL3/SDL_endian.h \
-  /opt/homebrew/include/SDL3/SDL_properties.h \
-  /opt/homebrew/include/SDL3/SDL_rect.h \
-  /opt/homebrew/include/SDL3/SDL_surface.h \
-  /opt/homebrew/include/SDL3/SDL_blendmode.h \
-  /opt/homebrew/include/SDL3/SDL_iostream.h \
-  /opt/homebrew/include/SDL3/SDL_video.h
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/monster/../../engine/world/tile_info.h

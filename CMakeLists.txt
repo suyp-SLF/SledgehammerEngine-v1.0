@@ -115,6 +115,7 @@ add_executable(
     src/game/scene/game_scene.cpp
     src/game/scene/menu_scene.cpp
     src/game/scene/ship_scene.cpp
+    src/game/scene/voxel_scene.cpp
 
     src/game/inventory/inventory.cpp
 

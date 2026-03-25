@@ -13,6 +13,89 @@
 
 namespace engine::world
 {
+    namespace
+    {
+        constexpr float kPseudoDepthX = 0.34f;
+        constexpr float kPseudoDepthY = 0.26f;
+
+        glm::vec4 faceTint(TileType type, float brightness)
+        {
+            glm::vec4 tint(1.0f);
+            switch (type)
+            {
+            case TileType::Grass:  tint = {1.05f, 1.08f, 0.98f, 1.0f}; break;
+            case TileType::Ore:    tint = {1.08f, 1.08f, 1.12f, 1.0f}; break;
+            case TileType::Wood:   tint = {1.02f, 0.94f, 0.86f, 1.0f}; break;
+            case TileType::Leaves: tint = {0.92f, 1.08f, 0.92f, 1.0f}; break;
+            case TileType::Gravel: tint = {0.95f, 0.95f, 0.98f, 1.0f}; break;
+            default: break;
+            }
+
+            tint.r = glm::clamp(tint.r * brightness, 0.0f, 1.15f);
+            tint.g = glm::clamp(tint.g * brightness, 0.0f, 1.15f);
+            tint.b = glm::clamp(tint.b * brightness, 0.0f, 1.15f);
+            return tint;
+        }
+
+        void appendQuad(std::vector<engine::render::GPUVertex> &vertices,
+                        const glm::vec2 &p0,
+                        const glm::vec2 &p1,
+                        const glm::vec2 &p2,
+                        const glm::vec2 &p3,
+                        const glm::vec4 &uvRect,
+                        float invW,
+                        float invH,
+                        const glm::vec4 &color)
+        {
+            float u0 = uvRect.x * invW;
+            float v0 = uvRect.y * invH;
+            float u1 = u0 + uvRect.z * invW;
+            float v1 = v0 + uvRect.w * invH;
+
+            vertices.push_back({p0, color, {u0, v0}});
+            vertices.push_back({p1, color, {u1, v0}});
+            vertices.push_back({p2, color, {u0, v1}});
+            vertices.push_back({p1, color, {u1, v0}});
+            vertices.push_back({p3, color, {u1, v1}});
+            vertices.push_back({p2, color, {u0, v1}});
+        }
+
+        void appendQuadGL(std::vector<float> &vertices,
+                          const glm::vec2 &p0,
+                          const glm::vec2 &p1,
+                          const glm::vec2 &p2,
+                          const glm::vec2 &p3,
+                          const glm::vec4 &uvRect,
+                          float invW,
+                          float invH,
+                          const glm::vec4 &color)
+        {
+            float u0 = uvRect.x * invW;
+            float v0 = uvRect.y * invH;
+            float u1 = u0 + uvRect.z * invW;
+            float v1 = v0 + uvRect.w * invH;
+
+            auto push = [&](const glm::vec2 &pos, float u, float v)
+            {
+                vertices.push_back(pos.x);
+                vertices.push_back(pos.y);
+                vertices.push_back(color.r);
+                vertices.push_back(color.g);
+                vertices.push_back(color.b);
+                vertices.push_back(color.a);
+                vertices.push_back(u);
+                vertices.push_back(v);
+            };
+
+            push(p0, u0, v0);
+            push(p1, u1, v0);
+            push(p2, u0, v1);
+            push(p1, u1, v0);
+            push(p3, u1, v1);
+            push(p2, u0, v1);
+        }
+    }
+
     Chunk::Chunk(int chunkX, int chunkY)
         : m_chunkX(chunkX), m_chunkY(chunkY)
     {
@@ -55,10 +138,12 @@ namespace engine::world
 
         std::unordered_map<SDL_GPUTexture *, std::vector<engine::render::GPUVertex>> tempVertices;
         auto &vertices = tempVertices[texture];
-        vertices.reserve(SIZE * SIZE * 6);
+        vertices.reserve(SIZE * SIZE * 18);
 
         float inv_w = 1.0f / texture_size.x;
         float inv_h = 1.0f / texture_size.y;
+        float depthX = tileSize.x * kPseudoDepthX;
+        float depthY = tileSize.y * kPseudoDepthY;
 
         for (int ly = 0; ly < SIZE; ++ly)
         {
@@ -73,18 +158,31 @@ namespace engine::world
                 float x1 = x0 + tileSize.x;
                 float y1 = y0 + tileSize.y;
 
-                float u0 = tile.uv_rect.x * inv_w;
-                float v0 = tile.uv_rect.y * inv_h;
-                float u1 = u0 + tile.uv_rect.z * inv_w;
-                float v1 = v0 + tile.uv_rect.w * inv_h;
+                glm::vec2 frontTL{x0, y0};
+                glm::vec2 frontTR{x1, y0};
+                glm::vec2 frontBL{x0, y1};
+                glm::vec2 frontBR{x1, y1};
+                glm::vec2 backTL{x0 - depthX, y0 - depthY};
+                glm::vec2 backTR{x1 - depthX, y0 - depthY};
+                glm::vec2 backBL{x0 - depthX, y1 - depthY};
+                glm::vec2 backBR{x1 - depthX, y1 - depthY};
 
-                glm::vec4 white = {1.0f, 1.0f, 1.0f, 1.0f};
-                vertices.push_back({{x0, y0}, white, {u0, v0}});
-                vertices.push_back({{x1, y0}, white, {u1, v0}});
-                vertices.push_back({{x0, y1}, white, {u0, v1}});
-                vertices.push_back({{x1, y0}, white, {u1, v0}});
-                vertices.push_back({{x0, y1}, white, {u0, v1}});
-                vertices.push_back({{x1, y1}, white, {u1, v1}});
+                appendQuad(vertices, frontTL, frontTR, frontBL, frontBR,
+                           tile.uv_rect, inv_w, inv_h, faceTint(tile.type, 1.0f));
+
+                bool topVisible = (ly == 0) || (m_tiles[(ly - 1) * SIZE + lx].type == TileType::Air);
+                bool rightVisible = (lx == SIZE - 1) || (m_tiles[ly * SIZE + (lx + 1)].type == TileType::Air);
+
+                if (topVisible)
+                {
+                    appendQuad(vertices, backTL, backTR, frontTL, frontTR,
+                               tile.uv_rect, inv_w, inv_h, faceTint(tile.type, 1.12f));
+                }
+                if (rightVisible)
+                {
+                    appendQuad(vertices, frontTR, backTR, frontBR, backBR,
+                               tile.uv_rect, inv_w, inv_h, faceTint(tile.type, 0.72f));
+                }
             }
         }
 
@@ -137,10 +235,12 @@ namespace engine::world
             return false;
 
         std::vector<float> vertices;
-        vertices.reserve(SIZE * SIZE * 6 * 4);
+        vertices.reserve(SIZE * SIZE * 18 * 8);
 
         float inv_w = 1.0f / texture_size.x;
         float inv_h = 1.0f / texture_size.y;
+        float depthX = tileSize.x * kPseudoDepthX;
+        float depthY = tileSize.y * kPseudoDepthY;
 
         for (int ly = 0; ly < SIZE; ++ly)
         {
@@ -155,18 +255,31 @@ namespace engine::world
                 float x1 = x0 + tileSize.x;
                 float y1 = y0 + tileSize.y;
 
-                float u0 = tile.uv_rect.x * inv_w;
-                float v0 = tile.uv_rect.y * inv_h;
-                float u1 = u0 + tile.uv_rect.z * inv_w;
-                float v1 = v0 + tile.uv_rect.w * inv_h;
+                glm::vec2 frontTL{x0, y0};
+                glm::vec2 frontTR{x1, y0};
+                glm::vec2 frontBL{x0, y1};
+                glm::vec2 frontBR{x1, y1};
+                glm::vec2 backTL{x0 - depthX, y0 - depthY};
+                glm::vec2 backTR{x1 - depthX, y0 - depthY};
+                glm::vec2 backBL{x0 - depthX, y1 - depthY};
+                glm::vec2 backBR{x1 - depthX, y1 - depthY};
 
-                // push_back \u6bcf\u4e2a float \u907f\u514d initializer_list \u4e34\u65f6\u5bf9\u8c61\u5f00\u9500
-                vertices.push_back(x0); vertices.push_back(y0); vertices.push_back(u0); vertices.push_back(v0);
-                vertices.push_back(x1); vertices.push_back(y0); vertices.push_back(u1); vertices.push_back(v0);
-                vertices.push_back(x0); vertices.push_back(y1); vertices.push_back(u0); vertices.push_back(v1);
-                vertices.push_back(x1); vertices.push_back(y0); vertices.push_back(u1); vertices.push_back(v0);
-                vertices.push_back(x1); vertices.push_back(y1); vertices.push_back(u1); vertices.push_back(v1);
-                vertices.push_back(x0); vertices.push_back(y1); vertices.push_back(u0); vertices.push_back(v1);
+                appendQuadGL(vertices, frontTL, frontTR, frontBL, frontBR,
+                             tile.uv_rect, inv_w, inv_h, faceTint(tile.type, 1.0f));
+
+                bool topVisible = (ly == 0) || (m_tiles[(ly - 1) * SIZE + lx].type == TileType::Air);
+                bool rightVisible = (lx == SIZE - 1) || (m_tiles[ly * SIZE + (lx + 1)].type == TileType::Air);
+
+                if (topVisible)
+                {
+                    appendQuadGL(vertices, backTL, backTR, frontTL, frontTR,
+                                 tile.uv_rect, inv_w, inv_h, faceTint(tile.type, 1.12f));
+                }
+                if (rightVisible)
+                {
+                    appendQuadGL(vertices, frontTR, backTR, frontBR, backBR,
+                                 tile.uv_rect, inv_w, inv_h, faceTint(tile.type, 0.72f));
+                }
             }
         }
 

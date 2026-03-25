@@ -1290,6 +1290,7 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/menu_scene.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../skill/star_skill.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../component/attribute_component.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../component/../../engine/component/component.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/voxel_scene.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/core/context.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/scene/scene_manager.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/input/input_manager.h \

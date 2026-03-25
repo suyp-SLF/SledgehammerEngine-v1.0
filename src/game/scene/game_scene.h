@@ -170,6 +170,7 @@ namespace game::scene
         void renderWeaponBar();
         void renderDropItems();
         void renderPlayerStateTag();
+        void renderActorGroundShadows();
         void syncPlayerPresentation();
         void renderPerformanceOverlay() const;
         void renderCommandTerminal();

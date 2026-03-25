@@ -6,10 +6,18 @@ namespace engine::render
     class Camera final
     {
     private:
+        enum class ProjectionMode
+        {
+            Flat2D,
+            Pseudo3D,
+        };
+
         float _zoom = 1; // 缩放比例
         glm::vec2 _viewport_size;
         glm::vec2 _position;                               // 左上角坐标
         std::optional<engine::utils::FRect> _limit_bounds; // 限制范围
+        ProjectionMode _projection_mode = ProjectionMode::Pseudo3D;
+        float _pseudo3d_vertical_scale = 0.90f;
 
         glm::vec2* _follow_target = nullptr; // 跟随目标
         float _follow_smoothness = 5.0f; // 跟随平滑度
@@ -49,6 +57,8 @@ namespace engine::render
         void setPosition(const glm::vec2 &position);
         void setLimitBounds(const std::optional<engine::utils::FRect> &limit_bounds);
         void setZoom(float zoom);
+        void setPseudo3DEnabled(bool enabled);
+        bool isPseudo3DEnabled() const { return _projection_mode == ProjectionMode::Pseudo3D; }
 
         const glm::vec2 &getPosition() const;
         std::optional<engine::utils::FRect> getLimitBounds() const; // 获取限制范围

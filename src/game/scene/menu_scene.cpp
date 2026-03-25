@@ -2,6 +2,7 @@
 #include "ship_scene.h"
 #include "route_select_scene.h"
 #include "game_scene.h"
+#include "voxel_scene.h"
 #include "../../engine/core/context.h"
 #include "../../engine/scene/scene_manager.h"
 #include "../../engine/input/input_manager.h"
@@ -164,8 +165,8 @@ namespace game::scene
 
     void MenuScene::startGame()
     {
-        spdlog::info("开始游戏 → 飞船场景");
-        auto scene = std::make_unique<ShipScene>("ShipScene", _context, _scene_manager);
+        spdlog::info("开始游戏 → 体素 3D 场景");
+        auto scene = std::make_unique<VoxelScene>("VoxelScene", _context, _scene_manager);
         _scene_manager.requestReplaceScene(std::move(scene));
     }
 

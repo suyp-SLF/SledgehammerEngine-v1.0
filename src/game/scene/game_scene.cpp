@@ -41,6 +41,28 @@
 namespace game::scene
 {
 
+static void drawWorldShadow(engine::core::Context &context,
+                            const glm::vec2 &center,
+                            const glm::vec2 &size,
+                            float alpha)
+{
+    auto &renderer = context.getRenderer();
+    const auto &camera = context.getCamera();
+
+    renderer.drawRect(camera,
+                      center.x - size.x * 0.5f,
+                      center.y - size.y * 0.5f,
+                      size.x,
+                      size.y,
+                      glm::vec4(0.0f, 0.0f, 0.0f, alpha));
+    renderer.drawRect(camera,
+                      center.x - size.x * 0.35f,
+                      center.y - size.y * 0.38f,
+                      size.x * 0.70f,
+                      size.y * 0.76f,
+                      glm::vec4(0.0f, 0.0f, 0.0f, alpha * 0.55f));
+}
+
 // ────────────────────────────────────────────────────────────────────────────
 //  绘制星技球形图标 (file-scope helper)
 //  dl     : ImDrawList*
@@ -488,6 +510,7 @@ static void saveBoolSetting(const char* key, bool enabled)
         _context.getParallaxRenderSystem().renderAll(_context);
         _context.getSpriteRenderSystem().renderAll(_context);
         _context.getTilelayerRenderSystem().renderAll(_context);
+        renderActorGroundShadows();
 
         if (actor_manager)
         {
@@ -634,6 +657,34 @@ static void saveBoolSetting(const char* key, bool enabled)
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
+    }
+
+    void GameScene::renderActorGroundShadows()
+    {
+        engine::object::GameObject *shadowActor = getControlledActor();
+        if (shadowActor)
+        {
+            auto *transform = shadowActor->getComponent<engine::component::TransformComponent>();
+            auto *physics = shadowActor->getComponent<engine::component::PhysicsComponent>();
+            if (transform)
+            {
+                glm::vec2 size = m_isPlayerInMech ? glm::vec2(38.0f, 11.0f) : glm::vec2(24.0f, 7.0f);
+                float alpha = m_isPlayerInMech ? 0.20f : 0.17f;
+                if (physics)
+                {
+                    float airFactor = std::min(std::abs(physics->getVelocity().y) / 8.0f, 1.0f);
+                    alpha *= 1.0f - airFactor * 0.35f;
+                    size *= 1.0f - airFactor * 0.20f;
+                }
+
+                glm::vec2 shadowCenter = transform->getPosition()
+                    + glm::vec2(0.0f, m_isPlayerInMech ? 20.0f : 14.0f);
+                drawWorldShadow(_context, shadowCenter, size, alpha);
+            }
+        }
+
+        if (m_monsterManager)
+            m_monsterManager->renderGroundShadows(_context);
     }
 
     void GameScene::handleInput()
