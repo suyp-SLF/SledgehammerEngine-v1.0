@@ -1,3 +1,5 @@
 {
-    "language": "zh_CN"
+    "language": "zh_CN",
+    "show_active_chunk_highlights": false,
+    "show_skill_debug_overlay": false
 }

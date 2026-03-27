@@ -473,6 +473,7 @@ static void saveBoolSetting(const char* key, bool enabled)
         tickSkillVFX(delta_time);
         tickSkillProjectiles(delta_time);
         tickCombatEffects(delta_time);
+        updateSettingsParticles(delta_time);
 
         if (m_monsterManager)
             m_monsterManager->update(delta_time);
@@ -1394,6 +1395,69 @@ static void saveBoolSetting(const char* key, bool enabled)
         ImGui::End();
     }
 
+    void GameScene::updateSettingsParticles(float dt)
+    {
+        // 内存历史采样：每 0.5s 记录一次 RSS
+        m_rssHistoryTimer += dt;
+        if (m_rssHistoryTimer >= 0.5f)
+        {
+            m_rssHistoryTimer = 0.0f;
+            struct mach_task_basic_info ti;
+            mach_msg_type_number_t cnt = MACH_TASK_BASIC_INFO_COUNT;
+            float mb = 0.0f;
+            if (task_info(mach_task_self(), MACH_TASK_BASIC_INFO,
+                          reinterpret_cast<task_info_t>(&ti), &cnt) == KERN_SUCCESS)
+                mb = static_cast<float>(ti.resident_size) / (1024.0f * 1024.0f);
+            m_rssHistory[m_rssHistoryIdx] = mb;
+            m_rssHistoryIdx = (m_rssHistoryIdx + 1) % kMemHistoryLen;
+            if (mb > m_rssPeakMB) m_rssPeakMB = mb;
+        }
+
+        if (m_uiParticleLevel == UiParticleLevel::None) { m_uiDusts.clear(); return; }
+
+        // 目标粒子数量
+        int target = 0;
+        switch (m_uiParticleLevel)
+        {
+            case UiParticleLevel::Low:    target = 18;  break;
+            case UiParticleLevel::Medium: target = 50;  break;
+            case UiParticleLevel::High:   target = 120; break;
+            default: break;
+        }
+
+        // 生成不足时补充
+        while (static_cast<int>(m_uiDusts.size()) < target)
+        {
+            UiDust d;
+            d.x     = static_cast<float>(rand() % 1000) / 1000.0f;
+            d.y     = static_cast<float>(rand() % 1000) / 1000.0f;
+            d.vy    = 0.008f + static_cast<float>(rand() % 100) / 10000.0f;
+            d.alpha = 0.15f + static_cast<float>(rand() % 50) / 200.0f;
+            d.size  = 1.5f + static_cast<float>(rand() % 3);
+            // 蓝紫能量色系（DNF 风格）
+            int palette = rand() % 3;
+            if (palette == 0) { d.r = 80;  d.g = 140; d.b = 255; }  // 蓝
+            else if (palette == 1) { d.r = 160; d.g = 80;  d.b = 220; }  // 紫
+            else               { d.r = 200; d.g = 220; d.b = 255; }  // 浅蓝
+            m_uiDusts.push_back(d);
+        }
+        // 超出则截断
+        if (static_cast<int>(m_uiDusts.size()) > target)
+            m_uiDusts.resize(static_cast<size_t>(target));
+
+        // 每帧更新粒子位置
+        for (auto &d : m_uiDusts)
+        {
+            d.y -= d.vy * dt;           // 向上飘动
+            d.x += (static_cast<float>(rand() % 200 - 100) / 100000.0f);  // 微小横向漂移
+            if (d.y < -0.02f)           // 超出顶部则重生在底部
+            {
+                d.y = 1.02f;
+                d.x = static_cast<float>(rand() % 1000) / 1000.0f;
+            }
+        }
+    }
+
     void GameScene::renderSettingsPage()
     {
         if (!m_showSettings) return;
@@ -1408,67 +1472,141 @@ static void saveBoolSetting(const char* key, bool enabled)
 
         // 各模块估算
         size_t chunkCount  = chunk_manager ? chunk_manager->loadedChunkCount() : 0;
-        // 每个 chunk：16×16 tiles + GL VBO（约 16×16×6顶点×4浮点×4字节）
         size_t chunkMemEst = chunkCount * (sizeof(engine::world::Chunk) + 16 * 16 * 6 * 4 * sizeof(float));
-
         size_t actorCount  = actor_manager ? actor_manager->actorCount() : 0;
-        size_t actorMemEst = actorCount * 2048; // 粗估每个 Actor ~2 KB（组件+对象）
-
+        size_t actorMemEst = actorCount * 2048;
         size_t monsterCount  = m_monsterManager ? m_monsterManager->monsterCount() : 0;
         size_t monsterMemEst = monsterCount * 2048;
-
         size_t dropCount  = m_treeManager.getDrops().size();
         size_t dropMemEst = dropCount * 256;
 
-        ImGui::SetNextWindowSize({560.0f, 420.0f}, ImGuiCond_Appearing);
+        ImGui::SetNextWindowSize({600.0f, 560.0f}, ImGuiCond_Appearing);
         ImGui::SetNextWindowPos(
-            {ImGui::GetIO().DisplaySize.x * 0.5f - 280.0f,
-             ImGui::GetIO().DisplaySize.y * 0.5f - 210.0f},
+            {ImGui::GetIO().DisplaySize.x * 0.5f - 300.0f,
+             ImGui::GetIO().DisplaySize.y * 0.5f - 280.0f},
             ImGuiCond_Appearing);
-        if (!ImGui::Begin("设置  [按 ` 关闭]", &m_showSettings))
+        if (!ImGui::Begin("设置  [ESC / ` 关闭]", &m_showSettings))
         {
             ImGui::End();
             return;
         }
 
-        ImGui::SeparatorText("内存使用");
+        // ── 粒子效果背景（绘制到窗口前景层）──────────────────────────────
+        if (m_uiParticleLevel != UiParticleLevel::None && !m_uiDusts.empty())
+        {
+            ImVec2 wMin = ImGui::GetWindowPos();
+            ImVec2 wMax = { wMin.x + ImGui::GetWindowWidth(), wMin.y + ImGui::GetWindowHeight() };
+            ImDrawList *dl = ImGui::GetWindowDrawList();
+            for (const auto &d : m_uiDusts)
+            {
+                float px = wMin.x + d.x * (wMax.x - wMin.x);
+                float py = wMin.y + d.y * (wMax.y - wMin.y);
+                uint8_t a = static_cast<uint8_t>(d.alpha * 255.0f);
+                dl->AddRectFilled(ImVec2(px, py), ImVec2(px + d.size, py + d.size),
+                    IM_COL32(d.r, d.g, d.b, a));
+            }
+        }
 
-        // 总进程 RSS
         auto fmtMB = [](size_t bytes) -> float { return static_cast<float>(bytes) / (1024.0f * 1024.0f); };
+        float rssMB = fmtMB(rss);
 
-        ImGui::Text("进程总 RSS: %.2f MB", fmtMB(rss));
+        // ── 内存折线图 ────────────────────────────────────────────────────
+        ImGui::SeparatorText("内存使用");
+        ImGui::Text("进程 RSS: %.1f MB   峰值: %.1f MB", rssMB, m_rssPeakMB);
+        if (ImGui::Button("重置峰值")) m_rssPeakMB = rssMB;
+
+        // 图表区域
+        {
+            const ImVec2 graphSize{ImGui::GetContentRegionAvail().x, 80.0f};
+            ImDrawList *dl = ImGui::GetWindowDrawList();
+            ImVec2 p0 = ImGui::GetCursorScreenPos();
+            ImVec2 p1 = { p0.x + graphSize.x, p0.y + graphSize.y };
+
+            // 背景
+            dl->AddRectFilled(p0, p1, IM_COL32(12, 18, 30, 220), 4.0f);
+            dl->AddRect(p0, p1, IM_COL32(60, 100, 160, 180), 4.0f);
+
+            // 确定 Y 轴最大值：RSS 峰值上取整到 16 MB 对齐
+            float yMax = std::max(m_rssPeakMB * 1.15f, 32.0f);
+            yMax = std::ceil(yMax / 16.0f) * 16.0f;
+
+            // 水平网格线（4 条）
+            for (int gi = 1; gi < 4; ++gi)
+            {
+                float gy = p0.y + graphSize.y * (1.0f - static_cast<float>(gi) / 4.0f);
+                dl->AddLine(ImVec2(p0.x, gy), ImVec2(p1.x, gy), IM_COL32(50, 80, 120, 80));
+                float label = yMax * static_cast<float>(gi) / 4.0f;
+                char buf[16]; snprintf(buf, sizeof(buf), "%.0f", label);
+                dl->AddText(ImVec2(p0.x + 3, gy - 10), IM_COL32(120, 160, 200, 160), buf);
+            }
+
+            // 折线
+            int n = kMemHistoryLen;
+            for (int i = 0; i < n - 1; ++i)
+            {
+                int ia = (m_rssHistoryIdx + i)     % n;
+                int ib = (m_rssHistoryIdx + i + 1) % n;
+                float va = m_rssHistory[ia] / yMax;
+                float vb = m_rssHistory[ib] / yMax;
+                float x0 = p0.x + graphSize.x * static_cast<float>(i)     / static_cast<float>(n - 1);
+                float x1 = p0.x + graphSize.x * static_cast<float>(i + 1) / static_cast<float>(n - 1);
+                float y0g = p1.y - graphSize.y * glm::clamp(va, 0.0f, 1.0f);
+                float y1g = p1.y - graphSize.y * glm::clamp(vb, 0.0f, 1.0f);
+
+                // 颜色随使用率变化：绿→黄→红
+                float ratio = glm::clamp(vb, 0.0f, 1.0f);
+                uint8_t cr = static_cast<uint8_t>(glm::mix(40.0f,  255.0f, ratio));
+                uint8_t cg = static_cast<uint8_t>(glm::mix(220.0f, 80.0f,  ratio));
+                dl->AddLine(ImVec2(x0, y0g), ImVec2(x1, y1g), IM_COL32(cr, cg, 60, 220), 1.5f);
+
+                // 填充区域（半透明）
+                float yFloor = p1.y;
+                ImVec2 quad[4] = { {x0,y0g},{x1,y1g},{x1,yFloor},{x0,yFloor} };
+                dl->AddConvexPolyFilled(quad, 4, IM_COL32(cr, cg, 60, 35));
+            }
+
+            // 当前点高亮圆点
+            {
+                int ic = (m_rssHistoryIdx + n - 1) % n;
+                float vc = m_rssHistory[ic] / yMax;
+                float xc = p1.x - 1.0f;
+                float yc = p1.y - graphSize.y * glm::clamp(vc, 0.0f, 1.0f);
+                dl->AddCircleFilled(ImVec2(xc, yc), 3.5f, IM_COL32(255, 240, 100, 220));
+            }
+
+            // "MB" y轴标签
+            dl->AddText(ImVec2(p0.x + 3, p0.y + 2), IM_COL32(120, 160, 200, 180), "MB");
+
+            ImGui::Dummy(graphSize);  // 占位推进光标
+        }
+
         ImGui::Spacing();
-
         if (ImGui::BeginTable("##mem_table", 3,
                               ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
                               ImGuiTableFlags_SizingFixedFit))
         {
-            ImGui::TableSetupColumn("模块",   ImGuiTableColumnFlags_WidthStretch);
-            ImGui::TableSetupColumn("数量",   ImGuiTableColumnFlags_WidthFixed, 80.0f);
-            ImGui::TableSetupColumn("估算内存", ImGuiTableColumnFlags_WidthFixed, 110.0f);
+            ImGui::TableSetupColumn("模块",     ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("数量",     ImGuiTableColumnFlags_WidthFixed, 60.0f);
+            ImGui::TableSetupColumn("估算内存", ImGuiTableColumnFlags_WidthFixed, 100.0f);
             ImGui::TableHeadersRow();
 
             auto row = [&](const char *name, size_t cnt, size_t mem) {
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted(name);
                 ImGui::TableSetColumnIndex(1); ImGui::Text("%zu", cnt);
-                ImGui::TableSetColumnIndex(2); ImGui::Text("%.3f MB", fmtMB(mem));
+                ImGui::TableSetColumnIndex(2); ImGui::Text("%.2f MB", fmtMB(mem));
             };
-
             row("区块 (Chunk)",       chunkCount,   chunkMemEst);
             row("Actor",              actorCount,   actorMemEst);
             row("怪物 (Monster)",     monsterCount, monsterMemEst);
             row("掉落物 (Drop Item)", dropCount,    dropMemEst);
-
             ImGui::EndTable();
         }
-
-        ImGui::Spacing();
         ImGui::TextDisabled("* 模块内存为估算值，总 RSS 为实际物理内存占用。");
 
+        // ── 图形设置 ───────────────────────────────────────────────────────
         ImGui::SeparatorText("图形设置");
 
-        // 相机缩放控制
         if (ImGui::SliderFloat("相机缩放", &m_zoomSliderValue, 0.5f, 8.0f))
             _context.getCamera().setZoom(m_zoomSliderValue);
         ImGui::SameLine();
@@ -1478,19 +1616,30 @@ static void saveBoolSetting(const char* key, bool enabled)
             _context.getCamera().setZoom(2.5f);
         }
 
-        if (ImGui::Checkbox("显示帧率", &m_showFpsOverlay))
+        // 粒子效果档位
         {
-            // 实时生效，无需额外操作
-        }
-        if (ImGui::Checkbox("显示技能调试", &m_showSkillDebugOverlay))
-        {
-            saveBoolSetting("show_skill_debug_overlay", m_showSkillDebugOverlay);
-        }
-        if (ImGui::Checkbox("高亮活跃地形块", &m_showActiveChunkHighlights))
-        {
-            saveBoolSetting("show_active_chunk_highlights", m_showActiveChunkHighlights);
+            const char* levelLabels[] = { "无粒子", "少量", "中等", "大量" };
+            int lvl = static_cast<int>(m_uiParticleLevel);
+            ImGui::Text("界面粒子效果：");
+            ImGui::SameLine();
+            for (int i = 0; i < 4; ++i)
+            {
+                bool sel = (lvl == i);
+                if (sel) ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 0.55f, 1.0f, 1.0f));
+                if (ImGui::Button(levelLabels[i]))
+                    m_uiParticleLevel = static_cast<UiParticleLevel>(i);
+                if (sel) ImGui::PopStyleColor();
+                if (i < 3) ImGui::SameLine();
+            }
         }
 
+        if (ImGui::Checkbox("显示帧率", &m_showFpsOverlay)) {}
+        if (ImGui::Checkbox("显示技能调试", &m_showSkillDebugOverlay))
+            saveBoolSetting("show_skill_debug_overlay", m_showSkillDebugOverlay);
+        if (ImGui::Checkbox("高亮活跃地形块", &m_showActiveChunkHighlights))
+            saveBoolSetting("show_active_chunk_highlights", m_showActiveChunkHighlights);
+
+        // ── 天气控制 ───────────────────────────────────────────────────────
         ImGui::SeparatorText("天气控制");
         ImGui::Text("星球: %s  %02d:%02d %s  日照: %.0f%%",
             game::route::RouteData::planetName(m_routeData.selectedPlanet),

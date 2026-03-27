@@ -55,6 +55,27 @@ namespace game::scene
 
         // 缩放滑块
         float m_zoomSliderValue = 9.0f;   // DNF 默认缩放
+
+        // ── 设置界面：内存历史折线图 ──────────────────────────────────────────
+        static constexpr int kMemHistoryLen = 128;   // 环形缓冲长度（帧/采样点）
+        std::array<float, kMemHistoryLen> m_rssHistory{};   // RSS（MB）历史
+        int   m_rssHistoryIdx   = 0;         // 下一写入位置
+        float m_rssHistoryTimer = 0.0f;      // 距上次采样经过秒数
+        float m_rssPeakMB       = 0.0f;      // 历史峰值
+
+        // ── 设置界面：粒子效果档位 ────────────────────────────────────────────
+        enum class UiParticleLevel { None = 0, Low, Medium, High };
+        UiParticleLevel m_uiParticleLevel = UiParticleLevel::Low;
+
+        // 设置界面背景漂浮尘埃粒子
+        struct UiDust {
+            float x, y;           // 屏幕归一化坐标 [0,1]
+            float vy;             // 上升速度（归一化/秒）
+            float alpha;          // 当前透明度
+            float size;           // 像素大小
+            uint8_t r, g, b;      // 颜色
+        };
+        std::vector<UiDust> m_uiDusts;
         glm::vec2 m_lastChunkUpdatePos = {-99999.0f, -99999.0f};
         glm::vec2 m_lastMouseLogicalPos = {0.0f, 0.0f};
         glm::vec2 m_lastMouseWorldPos = {0.0f, 0.0f};
@@ -175,6 +196,7 @@ namespace game::scene
         void renderPerformanceOverlay() const;
         void renderCommandTerminal();
         void renderSettingsPage();
+        void updateSettingsParticles(float dt);  // 设置界面粒子更新（每帧调用）
         void renderMechPrompt();
         void renderRouteHUD();    // 左下角路线 HUD
         void renderSettlementUI(); // 撤离结算界面
