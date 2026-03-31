@@ -40,8 +40,10 @@
 #include <SDL3_mixer/SDL_mixer.h>
 #include <algorithm>
 #include <cctype>
+#include <cmath>
 #include <cstring>
 #include <fstream>
+#include <limits>
 #include <nlohmann/json.hpp>
 #include <unordered_set>
 #include <mach/mach.h>
@@ -61,6 +63,68 @@ struct InventoryDragSlot
     int owner = 0;
     int index = 0;
 };
+
+struct GroundActorRecord
+{
+    std::string name;
+    std::string texture;
+    glm::vec2 position = {0.0f, 0.0f};
+    glm::vec2 scale = {1.0f, 1.0f};
+    glm::vec2 colliderHalf = {48.0f, 10.0f};
+    float rotation = 0.0f;
+    bool usePhysics = true;
+};
+
+static glm::vec2 readJsonVec2(const nlohmann::json& json, const char* key, const glm::vec2& fallback)
+{
+    if (!json.contains(key) || !json[key].is_object())
+        return fallback;
+
+    const auto& node = json[key];
+    return {
+        node.value("x", fallback.x),
+        node.value("y", fallback.y)
+    };
+}
+
+static nlohmann::json writeJsonVec2(const glm::vec2& value)
+{
+    return nlohmann::json{
+        {"x", value.x},
+        {"y", value.y}
+    };
+}
+
+static GroundActorRecord readGroundActorRecord(const nlohmann::json& json)
+{
+    GroundActorRecord record;
+    record.name = json.value("name", std::string{"ground_platform"});
+    record.texture = json.value("texture", std::string{"assets/textures/Props/platform-long.png"});
+    record.position = readJsonVec2(json, "position", {0.0f, 96.0f});
+    record.scale = readJsonVec2(json, "scale", {1.0f, 1.0f});
+    record.colliderHalf = readJsonVec2(json, "collider_half", {48.0f, 10.0f});
+    record.rotation = json.value("rotation", 0.0f);
+    record.usePhysics = json.value("use_physics", true);
+    return record;
+}
+
+static nlohmann::json writeGroundActorRecord(const GroundActorRecord& record)
+{
+    return nlohmann::json{
+        {"name", record.name},
+        {"texture", record.texture},
+        {"position", writeJsonVec2(record.position)},
+        {"scale", writeJsonVec2(record.scale)},
+        {"collider_half", writeJsonVec2(record.colliderHalf)},
+        {"rotation", record.rotation},
+        {"use_physics", record.usePhysics}
+    };
+}
+
+static bool rectIntersects(const glm::vec4& a, const glm::vec4& b)
+{
+    return !(a.z < b.x || b.z < a.x || a.w < b.y || b.w < a.y);
+}
 
 static const char* inventoryOwnerLabel(InventoryOwner owner)
 {
@@ -472,6 +536,189 @@ static void saveFloatSetting(const char* key, float value)
     file << j.dump(4);
 }
 
+bool GameScene::isGroundActor(const engine::object::GameObject* actor) const
+{
+    return actor && actor->getTag() == "Ground";
+}
+
+void GameScene::pruneGroundSelection()
+{
+    if (!actor_manager)
+    {
+        m_groundSelection.clear();
+        return;
+    }
+
+    std::unordered_set<const engine::object::GameObject*> validActors;
+    for (const auto& holder : actor_manager->getActors())
+    {
+        const auto* actor = holder.get();
+        if (!isGroundActor(actor) || actor->isNeedRemove())
+            continue;
+        validActors.insert(actor);
+    }
+
+    for (auto it = m_groundSelection.begin(); it != m_groundSelection.end();)
+    {
+        if (!validActors.contains(*it))
+            it = m_groundSelection.erase(it);
+        else
+            ++it;
+    }
+
+    for (auto it = m_groundColliderHalfByActor.begin(); it != m_groundColliderHalfByActor.end();)
+    {
+        if (!validActors.contains(it->first))
+            it = m_groundColliderHalfByActor.erase(it);
+        else
+            ++it;
+    }
+}
+
+void GameScene::clearPersistedGroundActors()
+{
+    if (!actor_manager)
+        return;
+
+    for (const auto& holder : actor_manager->getActors())
+    {
+        auto* actor = holder.get();
+        if (isGroundActor(actor))
+            actor->setNeedRemove(true);
+    }
+
+    m_groundSelection.clear();
+    m_groundColliderHalfByActor.clear();
+    m_selectedActorIndex = -1;
+    actor_manager->update(0.0f);
+}
+
+void GameScene::loadGroundActorsFromConfig(bool clearExisting)
+{
+    if (!actor_manager)
+        return;
+
+    if (clearExisting)
+        clearPersistedGroundActors();
+
+    const nlohmann::json config = loadConfigJsonObject();
+    if (!config.contains("editor") || !config["editor"].is_object())
+        return;
+
+    const auto& editor = config["editor"];
+    if (!editor.contains("ground_actors") || !editor["ground_actors"].is_array())
+        return;
+
+    for (const auto& entry : editor["ground_actors"])
+    {
+        const GroundActorRecord record = readGroundActorRecord(entry);
+
+        auto* ground = actor_manager->createActor(record.name.empty() ? "ground_platform" : record.name);
+        if (!ground)
+            continue;
+
+        ground->setTag("Ground");
+        auto* transform = ground->addComponent<engine::component::TransformComponent>(record.position, record.scale, record.rotation);
+        transform->setRotation(record.rotation);
+        ground->addComponent<engine::component::SpriteComponent>(record.texture, engine::utils::Alignment::CENTER);
+
+        if (record.usePhysics && physics_manager)
+        {
+            constexpr float kPixelsPerMeter = 32.0f;
+            const glm::vec2 bodyHalfMeters = {
+                std::max(1.0f, record.colliderHalf.x) / kPixelsPerMeter,
+                std::max(1.0f, record.colliderHalf.y) / kPixelsPerMeter
+            };
+            const b2BodyId bodyId = physics_manager->createStaticBody(
+                {record.position.x / kPixelsPerMeter, record.position.y / kPixelsPerMeter},
+                {bodyHalfMeters.x, bodyHalfMeters.y},
+                ground);
+            ground->addComponent<engine::component::PhysicsComponent>(bodyId, physics_manager.get());
+        }
+
+        m_groundColliderHalfByActor[ground] = record.colliderHalf;
+    }
+
+    pruneGroundSelection();
+    m_groundConfigDirty = false;
+}
+
+void GameScene::saveGroundActorsToConfig()
+{
+    if (!actor_manager)
+        return;
+
+    nlohmann::json config = loadConfigJsonObject();
+    if (!config.is_object())
+        config = nlohmann::json::object();
+    if (!config.contains("editor") || !config["editor"].is_object())
+        config["editor"] = nlohmann::json::object();
+
+    auto records = nlohmann::json::array();
+    for (const auto& holder : actor_manager->getActors())
+    {
+        const auto* actor = holder.get();
+        if (!isGroundActor(actor) || actor->isNeedRemove())
+            continue;
+
+        const auto* transform = actor->getComponent<engine::component::TransformComponent>();
+        const auto* sprite = actor->getComponent<engine::component::SpriteComponent>();
+        if (!transform || !sprite)
+            continue;
+
+        GroundActorRecord record;
+        record.name = actor->getName();
+        record.texture = sprite->getTextureId();
+        record.position = transform->getPosition();
+        record.scale = transform->getScale();
+        record.rotation = transform->getRotation();
+        record.usePhysics = actor->hasComponent<engine::component::PhysicsComponent>();
+        record.colliderHalf = m_groundColliderHalfByActor.contains(actor)
+            ? m_groundColliderHalfByActor.at(actor)
+            : glm::vec2{
+                std::max(8.0f, sprite->getSpriteSize().x * std::abs(record.scale.x) * 0.5f),
+                std::max(8.0f, sprite->getSpriteSize().y * std::abs(record.scale.y) * 0.5f)
+            };
+
+        records.push_back(writeGroundActorRecord(record));
+    }
+
+    config["editor"]["ground_actors"] = std::move(records);
+
+    std::ofstream file("assets/config.json");
+    if (!file.is_open())
+        return;
+    file << config.dump(4);
+    m_groundConfigDirty = false;
+}
+
+void GameScene::snapSelectedGroundActorsToGrid()
+{
+    if (!actor_manager)
+        return;
+
+    pruneGroundSelection();
+    for (const auto* actor : m_groundSelection)
+    {
+        if (!isGroundActor(actor))
+            continue;
+
+        auto* mutableActor = const_cast<engine::object::GameObject*>(actor);
+        auto* transform = mutableActor->getComponent<engine::component::TransformComponent>();
+        if (!transform)
+            continue;
+
+        const glm::vec2 snappedPos = snapGroundMakerPosition(transform->getPosition());
+        transform->setPosition(snappedPos);
+
+        if (auto* physics = mutableActor->getComponent<engine::component::PhysicsComponent>())
+            physics->setWorldPosition(snappedPos);
+    }
+
+    if (!m_groundSelection.empty())
+        m_groundConfigDirty = true;
+}
+
     GameScene::GameScene(const std::string &name,
                          engine::core::Context &context,
                          engine::scene::SceneManager &sceneManager,
@@ -537,6 +784,7 @@ static void saveFloatSetting(const char* key, float value)
         setupGroundTileScene(config);
 
         actor_manager = std::make_unique<engine::actor::ActorManager>(_context);
+    loadGroundActorsFromConfig(false);
         createPlayer();
         // 专注地面玩法：暂时禁用天空/建筑背景层。
 
@@ -1424,6 +1672,127 @@ static void saveFloatSetting(const char* key, float value)
                     IM_COL32(255, 240, 100, static_cast<int>(100 + 80 * pulse)), 1.2f);
             }
 
+            pruneGroundSelection();
+
+            if (!m_groundSelection.empty())
+            {
+                auto* fg = ImGui::GetForegroundDrawList();
+                const auto& cam = _context.getCamera();
+                for (const auto* actor : m_groundSelection)
+                {
+                    if (!isGroundActor(actor) || actor->isNeedRemove())
+                        continue;
+
+                    const auto* transform = actor->getComponent<engine::component::TransformComponent>();
+                    const auto* sprite = actor->getComponent<engine::component::SpriteComponent>();
+                    if (!transform || !sprite)
+                        continue;
+
+                    const glm::vec2 scale = transform->getScale();
+                    const glm::vec2 spriteSize = sprite->getSpriteSize();
+                    const glm::vec2 half = {
+                        std::max(10.0f, spriteSize.x * std::abs(scale.x) * 0.5f),
+                        std::max(10.0f, spriteSize.y * std::abs(scale.y) * 0.5f)
+                    };
+                    const glm::vec2 center = transform->getPosition();
+                    const ImVec2 sTL = logicalToImGuiScreen(_context, cam.worldToScreen({center.x - half.x, center.y - half.y}));
+                    const ImVec2 sBR = logicalToImGuiScreen(_context, cam.worldToScreen({center.x + half.x, center.y + half.y}));
+                    fg->AddRect(sTL, sBR, IM_COL32(80, 220, 255, 220), 3.0f, 0, 2.0f);
+                }
+            }
+
+            if (m_groundMakerPlaceMode && m_groundMakerDragPlacing)
+            {
+                auto* fg = ImGui::GetForegroundDrawList();
+                const auto& cam = _context.getCamera();
+                const glm::vec2 dragEnd = snapGroundMakerPosition(m_lastHoveredTileCenter);
+                const glm::vec2 center = snapGroundMakerPosition((m_groundMakerDragStartWorld + dragEnd) * 0.5f);
+                const float widthPx = groundMakerWidthFromCells();
+                const float halfWidth = widthPx * 0.5f;
+                const float halfHeight = std::max(8.0f, m_groundMakerBodyHalfPx.y * m_groundMakerScale.y);
+                const float angleRad = m_groundMakerRotation * 0.01745329252f;
+                const float cosA = std::cos(angleRad);
+                const float sinA = std::sin(angleRad);
+                const glm::vec2 corners[4] = {
+                    {-halfWidth, -halfHeight},
+                    { halfWidth, -halfHeight},
+                    { halfWidth,  halfHeight},
+                    {-halfWidth,  halfHeight}
+                };
+                ImVec2 quad[4];
+                float minX = std::numeric_limits<float>::max();
+                float minY = std::numeric_limits<float>::max();
+                for (int i = 0; i < 4; ++i)
+                {
+                    const glm::vec2 rotated = {
+                        corners[i].x * cosA - corners[i].y * sinA,
+                        corners[i].x * sinA + corners[i].y * cosA
+                    };
+                    quad[i] = logicalToImGuiScreen(_context, cam.worldToScreen(center + rotated));
+                    minX = std::min(minX, quad[i].x);
+                    minY = std::min(minY, quad[i].y);
+                }
+
+                fg->AddConvexPolyFilled(quad, 4, IM_COL32(255, 220, 90, 34));
+                fg->AddPolyline(quad, 4, IM_COL32(255, 220, 90, 220), ImDrawFlags_Closed, 2.0f);
+                fg->AddText(ImVec2(minX, minY - 18.0f), IM_COL32(255, 235, 150, 230), "地面放置预览");
+            }
+
+            if (m_groundBoxSelecting)
+            {
+                auto* fg = ImGui::GetForegroundDrawList();
+                const auto& cam = _context.getCamera();
+                const glm::vec2 minWorld = {
+                    std::min(m_groundBoxSelectStartWorld.x, m_groundBoxSelectEndWorld.x),
+                    std::min(m_groundBoxSelectStartWorld.y, m_groundBoxSelectEndWorld.y)
+                };
+                const glm::vec2 maxWorld = {
+                    std::max(m_groundBoxSelectStartWorld.x, m_groundBoxSelectEndWorld.x),
+                    std::max(m_groundBoxSelectStartWorld.y, m_groundBoxSelectEndWorld.y)
+                };
+                const ImVec2 sTL = logicalToImGuiScreen(_context, cam.worldToScreen(minWorld));
+                const ImVec2 sBR = logicalToImGuiScreen(_context, cam.worldToScreen(maxWorld));
+                fg->AddRectFilled(sTL, sBR, IM_COL32(90, 180, 255, 26), 2.0f);
+                fg->AddRect(sTL, sBR, IM_COL32(90, 180, 255, 220), 2.0f, 0, 1.6f);
+            }
+
+            if (m_groundMakerShowGrid && chunk_manager)
+            {
+                auto* fg = ImGui::GetForegroundDrawList();
+                const auto& cam = _context.getCamera();
+                const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+                const glm::vec2 worldMin = cam.screenToWorld({0.0f, 0.0f});
+                const glm::vec2 worldMax = cam.screenToWorld({displaySize.x, displaySize.y});
+                const float gridX = static_cast<float>(std::max(1, m_groundMakerGridSize.x));
+                const float gridY = static_cast<float>(std::max(1, m_groundMakerGridSize.y));
+                const float minX = std::min(worldMin.x, worldMax.x);
+                const float maxX = std::max(worldMin.x, worldMax.x);
+                const float minY = std::min(worldMin.y, worldMax.y);
+                const float maxY = std::max(worldMin.y, worldMax.y);
+
+                if (m_groundMakerSnapX)
+                {
+                    const float startX = std::floor(minX / gridX) * gridX;
+                    for (float x = startX; x <= maxX + gridX; x += gridX)
+                    {
+                        const ImVec2 s0 = logicalToImGuiScreen(_context, cam.worldToScreen({x, minY}));
+                        const ImVec2 s1 = logicalToImGuiScreen(_context, cam.worldToScreen({x, maxY}));
+                        fg->AddLine(s0, s1, IM_COL32(120, 190, 255, 44), 1.0f);
+                    }
+                }
+
+                if (m_groundMakerSnapY)
+                {
+                    const float startY = std::floor(minY / gridY) * gridY;
+                    for (float y = startY; y <= maxY + gridY; y += gridY)
+                    {
+                        const ImVec2 s0 = logicalToImGuiScreen(_context, cam.worldToScreen({minX, y}));
+                        const ImVec2 s1 = logicalToImGuiScreen(_context, cam.worldToScreen({maxX, y}));
+                        fg->AddLine(s0, s1, IM_COL32(120, 190, 255, 44), 1.0f);
+                    }
+                }
+            }
+
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
@@ -1619,9 +1988,110 @@ static void saveFloatSetting(const char* key, float value)
             + glm::vec2(chunk_manager->getTileSize()) * 0.5f;
         m_lastHoveredTileCenter = hoveredTileCenter;
 
+        const Uint32 mouseButtons = SDL_GetMouseState(nullptr, nullptr);
+        const bool leftMouseDown = (mouseButtons & SDL_BUTTON_LMASK) != 0;
+        const bool rightMouseDown = (mouseButtons & SDL_BUTTON_RMASK) != 0;
+        const bool* keys = SDL_GetKeyboardState(nullptr);
+        const bool shiftDown = (keys[SDL_SCANCODE_LSHIFT] || keys[SDL_SCANCODE_RSHIFT]) != 0;
+
+        if (!m_gameplayRunning && !m_showMapEditor && !m_groundMakerPlaceMode && !ImGui::GetIO().WantCaptureMouse)
+        {
+            if (shiftDown && leftMouseDown && !m_groundBoxSelecting)
+            {
+                m_groundBoxSelecting = true;
+                m_groundBoxSelectStartWorld = worldPos;
+                m_groundBoxSelectEndWorld = worldPos;
+            }
+            else if (m_groundBoxSelecting && leftMouseDown)
+            {
+                m_groundBoxSelectEndWorld = worldPos;
+            }
+            else if (m_groundBoxSelecting && !leftMouseDown)
+            {
+                m_groundBoxSelecting = false;
+                m_groundBoxSelectEndWorld = worldPos;
+                m_groundSelection.clear();
+                m_selectedActorIndex = -1;
+
+                const glm::vec4 selectRect = {
+                    std::min(m_groundBoxSelectStartWorld.x, m_groundBoxSelectEndWorld.x),
+                    std::min(m_groundBoxSelectStartWorld.y, m_groundBoxSelectEndWorld.y),
+                    std::max(m_groundBoxSelectStartWorld.x, m_groundBoxSelectEndWorld.x),
+                    std::max(m_groundBoxSelectStartWorld.y, m_groundBoxSelectEndWorld.y)
+                };
+
+                for (int index = 0; actor_manager && index < static_cast<int>(actor_manager->getActors().size()); ++index)
+                {
+                    const auto* actor = actor_manager->getActors()[static_cast<size_t>(index)].get();
+                    if (!isGroundActor(actor) || actor->isNeedRemove())
+                        continue;
+
+                    const auto* transform = actor->getComponent<engine::component::TransformComponent>();
+                    const auto* sprite = actor->getComponent<engine::component::SpriteComponent>();
+                    if (!transform || !sprite)
+                        continue;
+
+                    const glm::vec2 scale = transform->getScale();
+                    const glm::vec2 spriteSize = sprite->getSpriteSize();
+                    const glm::vec2 half = {
+                        std::max(10.0f, spriteSize.x * std::abs(scale.x) * 0.5f),
+                        std::max(10.0f, spriteSize.y * std::abs(scale.y) * 0.5f)
+                    };
+                    const glm::vec2 center = transform->getPosition();
+                    const glm::vec4 actorRect = {
+                        center.x - half.x,
+                        center.y - half.y,
+                        center.x + half.x,
+                        center.y + half.y
+                    };
+                    if (!rectIntersects(selectRect, actorRect))
+                        continue;
+
+                    m_groundSelection.insert(actor);
+                    if (m_selectedActorIndex < 0)
+                        m_selectedActorIndex = index;
+                }
+
+                if (m_groundSelection.empty())
+                    m_selectedActorIndex = -1;
+            }
+        }
+        else if (!leftMouseDown)
+        {
+            m_groundBoxSelecting = false;
+        }
+
+        if (m_groundMakerPlaceMode && !m_showMapEditor)
+        {
+            const glm::vec2 snappedHoveredCenter = snapGroundMakerPosition(hoveredTileCenter);
+            if (rightMouseDown && !m_groundMakerRightMouseWasDown)
+            {
+                m_groundMakerDragPlacing = true;
+                m_groundMakerDragStartWorld = snappedHoveredCenter;
+                m_groundMakerSpawnPos = snappedHoveredCenter;
+            }
+            else if (!rightMouseDown && m_groundMakerRightMouseWasDown && m_groundMakerDragPlacing)
+            {
+                const glm::vec2 dragEnd = snappedHoveredCenter;
+                const glm::vec2 delta = dragEnd - m_groundMakerDragStartWorld;
+                const float gridX = static_cast<float>(std::max(1, m_groundMakerGridSize.x));
+                const float baseWidthPx = m_groundMakerUseGridSnap ? gridX : 32.0f;
+                const float widthPx = snapGroundMakerWidth(std::max(baseWidthPx, std::abs(delta.x) + baseWidthPx));
+                m_groundMakerLengthCells = std::max(1, static_cast<int>(std::round(widthPx / gridX)));
+                m_groundMakerSpawnPos = snapGroundMakerPosition((m_groundMakerDragStartWorld + dragEnd) * 0.5f);
+                m_groundMakerBodyHalfPx.x = std::max(8.0f, widthPx * 0.5f);
+                createGroundActor();
+                m_groundMakerDragPlacing = false;
+            }
+        }
+        else
+        {
+            m_groundMakerDragPlacing = false;
+        }
+        m_groundMakerRightMouseWasDown = rightMouseDown;
+
         if (m_showMapEditor)
         {
-            const Uint32 mouseButtons = SDL_GetMouseState(nullptr, nullptr);
             const bool paintDown = (mouseButtons & SDL_BUTTON_LMASK) != 0;
             const bool eraseDown = (mouseButtons & SDL_BUTTON_RMASK) != 0;
 

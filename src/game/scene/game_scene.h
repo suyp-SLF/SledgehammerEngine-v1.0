@@ -22,6 +22,7 @@
 #include <array>
 #include <optional>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -167,7 +168,30 @@ namespace game::scene
         std::array<char, 96> m_hierarchyFilterBuffer{};
         std::array<char, 64> m_inspectorRenameBuffer{};
         std::array<char, 64> m_inspectorTagBuffer{};
+        std::array<char, 64> m_groundMakerNameBuffer{"ground_platform"};
         int m_inspectorRenameBufferActorIndex = -1;
+        glm::vec2 m_groundMakerSpawnPos = {0.0f, 96.0f};
+        glm::vec2 m_groundMakerScale = {1.0f, 1.0f};
+        glm::vec2 m_groundMakerBodyHalfPx = {48.0f, 10.0f};
+        glm::ivec2 m_groundMakerGridSize = {16, 16};
+        int m_groundMakerLengthCells = 6;
+        int m_groundMakerTextureIndex = 0;
+        float m_groundMakerRotation = 0.0f;
+        bool m_groundMakerUsePhysics = true;
+        bool m_groundMakerUseGridSnap = true;
+        bool m_groundMakerSnapX = true;
+        bool m_groundMakerSnapY = true;
+        bool m_groundMakerShowGrid = true;
+        bool m_groundMakerPlaceMode = false;
+        bool m_groundMakerDragPlacing = false;
+        bool m_groundMakerRightMouseWasDown = false;
+        glm::vec2 m_groundMakerDragStartWorld = {0.0f, 0.0f};
+        bool m_groundBoxSelecting = false;
+        bool m_groundConfigDirty = false;
+        glm::vec2 m_groundBoxSelectStartWorld = {0.0f, 0.0f};
+        glm::vec2 m_groundBoxSelectEndWorld = {0.0f, 0.0f};
+        std::unordered_map<const engine::object::GameObject*, glm::vec2> m_groundColliderHalfByActor;
+        std::unordered_set<const engine::object::GameObject*> m_groundSelection;
         std::unordered_set<const engine::object::GameObject*> m_hierarchyFavorites;
         bool m_devMode = false;         // 开发模式：显示地形/物理调试覆盖层
         engine::world::TileType m_mapEditorPaintTile = engine::world::TileType::Stone;
@@ -383,6 +407,16 @@ namespace game::scene
         void renderCommandTerminal();
         void renderSettingsPage();
         void renderMapEditor();
+        void createGroundActor();
+        glm::vec2 snapGroundMakerPosition(glm::vec2 worldPos) const;
+        float snapGroundMakerWidth(float widthPx) const;
+        float groundMakerWidthFromCells() const;
+        void loadGroundActorsFromConfig(bool clearExisting);
+        void saveGroundActorsToConfig();
+        void clearPersistedGroundActors();
+        void snapSelectedGroundActorsToGrid();
+        void pruneGroundSelection();
+        bool isGroundActor(const engine::object::GameObject* actor) const;
         void applyRuntimeGraphicsSettings();
         void setGameplayRunning(bool running);
         void capturePlaySnapshot();

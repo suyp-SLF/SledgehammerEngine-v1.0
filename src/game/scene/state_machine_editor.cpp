@@ -44,6 +44,58 @@ static void ensureTriggersMeta()
 
 static const char* kWindowNames[] = { "Locked", "ComboWindow", "Cancelable" };
 
+namespace
+{
+    constexpr int kDevThemeVarCount = 6;
+    constexpr int kDevThemeColorCount = 10;
+
+    void pushDevEditorTheme()
+    {
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(14.0f, 12.0f));
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 6.0f));
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8.0f, 8.0f));
+        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 8.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 6.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_GrabRounding, 6.0f);
+
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.07f, 0.09f, 0.12f, 0.96f));
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.10f, 0.12f, 0.16f, 0.92f));
+        ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.12f, 0.16f, 0.24f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.16f, 0.24f, 0.36f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.13f, 0.16f, 0.20f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.18f, 0.22f, 0.28f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.18f, 0.30f, 0.44f, 0.92f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.24f, 0.40f, 0.58f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.18f, 0.27f, 0.38f, 0.92f));
+        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.24f, 0.37f, 0.52f, 1.0f));
+    }
+
+    void popDevEditorTheme()
+    {
+        ImGui::PopStyleColor(kDevThemeColorCount);
+        ImGui::PopStyleVar(kDevThemeVarCount);
+    }
+
+    void drawDevSectionTitle(const char* title)
+    {
+        ImGui::SeparatorText(title);
+    }
+
+    void drawDevMetric(const char* label, const char* value)
+    {
+        ImGui::TextDisabled("%s", label);
+        ImGui::SameLine();
+        ImGui::TextUnformatted(value);
+    }
+
+    void drawDevMetric(const char* label, int value)
+    {
+        ImGui::TextDisabled("%s", label);
+        ImGui::SameLine();
+        ImGui::Text("%d", value);
+    }
+}
+
 using namespace game::statemachine;
 
 namespace game::scene {
@@ -73,7 +125,9 @@ void StateMachineEditor::render()
     if (!m_open) return;
     ensureTriggersMeta();  // 确保元数据已初始化
 
-    ImGui::SetNextWindowSize(ImVec2(980, 640), ImGuiCond_FirstUseEver);
+    pushDevEditorTheme();
+
+    ImGui::SetNextWindowSize(ImVec2(1080, 700), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowPos(ImVec2(60, 80), ImGuiCond_FirstUseEver);
     const ImGuiWindowFlags flags =
         ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse;
@@ -82,10 +136,11 @@ void StateMachineEditor::render()
     if (!ImGui::Begin("状态机编辑器", &keepOpen, flags))
     {
         ImGui::End();
+        popDevEditorTheme();
         if (!keepOpen) m_open = false;
         return;
     }
-    if (!keepOpen) { m_open = false; ImGui::End(); return; }
+    if (!keepOpen) { m_open = false; ImGui::End(); popDevEditorTheme(); return; }
 
     renderMenuBar();
 
@@ -93,14 +148,29 @@ void StateMachineEditor::render()
     {
         renderLauncher();
         ImGui::End();
+        popDevEditorTheme();
         return;
+    }
+
+    drawDevSectionTitle("状态机概览");
+    if (ImGui::BeginTable("##sme_overview", 4, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_NoSavedSettings))
+    {
+        ImGui::TableNextColumn();
+        drawDevMetric("角色", m_data.characterId.empty() ? "<未设置>" : m_data.characterId.c_str());
+        ImGui::TableNextColumn();
+        drawDevMetric("初始状态", m_data.initialState.empty() ? "---" : m_data.initialState.c_str());
+        ImGui::TableNextColumn();
+        drawDevMetric("状态数", static_cast<int>(m_data.states.size()));
+        ImGui::TableNextColumn();
+        drawDevMetric("文件", m_savePath.empty() ? "<未保存>" : m_savePath.c_str());
+        ImGui::EndTable();
     }
 
     // ── 主布局：左列 + 右列 ────────────────────────────────────────────────
     const float winH         = ImGui::GetContentRegionAvail().y;
-    const float timelineH    = 58.0f;
-    const float contentH     = winH - timelineH - 4.0f;
-    const float leftW        = 180.0f;
+    const float timelineH    = 78.0f;
+    const float contentH     = winH - timelineH - 8.0f;
+    const float leftW        = 220.0f;
 
     // 左：状态列表
     ImGui::BeginChild("##sme_left", ImVec2(leftW, contentH), true);
@@ -120,6 +190,7 @@ void StateMachineEditor::render()
     ImGui::EndChild();
 
     ImGui::End();
+    popDevEditorTheme();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -163,8 +234,12 @@ void StateMachineEditor::renderMenuBar()
     }
 
     // 顶部信息栏
-    ImGui::Text(" | 角色: %s | 初始状态: ",
-                m_data.characterId.empty() ? "<未设置>" : m_data.characterId.c_str());
+    ImGui::TextDisabled("角色");
+    ImGui::SameLine();
+    ImGui::TextUnformatted(m_data.characterId.empty() ? "<未设置>" : m_data.characterId.c_str());
+    ImGui::SameLine(0.0f, 18.0f);
+    ImGui::TextDisabled("初始状态");
+    ImGui::SameLine();
     ImGui::SetNextItemWidth(120.0f);
 
     // 初始状态下拉
@@ -191,13 +266,11 @@ void StateMachineEditor::renderMenuBar()
 // ─────────────────────────────────────────────────────────────────────────────
 void StateMachineEditor::renderLauncher()
 {
-    ImGui::Spacing();
-    ImGui::TextUnformatted("选择或创建一个状态机文件：");
-    ImGui::Separator();
-    ImGui::Spacing();
+    drawDevSectionTitle("项目选择");
+    ImGui::TextUnformatted("选择已有状态机，或在角色目录下创建一个新的状态机文件。");
 
     // 列表
-    const float listH = ImGui::GetContentRegionAvail().y - 60.0f;
+    const float listH = ImGui::GetContentRegionAvail().y - 88.0f;
     ImGui::BeginChild("##sme_launcher_list", ImVec2(0, listH), true);
     for (const auto& entry : m_smFiles)
     {
@@ -208,10 +281,10 @@ void StateMachineEditor::renderLauncher()
         ImGui::TextDisabled("（暂无 *.sm.json 文件）");
     ImGui::EndChild();
 
-    ImGui::Spacing();
-    if (ImGui::Button("刷新列表")) scanSmFiles();
+    drawDevSectionTitle("操作");
+    if (ImGui::Button("刷新列表", ImVec2(110.0f, 0.0f))) scanSmFiles();
     ImGui::SameLine();
-    if (ImGui::Button("新建...")) ImGui::OpenPopup("SME_NewFile");
+    if (ImGui::Button("新建状态机", ImVec2(132.0f, 0.0f))) ImGui::OpenPopup("SME_NewFile");
 
     // 新建弹窗
     if (ImGui::BeginPopup("SME_NewFile"))
@@ -238,11 +311,11 @@ void StateMachineEditor::renderLauncher()
 // ─────────────────────────────────────────────────────────────────────────────
 void StateMachineEditor::renderStateList(float listH)
 {
-    ImGui::TextUnformatted("状态列表");
-    ImGui::Separator();
+    drawDevSectionTitle("状态列表");
+    ImGui::TextDisabled("共 %d 个状态", static_cast<int>(m_data.states.size()));
 
     const float btnH  = 28.0f;
-    const float scrollH = listH - 80.0f;
+    const float scrollH = listH - 108.0f;
 
     ImGui::BeginChild("##sme_states", ImVec2(0, scrollH), false);
     for (auto& [name, node] : m_data.states)
@@ -256,17 +329,17 @@ void StateMachineEditor::renderStateList(float listH)
     }
     ImGui::EndChild();
 
-    ImGui::Separator();
+    drawDevSectionTitle("编辑");
 
     // 新建状态按钮
-    if (ImGui::Button("+ 新建", ImVec2(-1, btnH)))
+    if (ImGui::Button("+ 新建状态", ImVec2(-1, btnH)))
         ImGui::OpenPopup("SME_NewState");
 
     // 删除状态按钮
     const bool canDel = !m_selState.empty() &&
                         m_selState != "IDLE" && m_selState != "MOVE";
     if (!canDel) ImGui::BeginDisabled();
-    if (ImGui::Button("X 删除", ImVec2(-1, btnH)))
+    if (ImGui::Button("删除当前状态", ImVec2(-1, btnH)))
     {
         m_data.states.erase(m_selState);
         m_selState.clear();
@@ -317,10 +390,19 @@ void StateMachineEditor::renderStateDetails()
 
     StateNode& node = m_data.states.at(m_selState);
 
-    // 标题
-    ImGui::Text("当前状态: %s", m_selState.c_str());
-    ImGui::Separator();
-    ImGui::Spacing();
+    drawDevSectionTitle("当前状态");
+    if (ImGui::BeginTable("##sme_state_summary", 4, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_NoSavedSettings))
+    {
+        ImGui::TableNextColumn();
+        drawDevMetric("名称", m_selState.c_str());
+        ImGui::TableNextColumn();
+        drawDevMetric("动画", node.animationId.empty() ? "<未设置>" : node.animationId.c_str());
+        ImGui::TableNextColumn();
+        drawDevMetric("总帧数", node.totalFrames);
+        ImGui::TableNextColumn();
+        drawDevMetric("循环", node.loop ? "是" : "否");
+        ImGui::EndTable();
+    }
 
     if (!ImGui::BeginTabBar("##sme_tabs")) return;
 
@@ -644,8 +726,8 @@ void StateMachineEditor::renderTimeline()
     const StateNode& node = m_data.states.at(m_selState);
     const int totalFrames = std::max(1, node.totalFrames);
 
-    ImGui::TextUnformatted("帧区间预览:");
-    ImGui::SameLine();
+    drawDevSectionTitle("帧区间预览");
+    ImGui::TextDisabled("红: Locked  蓝: ComboWindow  绿: Cancelable");
 
     const ImVec2 origin   = ImGui::GetCursorScreenPos();
     const float  availW   = ImGui::GetContentRegionAvail().x - 4.0f;

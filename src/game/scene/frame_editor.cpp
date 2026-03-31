@@ -69,6 +69,44 @@ static const ImU32 kBoxBorder[3] = {
 };
 static const char* kBoxTypeNames[3] = { "受击盒 (Hurtbox)", "攻击盒 (Hitbox)", "推挤盒 (Bodybox)" };
 
+namespace
+{
+    constexpr int kDevThemeVarCount = 6;
+    constexpr int kDevThemeColorCount = 10;
+
+    void pushDevEditorTheme()
+    {
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(14.0f, 12.0f));
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 6.0f));
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8.0f, 8.0f));
+        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 8.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 6.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_GrabRounding, 6.0f);
+
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.07f, 0.09f, 0.12f, 0.96f));
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.10f, 0.12f, 0.16f, 0.92f));
+        ImGui::PushStyleColor(ImGuiCol_TitleBg, ImVec4(0.12f, 0.16f, 0.24f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(0.16f, 0.24f, 0.36f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.13f, 0.16f, 0.20f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.18f, 0.22f, 0.28f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.18f, 0.30f, 0.44f, 0.92f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.24f, 0.40f, 0.58f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.18f, 0.27f, 0.38f, 0.92f));
+        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.24f, 0.37f, 0.52f, 1.0f));
+    }
+
+    void popDevEditorTheme()
+    {
+        ImGui::PopStyleColor(kDevThemeColorCount);
+        ImGui::PopStyleVar(kDevThemeVarCount);
+    }
+
+    void drawDevSectionTitle(const char* title)
+    {
+        ImGui::SeparatorText(title);
+    }
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  公共入口
 // ─────────────────────────────────────────────────────────────────────────────
@@ -76,10 +114,13 @@ void FrameEditor::render(engine::resource::ResourceManager &resMgr)
 {
     if (!m_open) return;
 
+    pushDevEditorTheme();
+
     // ── 启动选择页 ────────────────────────────────────────────────────────
     if (m_showLauncher)
     {
         renderLauncher(resMgr);
+        popDevEditorTheme();
         return;
     }
 
@@ -103,6 +144,7 @@ void FrameEditor::render(engine::resource::ResourceManager &resMgr)
             ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoSavedSettings))
     {
         ImGui::End();
+        popDevEditorTheme();
         return;
     }
 
@@ -112,6 +154,24 @@ void FrameEditor::render(engine::resource::ResourceManager &resMgr)
 
     // ── 渲染各区域 ──────────────────────────────────────────────
     renderMenuBar(resMgr);
+
+    drawDevSectionTitle("项目概览");
+    if (ImGui::BeginTable("##fe_overview", 4, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_NoSavedSettings))
+    {
+        ImGui::TableNextColumn();
+        ImGui::TextDisabled("文件");
+        ImGui::TextUnformatted(m_savePath[0] ? m_savePath : "<未保存>");
+        ImGui::TableNextColumn();
+        ImGui::TextDisabled("纹理");
+        ImGui::TextUnformatted(m_texturePath[0] ? m_texturePath : "<未加载>");
+        ImGui::TableNextColumn();
+        ImGui::TextDisabled("动作数");
+        ImGui::Text("%d", static_cast<int>(m_actions.size()));
+        ImGui::TableNextColumn();
+        ImGui::TextDisabled("缩放");
+        ImGui::Text("%.1fx", m_zoom);
+        ImGui::EndTable();
+    }
 
     // 内容区：三列（左 | 中 | 右）
     const float bottomH  = 160.0f;  // 时间轴区域高度
@@ -155,6 +215,7 @@ void FrameEditor::render(engine::resource::ResourceManager &resMgr)
     renderStatusBar();
 
     ImGui::End();
+    popDevEditorTheme();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -787,7 +848,7 @@ void FrameEditor::renderRightPanel()
     // ── 动作属性 ──────────────────────────────────────────────────────
     if (a)
     {
-        ImGui::SeparatorText("动作属性");
+        drawDevSectionTitle("动作属性");
         ImGui::SetNextItemWidth(-1);
         ImGui::InputText("##actname", a->name, sizeof(a->name));
         ImGui::Checkbox("循环##fl", &a->is_loop);
@@ -800,7 +861,7 @@ void FrameEditor::renderRightPanel()
     }
 
     // ── 帧矩形 ────────────────────────────────────────────────────────
-    ImGui::SeparatorText("帧矩形 (像素)");
+    drawDevSectionTitle("帧矩形");
     ImGui::SetNextItemWidth(60); ImGui::InputInt("X##fsx", &cf->sx); ImGui::SameLine();
     ImGui::SetNextItemWidth(60); ImGui::InputInt("Y##fsy", &cf->sy);
     ImGui::SetNextItemWidth(60); ImGui::InputInt("W##fsw", &cf->sw); ImGui::SameLine();
@@ -809,7 +870,7 @@ void FrameEditor::renderRightPanel()
     cf->sh = std::max(1, cf->sh);
 
     // ── 锚点 ──────────────────────────────────────────────────────────
-    ImGui::SeparatorText("锚点 (帧内像素)");
+    drawDevSectionTitle("锚点");
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.4f, 0.4f, 1.0f));
     ImGui::SetNextItemWidth(60); ImGui::InputInt("X##fax", &cf->anchor_x); ImGui::SameLine();
     ImGui::SetNextItemWidth(60); ImGui::InputInt("Y##fay", &cf->anchor_y);
@@ -823,17 +884,16 @@ void FrameEditor::renderRightPanel()
         m_statusMsg[0] = '\0';
 
     // ── 帧延迟 ────────────────────────────────────────────────────────
-    ImGui::SeparatorText("帧延迟");
+    drawDevSectionTitle("帧延迟与方向");
     ImGui::SetNextItemWidth(80);
     ImGui::InputInt("ms##fdur", &cf->duration_ms);
     cf->duration_ms = std::clamp(cf->duration_ms, 1, 9999);
 
     // ── 帧方向 ────────────────────────────────────────────────────────
-    ImGui::SeparatorText("帧方向");
     ImGui::Checkbox("水平反向##fflipx", &cf->flip_x);
 
     // ── 判定盒 ────────────────────────────────────────────────────────
-    ImGui::SeparatorText("判定盒");
+    drawDevSectionTitle("判定盒");
     const char* kBoxShort[3] = {"受击", "攻击", "推挤"};
     for (int bi = 0; bi < 3; ++bi)
     {
@@ -890,12 +950,10 @@ void FrameEditor::renderRightPanel()
     }
 
     // ── 帧事件 ────────────────────────────────────────────────────────
-    ImGui::SeparatorText("帧事件");
+    drawDevSectionTitle("帧事件");
     for (int ei = 0; ei < (int)cf->events.size(); ++ei)
     {
         ImGui::PushID(ei);
-    ImGui::SeparatorText("帧方向");
-    ImGui::Checkbox("水平反向##fflipx", &cf->flip_x);
         ImGui::InputText("##fevi", cf->events[ei].name, sizeof(FrameEvent::name));
         ImGui::SameLine();
         if (ImGui::Button("X##evdel", ImVec2(24, 0)))
@@ -924,6 +982,8 @@ void FrameEditor::renderPreview()
         ImGui::TextDisabled("无动作或无帧 — 请先提取帧数据");
         return;
     }
+
+    drawDevSectionTitle("动画预览与时间轴");
 
     // 预览控制
     ImGui::SetNextItemWidth(60);
@@ -1552,8 +1612,8 @@ void FrameEditor::renderLauncher(engine::resource::ResourceManager &resMgr)
         return;
     }
 
-    ImGui::TextUnformatted("请选择已有动画 JSON 或新建一个：");
-    ImGui::Separator();
+    drawDevSectionTitle("项目选择");
+    ImGui::TextUnformatted("选择已有动画 JSON，或在角色资源目录下新建一个动作文件。");
 
     // 已有文件列表
     if (m_jsonFiles.empty())
@@ -1591,7 +1651,7 @@ void FrameEditor::renderLauncher(engine::resource::ResourceManager &resMgr)
         ImGui::EndChild();
     }
 
-    ImGui::Separator();
+    drawDevSectionTitle("操作");
 
     // 新建按钮
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.12f, 0.45f, 0.18f, 1.0f));
