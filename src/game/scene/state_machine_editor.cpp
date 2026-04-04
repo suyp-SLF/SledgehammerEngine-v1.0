@@ -96,7 +96,8 @@ namespace
     }
 }
 
-using namespace game::statemachine;
+using namespace engine::statemachine;
+using game::statemachine::SmLoader;
 
 namespace game::scene {
 
@@ -125,10 +126,19 @@ void StateMachineEditor::toggle()
             loadJsonFrom(path);
             m_showLauncher = false;
         }
-        else if (!suggestedSavePath.empty() && m_savePath.empty())
+        else
         {
-            // 没有已有文件，但设置合理的默认保存路径
-            m_savePath = suggestedSavePath;
+            // 无已有文件：总是重置到启动器状态，并用建议路径作为新建默认路径
+            m_data        = StateMachineData{};
+            m_savePath    = suggestedSavePath;
+            m_showLauncher = true;
+            // 从建议路径中提取 stem（如 "gundom"）预填到新建 ID 输入框
+            if (!suggestedSavePath.empty())
+            {
+                const std::string stem = fs::path(suggestedSavePath).stem().stem().string();
+                std::strncpy(m_newFileIdBuf, stem.c_str(), sizeof(m_newFileIdBuf) - 1);
+                m_newFileIdBuf[sizeof(m_newFileIdBuf) - 1] = '\0';
+            }
         }
     }
 
@@ -173,7 +183,26 @@ void StateMachineEditor::toggle()
 
             if (ImGui::Button("刷新列表##smeil")) scanSmFiles();
             ImGui::SameLine();
-            if (ImGui::Button("新建状态机##smeil")) ImGui::OpenPopup("SME_NewFile_IL");
+            // 若已预设建议路径（来自贴图名），显示一键新建按钮
+            if (!m_savePath.empty())
+            {
+                const std::string btnLabel = "一键新建: " + fs::path(m_savePath).filename().string() + "##smeil_quick";
+                if (ImGui::Button(btnLabel.c_str()))
+                {
+                    const std::string stem = fs::path(m_savePath).stem().stem().string();
+                    newFile(stem.empty() ? m_newFileIdBuf : stem);
+                    m_showLauncher = false;
+                }
+                ImGui::SameLine();
+            }
+            if (ImGui::Button("自定义新建##smeil")) ImGui::OpenPopup("SME_NewFile_IL");
+            ImGui::SameLine();
+            // 快速展开内联文档
+            ImGui::PushStyleColor(ImGuiCol_Button,        ImVec4(0.12f, 0.36f, 0.52f, 0.88f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.20f, 0.50f, 0.72f, 1.00f));
+            if (ImGui::Button(m_showHelp ? "隐藏文档##smeil_help" : "? 查看开发文档##smeil_help"))
+                m_showHelp = !m_showHelp;
+            ImGui::PopStyleColor(2);
 
             if (ImGui::BeginPopup("SME_NewFile_IL"))
             {
@@ -187,6 +216,98 @@ void StateMachineEditor::toggle()
                 ImGui::SameLine();
                 if (ImGui::Button("取消##smeil_ca")) ImGui::CloseCurrentPopup();
                 ImGui::EndPopup();
+            }
+
+            // ── launcher 内文档面板 ──────────────────────────────────────────
+            if (m_showHelp)
+            {
+                ImGui::Separator();
+                ImGui::BeginChild("##smeil_doc_launcher", ImVec2(0, 360.0f), ImGuiChildFlags_Borders);
+
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.85f, 0.95f, 1.0f, 1.0f));
+                ImGui::SeparatorText("状态机开发文档（快速参考）");
+                ImGui::PopStyleColor();
+
+                if (ImGui::CollapsingHeader("触发器完整列表", ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 1.0f, 0.7f, 1.0f));
+                    ImGui::TextUnformatted("按键事件（pushInput 调用一次）");
+                    ImGui::PopStyleColor();
+                    ImGui::TextDisabled("  KEY_ATTACK  KEY_JUMP  KEY_DASH");
+                    ImGui::TextDisabled("  KEY_MOVE_L  KEY_MOVE_R  KEY_BLOCK");
+                    ImGui::TextDisabled("  KEY_SKILL_1  KEY_SKILL_2  KEY_SKILL_3");
+
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 1.0f, 0.7f, 1.0f));
+                    ImGui::TextUnformatted("持续状态（每帧满足就加入 activeInputs）");
+                    ImGui::PopStyleColor();
+                    ImGui::TextDisabled("  IS_MOVING  NO_INPUT  IS_DASHING  IS_ATTACKING");
+                    ImGui::TextDisabled("  GROUNDED  AIRBORNE  RISING  FALLING");
+
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 1.0f, 0.7f, 1.0f));
+                    ImGui::TextUnformatted("瞬间事件（发生那帧加入）");
+                    ImGui::PopStyleColor();
+                    ImGui::TextDisabled("  ANIM_END  LAND  ON_WALL");
+
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.8f, 0.4f, 1.0f));
+                    ImGui::TextUnformatted("自定义条件（C++ registerCondition 注册，名称任意）");
+                    ImGui::PopStyleColor();
+                    ImGui::TextDisabled("  IS_LOW_HP  ENEMY_NEARBY  SKILL_READY  ... 任意命名");
+                }
+
+                if (ImGui::CollapsingHeader("代码接入三步走", ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.5f, 1.0f));
+                    ImGui::TextUnformatted("步骤 1：注册自定义条件（loadPlayerSM 之后）");
+                    ImGui::PopStyleColor();
+                    ImGui::TextUnformatted("  m_playerSM.registerCondition(\"IS_LOW_HP\",");
+                    ImGui::TextUnformatted("      [&](const StateController&) -> bool {");
+                    ImGui::TextUnformatted("          return m_hp < m_maxHp * 0.25f;");
+                    ImGui::TextUnformatted("      });");
+                    ImGui::Spacing();
+
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.5f, 1.0f));
+                    ImGui::TextUnformatted("步骤 2：注册回调（loadPlayerSM 之后）");
+                    ImGui::PopStyleColor();
+                    ImGui::TextUnformatted("  m_playerSM.setOnStateChanged(");
+                    ImGui::TextUnformatted("      [this](const std::string& from, const std::string& to) {");
+                    ImGui::TextUnformatted("          if (to == \"HURT\") startHurtFlash();");
+                    ImGui::TextUnformatted("          if (to == \"DEAD\") triggerDeathSequence();");
+                    ImGui::TextUnformatted("      });");
+                    ImGui::TextUnformatted("  m_playerSM.setOnFrameEvent(");
+                    ImGui::TextUnformatted("      [this](const std::string& event, int /*frame*/) {");
+                    ImGui::TextUnformatted("          if (event == \"spawn_hitbox\") createMeleeHitbox(...);");
+                    ImGui::TextUnformatted("          if (event.rfind(\"play_sound:\",0)==0) playSound(...);");
+                    ImGui::TextUnformatted("      });");
+                    ImGui::Spacing();
+
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.5f, 1.0f));
+                    ImGui::TextUnformatted("步骤 3：每帧驱动（tickPlayerSM 内部）");
+                    ImGui::PopStyleColor();
+                    ImGui::TextUnformatted("  // KEY 类：按下那帧 pushInput（内置 0.2s 缓冲）");
+                    ImGui::TextUnformatted("  if (inp.isActionPressed(\"attack\"))");
+                    ImGui::TextUnformatted("      m_playerSM.pushInput(\"KEY_ATTACK\", smTime);");
+                    ImGui::TextUnformatted("  // 持续型：每帧满足就加入 activeInputs");
+                    ImGui::TextUnformatted("  std::vector<std::string> inputs;");
+                    ImGui::TextUnformatted("  if (grounded) inputs.push_back(\"GROUNDED\");");
+                    ImGui::TextUnformatted("  else          inputs.push_back(\"AIRBORNE\");");
+                    ImGui::TextUnformatted("  if (isMoving) inputs.push_back(\"IS_MOVING\");");
+                    ImGui::TextUnformatted("  // 自定义条件无需手动加入，sm.update 内部自动求值");
+                    ImGui::TextUnformatted("  auto result = m_playerSM.update(dt, inputs, smTime);");
+                    ImGui::TextUnformatted("  // 详细示例见 ghost_swordsman_example.cpp");
+                }
+
+                if (ImGui::CollapsingHeader("帧事件推荐命名规范"))
+                {
+                    ImGui::TextDisabled("  \"play_sound:sword_swing\"  播放音效");
+                    ImGui::TextDisabled("  \"spawn_hitbox\"            生成近战判定框");
+                    ImGui::TextDisabled("  \"spawn_vfx:slash\"         生成斩击特效");
+                    ImGui::TextDisabled("  \"spawn_projectile\"        发射子弹");
+                    ImGui::TextDisabled("  \"shake_screen\"            屏幕震动");
+                    ImGui::TextDisabled("  \"enable_cancel\"           手动开启取消窗口");
+                    ImGui::TextDisabled("  \"root_motion:dx=50\"       注入位移冲量");
+                }
+
+                ImGui::EndChild();
             }
 
             popDevEditorTheme();
@@ -212,6 +333,162 @@ void StateMachineEditor::toggle()
                 if (sel) ImGui::SetItemDefaultFocus();
             }
             ImGui::EndCombo();
+        }
+        ImGui::SameLine(0.0f, 16.0f);
+        ImGui::PushStyleColor(ImGuiCol_Button,        ImVec4(0.12f, 0.36f, 0.52f, 0.88f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.20f, 0.50f, 0.72f, 1.00f));
+        if (ImGui::Button(m_showHelp ? "隐藏文档##smeil_help2" : "? 开发文档##smeil_help2"))
+            m_showHelp = !m_showHelp;
+        ImGui::PopStyleColor(2);
+
+        // ── 开发文档面板（折叠式） ────────────────────────────────────────────
+        if (m_showHelp)
+        {
+            ImGui::Separator();
+            ImGui::BeginChild("##smeil_doc", ImVec2(0, 420.0f), ImGuiChildFlags_Borders);
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.85f, 0.95f, 1.0f, 1.0f));
+            ImGui::SeparatorText("状态机配置说明");
+            ImGui::PopStyleColor();
+
+            if (ImGui::CollapsingHeader("一、状态（State）字段说明", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                ImGui::TextDisabled("  animationId   帧编辑器中定义的动作名，状态激活时播放此动画。");
+                ImGui::TextDisabled("  loop          true=循环播放；false=播完后留在最后一帧并触发 ANIM_END。");
+                ImGui::TextDisabled("  totalFrames   帧数（用于区间和事件计算，需与帧编辑器一致）。");
+                ImGui::Separator();
+                ImGui::TextDisabled("  transitions   转换列表（按 priority 降序，优先级大的先检查）：");
+                ImGui::TextDisabled("    trigger       触发器名称（见下方触发器列表）。");
+                ImGui::TextDisabled("    targetState   目标状态名（必须存在于当前状态机内）。");
+                ImGui::TextDisabled("    priority      整数，越大越优先，相同时按定义顺序。");
+                ImGui::TextDisabled("    requireWindow 是否要求当前帧在指定区间内（配合连招使用）。");
+                ImGui::Separator();
+                ImGui::TextDisabled("  windows       帧区间列表（用于连招/取消窗口）：");
+                ImGui::TextDisabled("    Locked       锁定：不可被打断。");
+                ImGui::TextDisabled("    ComboWindow  连招窗口：在此区间内 KEY_ATTACK 等指令可被缓存消耗。");
+                ImGui::TextDisabled("    Cancelable   可取消：可被闪避/技能强制打断。");
+                ImGui::Separator();
+                ImGui::TextDisabled("  frameEvents   帧事件列表（特定帧触发，由代码监听）：");
+                ImGui::TextDisabled("    frame         触发帧号（0 起始）。");
+                ImGui::TextDisabled("    event         事件字符串，建议格式 \"类别:参数\"。");
+                ImGui::TextDisabled("    示例: \"play_sound:sword\"  \"spawn_hitbox\"  \"shake_screen\"");
+            }
+
+            if (ImGui::CollapsingHeader("二、内置触发器列表", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 1.0f, 0.7f, 1.0f));
+                ImGui::TextUnformatted("── 按键事件（只在按下那帧 pushInput 一次）");
+                ImGui::PopStyleColor();
+                ImGui::TextDisabled("  KEY_ATTACK  KEY_JUMP  KEY_DASH  KEY_MOVE_L  KEY_MOVE_R");
+                ImGui::TextDisabled("  KEY_BLOCK   KEY_SKILL_1  KEY_SKILL_2  KEY_SKILL_3");
+
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 1.0f, 0.7f, 1.0f));
+                ImGui::TextUnformatted("── 持续状态（每帧满足条件就加入 activeInputs）");
+                ImGui::PopStyleColor();
+                ImGui::TextDisabled("  IS_MOVING   NO_INPUT   IS_DASHING   IS_ATTACKING");
+                ImGui::TextDisabled("  GROUNDED    AIRBORNE   RISING       FALLING");
+
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 1.0f, 0.7f, 1.0f));
+                ImGui::TextUnformatted("── 瞬间事件（只在发生那帧加入 activeInputs）");
+                ImGui::PopStyleColor();
+                ImGui::TextDisabled("  ANIM_END  （非循环动画播完时自动触发）");
+                ImGui::TextDisabled("  LAND      （上一帧 AIRBORNE -> 本帧 GROUNDED）");
+                ImGui::TextDisabled("  ON_WALL   （贴墙检测）");
+            }
+
+            if (ImGui::CollapsingHeader("三、代码接入：自定义条件", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.5f, 1.0f));
+                ImGui::TextUnformatted("// 在状态机编辑器中，Trigger 字段填写自定义名称（任意字符串）");
+                ImGui::TextUnformatted("// 在 C++ 代码中调用 registerCondition 注册逻辑：");
+                ImGui::PopStyleColor();
+                ImGui::TextDisabled("");
+                ImGui::TextUnformatted("  m_playerSM.registerCondition(\"IS_LOW_HP\",");
+                ImGui::TextUnformatted("      [this](const StateController&) -> bool {");
+                ImGui::TextUnformatted("          return m_hp < m_maxHp * 0.25f;");
+                ImGui::TextUnformatted("      });");
+                ImGui::Spacing();
+                ImGui::TextUnformatted("  m_playerSM.registerCondition(\"NEAR_ENEMY\",");
+                ImGui::TextUnformatted("      [this](const StateController& sm) -> bool {");
+                ImGui::TextUnformatted("          // sm.getCurrentState() 可查当前状态");
+                ImGui::TextUnformatted("          return getNearestEnemyDist() < 80.0f;");
+                ImGui::TextUnformatted("      });");
+                ImGui::Spacing();
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 0.8f, 1.0f, 1.0f));
+                ImGui::TextUnformatted("  // 取消注册：");
+                ImGui::PopStyleColor();
+                ImGui::TextUnformatted("  m_playerSM.unregisterCondition(\"IS_LOW_HP\");");
+                ImGui::TextUnformatted("  m_playerSM.clearConditions();  // 清除全部");
+            }
+
+            if (ImGui::CollapsingHeader("四、代码接入：状态切换回调", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.5f, 1.0f));
+                ImGui::TextUnformatted("// 监听任意状态切换（前一状态 -> 新状态）");
+                ImGui::PopStyleColor();
+                ImGui::TextUnformatted("  m_playerSM.setOnStateChanged(");
+                ImGui::TextUnformatted("      [this](const std::string& from, const std::string& to) {");
+                ImGui::TextUnformatted("          spdlog::debug(\"[SM] {} -> {}\", from, to);");
+                ImGui::TextUnformatted("          if (to == \"HURT\")  startHurtFlash();");
+                ImGui::TextUnformatted("          if (to == \"DEAD\")  triggerDeathSequence();");
+                ImGui::TextUnformatted("          if (from == \"JUMP\" && to == \"IDLE\") spawnLandDust();");
+                ImGui::TextUnformatted("      });");
+            }
+
+            if (ImGui::CollapsingHeader("五、代码接入：帧事件回调", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.5f, 1.0f));
+                ImGui::TextUnformatted("// 监听 .sm.json 中 frameEvents 配置的帧事件");
+                ImGui::TextUnformatted("// 建议 event 字段格式：\"类别:参数\"");
+                ImGui::PopStyleColor();
+                ImGui::TextUnformatted("  m_playerSM.setOnFrameEvent(");
+                ImGui::TextUnformatted("      [this](const std::string& event, int frame) {");
+                ImGui::TextUnformatted("          if (event == \"play_sound:sword_swing\")");
+                ImGui::TextUnformatted("              playSound(\"sword_swing\");");
+                ImGui::TextUnformatted("          if (event == \"spawn_hitbox\")");
+                ImGui::TextUnformatted("              createMeleeHitbox(getActorPos(), 48.0f);");
+                ImGui::TextUnformatted("          if (event == \"spawn_vfx:slash\")");
+                ImGui::TextUnformatted("              emitSlashVFX(getActorPos(), getFacing());");
+                ImGui::TextUnformatted("          if (event == \"shake_screen\")");
+                ImGui::TextUnformatted("              startScreenShake(0.3f, 8.0f);");
+                ImGui::TextUnformatted("      });");
+            }
+
+            if (ImGui::CollapsingHeader("六、强制跳转（外部干预）"))
+            {
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.5f, 1.0f));
+                ImGui::TextUnformatted("// 绕过所有条件，直接切换到指定状态（被击/剧情用）");
+                ImGui::PopStyleColor();
+                ImGui::TextUnformatted("  m_playerSM.forceTransition(\"HURT\");");
+                ImGui::TextUnformatted("  m_playerSM.forceTransition(\"DEAD\");");
+                ImGui::Spacing();
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.6f, 0.6f, 1.0f));
+                ImGui::TextUnformatted("  ⚠ 会立即跳转并触发 onStateChanged 回调，但不检查区间/优先级。");
+                ImGui::PopStyleColor();
+            }
+
+            if (ImGui::CollapsingHeader("七、完整示例文件"))
+            {
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 1.0f, 0.7f, 1.0f));
+                ImGui::TextUnformatted("完整示例见（仅供参考，不参与编译）：");
+                ImGui::PopStyleColor();
+                ImGui::TextUnformatted("  src/game/statemachine/ghost_swordsman_example.cpp");
+                ImGui::Spacing();
+                ImGui::TextDisabled("文件包含三个示例函数：");
+                ImGui::BulletText("example_loadPlayerSM()   — 加载后注册条件/回调");
+                ImGui::BulletText("example_tickPlayerSM()   — 每帧驱动（含 activeInputs 构建）");
+                ImGui::BulletText("example_forceTransitions() — 强制跳转与状态查询");
+                ImGui::Spacing();
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.5f, 1.0f));
+                ImGui::TextUnformatted("实际接入位置（已有基础实现）：");
+                ImGui::PopStyleColor();
+                ImGui::TextDisabled("  loadPlayerSM()  →  game_scene.cpp ~L4132");
+                ImGui::TextDisabled("  tickPlayerSM()  →  game_scene.cpp ~L4209");
+                ImGui::TextDisabled("  成员变量: m_playerSM (StateController)");
+                ImGui::TextDisabled("            m_playerSMData (StateMachineData)");
+            }
+
+            ImGui::EndChild();
+            ImGui::Separator();
         }
 
         // ── 内容布局 ──────────────────────────────────────────────────────────
@@ -954,6 +1231,9 @@ void StateMachineEditor::newFile(const std::string& characterId)
 
     std::memset(m_newFileIdBuf, 0, sizeof(m_newFileIdBuf));
     spdlog::info("[SMEditor] 新建状态机: {}", characterId);
+
+    // 立即保存并通知 character_editor 回写路径到 profile
+    saveJson();
 }
 
 void StateMachineEditor::loadJsonFrom(const std::string& path)

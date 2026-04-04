@@ -140,9 +140,10 @@ add_executable(
     src/game/scene/menu_scene.cpp
     src/game/animation/frame_animation_loader.cpp
 
-    src/game/statemachine/input_buffer.cpp
-    src/game/statemachine/state_controller.cpp
-    src/game/statemachine/sm_loader.cpp
+    src/engine/statemachine/input_buffer.cpp
+    src/engine/statemachine/state_controller.cpp
+    src/engine/statemachine/sm_loader.cpp
+    src/game/statemachine/ghost_swordsman_sm.cpp
     src/game/scene/ship_scene.cpp
     src/game/scene/voxel_scene.cpp
     src/game/scene/dnf_terrain_generator.cpp

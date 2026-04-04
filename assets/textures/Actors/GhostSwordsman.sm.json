@@ -1,0 +1,170 @@
+{
+  "character_id": "GhostSwordsman",
+  "initial_state": "IDLE",
+  "states": {
+    "IDLE": {
+      "animation_id": "idle",
+      "loop": true,
+      "total_frames": 6,
+      "transitions": [
+        {
+          "trigger": "KEY_ATTACK",
+          "target": "ATTACK_1",
+          "priority": 10,
+          "require_window": false,
+          "window_type": 0
+        },
+        {
+          "trigger": "IS_MOVING",
+          "target": "MOVE",
+          "priority": 3,
+          "require_window": false,
+          "window_type": 0
+        }
+      ],
+      "windows": [],
+      "frame_events": [],
+      "root_motion": []
+    },
+    "MOVE": {
+      "animation_id": "walk",
+      "loop": true,
+      "total_frames": 8,
+      "transitions": [
+        {
+          "trigger": "KEY_ATTACK",
+          "target": "ATTACK_1",
+          "priority": 10,
+          "require_window": false,
+          "window_type": 0
+        },
+        {
+          "trigger": "NO_INPUT",
+          "target": "IDLE",
+          "priority": 3,
+          "require_window": false,
+          "window_type": 0
+        }
+      ],
+      "windows": [],
+      "frame_events": [],
+      "root_motion": []
+    },
+    "ATTACK_1": {
+      "animation_id": "attack_1",
+      "loop": false,
+      "total_frames": 8,
+      "transitions": [
+        {
+          "trigger": "KEY_ATTACK",
+          "target": "ATTACK_2",
+          "priority": 10,
+          "require_window": true,
+          "window_type": 1
+        },
+        {
+          "trigger": "ANIM_END",
+          "target": "IDLE",
+          "priority": 1,
+          "require_window": false,
+          "window_type": 0
+        }
+      ],
+      "windows": [
+        { "start": 0, "end": 3, "type": 0 },
+        { "start": 4, "end": 7, "type": 1 }
+      ],
+      "frame_events": [
+        { "frame": 2, "event": "spawn_hitbox:1" },
+        { "frame": 2, "event": "play_sound:ghost_swordsman_attack1" }
+      ],
+      "root_motion": []
+    },
+    "ATTACK_2": {
+      "animation_id": "attack_2",
+      "loop": false,
+      "total_frames": 8,
+      "transitions": [
+        {
+          "trigger": "KEY_ATTACK",
+          "target": "ATTACK_3",
+          "priority": 10,
+          "require_window": true,
+          "window_type": 1
+        },
+        {
+          "trigger": "ANIM_END",
+          "target": "IDLE",
+          "priority": 1,
+          "require_window": false,
+          "window_type": 0
+        }
+      ],
+      "windows": [
+        { "start": 0, "end": 3, "type": 0 },
+        { "start": 4, "end": 7, "type": 1 }
+      ],
+      "frame_events": [
+        { "frame": 2, "event": "spawn_hitbox:2" },
+        { "frame": 2, "event": "play_sound:ghost_swordsman_attack2" }
+      ],
+      "root_motion": []
+    },
+    "ATTACK_3": {
+      "animation_id": "attack_3",
+      "loop": false,
+      "total_frames": 10,
+      "transitions": [
+        {
+          "trigger": "KEY_ATTACK",
+          "target": "ATTACK_4",
+          "priority": 10,
+          "require_window": true,
+          "window_type": 1
+        },
+        {
+          "trigger": "ANIM_END",
+          "target": "IDLE",
+          "priority": 1,
+          "require_window": false,
+          "window_type": 0
+        }
+      ],
+      "windows": [
+        { "start": 0, "end": 5, "type": 0 },
+        { "start": 6, "end": 9, "type": 1 }
+      ],
+      "frame_events": [
+        { "frame": 3, "event": "spawn_hitbox:3" },
+        { "frame": 3, "event": "play_sound:ghost_swordsman_attack3" },
+        { "frame": 4, "event": "spawn_vfx:slash" }
+      ],
+      "root_motion": []
+    },
+    "ATTACK_4": {
+      "animation_id": "attack_4",
+      "loop": false,
+      "total_frames": 12,
+      "transitions": [
+        {
+          "trigger": "ANIM_END",
+          "target": "IDLE",
+          "priority": 1,
+          "require_window": false,
+          "window_type": 0
+        }
+      ],
+      "windows": [
+        { "start": 0, "end": 7, "type": 0 },
+        { "start": 8, "end": 11, "type": 2 }
+      ],
+      "frame_events": [
+        { "frame": 4, "event": "spawn_hitbox:4" },
+        { "frame": 4, "event": "play_sound:ghost_swordsman_attack4" },
+        { "frame": 5, "event": "spawn_vfx:slash" },
+        { "frame": 6, "event": "shake_screen" }
+      ],
+      "root_motion": []
+    }
+  }
+}

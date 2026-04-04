@@ -237,12 +237,21 @@ namespace game::scene
                     if (m_editingProfile != m_selectedProfile)
                         syncEditBuffersFromSelection();
 
-                    // 根据角色 ID 计算建议的默认保存路径（无文件时使用）
+                    // 根据贴图路径推导建议的默认保存路径（无文件时使用），与动画编辑器保持一致
+                    auto texStem = [](const std::string& texPath) -> std::string {
+                        if (texPath.empty()) return {};
+                        return std::filesystem::path(texPath).stem().string();
+                    };
+                    const std::string stem = texStem(p.texturePath);
+                    const std::string charDir = "assets/textures/Characters/";
+
                     const std::string suggestedFramePath = p.frameJsonPath.empty()
-                        ? ("assets/textures/Characters/" + p.id + ".json")
+                        ? (stem.empty() ? charDir + p.id + ".json"
+                                        : charDir + stem + ".json")
                         : p.frameJsonPath;
                     const std::string suggestedSmPath = p.stateMachineJsonPath.empty()
-                        ? ("assets/textures/Characters/" + p.id + ".sm.json")
+                        ? (stem.empty() ? charDir + p.id + ".sm.json"
+                                        : charDir + stem + ".sm.json")
                         : p.stateMachineJsonPath;
 
                     auto bindEditorsFromBaseFields = [&]() {

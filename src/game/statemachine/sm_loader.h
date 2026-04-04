@@ -1,28 +1,13 @@
 /**
- * sm_loader.h  —  状态机 JSON 序列化/反序列化
+ * sm_loader.h  —  兼容转发头
  *
- * 文件格式：*.sm.json，存放在 assets/textures/Characters/
+ * SmLoader 已移入 engine::statemachine。
+ * 此头文件保留以兼容旧的 #include 路径，并通过 using 在
+ * game::statemachine 命名空间内公开 SmLoader。
  */
 #pragma once
-
-#include "sm_types.h"
-#include <string>
+#include "../../engine/statemachine/sm_loader.h"
 
 namespace game::statemachine {
-
-class SmLoader {
-public:
-    /** 将 StateMachineData 序列化为 JSON 文件，返回 true 表示成功 */
-    static bool save(const StateMachineData& data, const std::string& path);
-
-    /** 从 JSON 文件加载 StateMachineData，返回 true 表示成功 */
-    static bool load(const std::string& path, StateMachineData& outData);
-
-    /** 检查当前是否有错误消息 */
-    static const std::string& lastError() { return s_lastError; }
-
-private:
-    static std::string s_lastError;
-};
-
+    using engine::statemachine::SmLoader;
 } // namespace game::statemachine

@@ -1,5 +1,5 @@
 #pragma once
-#include "../statemachine/sm_types.h"
+#include "../../engine/statemachine/sm_types.h"
 #include "../statemachine/sm_loader.h"
 #include <string>
 #include <vector>
@@ -33,7 +33,7 @@ public:
     void render();
 
     // ── 数据访问 ──────────────────────────────────────────────────────────────
-    const statemachine::StateMachineData& getData()      const { return m_data; }
+    const engine::statemachine::StateMachineData& getData()      const { return m_data; }
     const std::string&                    getSavePath()  const { return m_savePath; }
 
     /** 若上次 render() 期间用户刚选了新文件，返回 true 并清除标志（每帧最多返回一次 true） */
@@ -47,7 +47,7 @@ private:
     bool m_open          = false;
     bool m_showLauncher  = true;
 
-    statemachine::StateMachineData m_data;
+    engine::statemachine::StateMachineData m_data;
     std::string                    m_savePath;
 
     // ── 选中状态 ──────────────────────────────────────────────────────────────
@@ -76,6 +76,7 @@ private:
 
     bool m_justLoaded = false;  // 用户刚从启动页选了新文件
     bool m_justSaved  = false;  // 本帧执行了保存
+    bool m_showHelp   = false;  // 是否展开文档面板
 
     // ── 新建状态弹窗临时缓冲区 ────────────────────────────────────────────────
     char m_newStateNameBuf[64]  = {};

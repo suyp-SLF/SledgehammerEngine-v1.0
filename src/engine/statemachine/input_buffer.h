@@ -10,7 +10,7 @@
 #include <string>
 #include <deque>
 
-namespace game::statemachine {
+namespace engine::statemachine {
 
 class InputBuffer {
 public:
@@ -42,4 +42,4 @@ private:
     std::deque<Entry> m_buffer;
 };
 
-} // namespace game::statemachine
+} // namespace engine::statemachine

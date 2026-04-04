@@ -1,7 +1,7 @@
 CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/state_machine_editor.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/state_machine_editor.cpp \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/state_machine_editor.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../statemachine/sm_types.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../../engine/statemachine/sm_types.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/max.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/comp.h \
@@ -902,6 +902,8 @@ CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/state_machine_editor.cpp.o: 
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/bind_back.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/bind_front.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../statemachine/sm_loader.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../statemachine/../../engine/statemachine/sm_loader.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/scene/../statemachine/../../engine/statemachine/sm_types.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui/imgui.h \
   /Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui/imconfig.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/float.h \

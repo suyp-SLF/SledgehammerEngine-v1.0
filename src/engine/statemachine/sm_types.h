@@ -10,7 +10,7 @@
 #include <vector>
 #include <map>
 
-namespace game::statemachine {
+namespace engine::statemachine {
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  帧区间类型
@@ -134,4 +134,4 @@ struct UpdateResult {
     float                    stateTimeRatio = 0.0f;  // 0..1，当前帧在动画中的进度
 };
 
-} // namespace game::statemachine
+} // namespace engine::statemachine

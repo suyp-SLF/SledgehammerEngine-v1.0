@@ -433,4 +433,51 @@ namespace engine::input
             return SDL_BUTTON_X2;
         return 0;
     }
+
+    const std::unordered_map<std::string, std::vector<std::string>>& InputManager::getActionBindings() const
+    {
+        return _actions_to_keyname_map;
+    }
+
+    void InputManager::rebindAction(const std::string& action, std::vector<std::string> keys)
+    {
+        // 1. 从反向映射表中移除该动作的所有旧条目
+        for (auto& [input, actions] : _input_to_action_map)
+        {
+            auto& v = actions;
+            v.erase(std::remove(v.begin(), v.end(), action), v.end());
+        }
+        // 清理空条目
+        for (auto it = _input_to_action_map.begin(); it != _input_to_action_map.end();)
+        {
+            if (it->second.empty())
+                it = _input_to_action_map.erase(it);
+            else
+                ++it;
+        }
+
+        // 2. 设置新绑定
+        if (keys.empty())
+        {
+            _actions_to_keyname_map.erase(action);
+            // 保留 _action_states 以防其他代码仍查询该动作
+        }
+        else
+        {
+            _actions_to_keyname_map[action] = keys;
+            _action_states.try_emplace(action, ActionState::INACTIVE);
+            for (const auto& kn : keys)
+            {
+                SDL_Scancode sc = SDL_GetScancodeFromName(kn.c_str());
+                Uint32 mb = MouseButtonUint8FromString(kn);
+                if (sc != SDL_SCANCODE_UNKNOWN)
+                    _input_to_action_map[sc].push_back(action);
+                else if (mb != 0)
+                    _input_to_action_map[static_cast<Uint32>(mb)].push_back(action);
+                else
+                    spdlog::warn("[InputManager] rebindAction: 未知按键名 '{}' for '{}'", kn, action);
+            }
+        }
+        spdlog::info("[InputManager] 动作 '{}' 重新绑定: {} 个按键", action, keys.size());
+    }
 }

@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace game::statemachine {
+namespace engine::statemachine {
 
 // ─────────────────────────────────────────────────────────────────────────────
 void StateController::init(const StateMachineData* data, const std::string& initialState)
@@ -40,6 +40,15 @@ UpdateResult StateController::update(float dt,
     // 更新输入缓冲池（清除过期）
     m_inputBuffer.update(time);
 
+    // ── 求值自定义条件，满足则注入触发器 ───────────────────────────────
+    // 每帧对注册的条件函数求值，true → 等价于收到该触发器名称的指令
+    std::vector<std::string> injectInputs;
+    for (const auto& [name, fn] : m_conditions)
+    {
+        if (fn && fn(*this))
+            injectInputs.push_back(name);
+    }
+
     // 计算前后帧
     float prevStateTime = m_stateTime;
     m_stateTime += dt;
@@ -68,8 +77,15 @@ UpdateResult StateController::update(float dt,
     bool inComboOrCancel = (winType == 1 || winType == 2);
 
     // ── 尝试转换 ────────────────────────────────────────────────────────
-    // 合并当前激活输入 + 缓冲池中的输入
-    std::vector<std::string> effectiveInputs = activeInputs;
+    // 合并当前激活输入 + 缓冲池中的输入 + 自定义条件注入
+    std::vector<std::string> effectiveInputs;
+    effectiveInputs.reserve(activeInputs.size() + injectInputs.size());
+    effectiveInputs.insert(effectiveInputs.end(), activeInputs.begin(), activeInputs.end());
+    for (const auto& name : injectInputs)
+    {
+        if (std::find(effectiveInputs.begin(), effectiveInputs.end(), name) == effectiveInputs.end())
+            effectiveInputs.push_back(name);
+    }
     // 把缓冲池中未消耗的指令也加入（仅在连招/可取消窗口生效）
     if (inComboOrCancel)
     {
@@ -114,6 +130,34 @@ void StateController::pushInput(const std::string& action, float time)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 自定义条件注册
+// ─────────────────────────────────────────────────────────────────────────────
+void StateController::registerCondition(const std::string& triggerName, ConditionFn fn)
+{
+    m_conditions[triggerName] = std::move(fn);
+}
+
+void StateController::unregisterCondition(const std::string& triggerName)
+{
+    m_conditions.erase(triggerName);
+}
+
+void StateController::clearConditions()
+{
+    m_conditions.clear();
+}
+
+void StateController::setOnStateChanged(StateChangedFn fn)
+{
+    m_onStateChanged = std::move(fn);
+}
+
+void StateController::setOnFrameEvent(FrameEventFn fn)
+{
+    m_onFrameEvent = std::move(fn);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 int StateController::currentWindowType() const
 {
     if (!m_currentState) return -1;
@@ -139,6 +183,7 @@ void StateController::doTransition(const std::string& stateName, UpdateResult& r
     auto it = m_data->states.find(stateName);
     if (it == m_data->states.end()) return;
 
+    const std::string prevState = m_currentStateName;
     m_currentStateName = stateName;
     m_currentState     = &it->second;
     m_stateTime        = 0.0f;
@@ -146,6 +191,10 @@ void StateController::doTransition(const std::string& stateName, UpdateResult& r
     m_lastEventFrame   = -1;
     result.stateChanged  = true;
     result.currentState  = stateName;
+
+    // 通知状态切换回调
+    if (m_onStateChanged)
+        m_onStateChanged(prevState, stateName);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -196,7 +245,12 @@ void StateController::collectFrameEvents(int prevFrame, int newFrame, UpdateResu
     for (const auto& fe : m_currentState->frameEvents)
     {
         if (fe.frame > prevFrame && fe.frame <= newFrame && fe.frame > m_lastEventFrame)
+        {
             result.firedEvents.push_back(fe.event);
+            // 直接回调帧事件，不必外部循环 firedEvents
+            if (m_onFrameEvent)
+                m_onFrameEvent(fe.event, fe.frame);
+        }
     }
     if (newFrame > m_lastEventFrame) m_lastEventFrame = newFrame;
 }
@@ -215,4 +269,4 @@ void StateController::collectRootMotion(int prevFrame, int newFrame, UpdateResul
     }
 }
 
-} // namespace game::statemachine
+} // namespace engine::statemachine

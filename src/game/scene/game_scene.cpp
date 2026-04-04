@@ -3,6 +3,7 @@
 #include "ship_scene.h"
 #include "../animation/frame_animation_loader.h"
 #include "../component/attribute_component.h"
+#include "../statemachine/character_sm_setup.h"
 #include "../../engine/scene/scene_manager.h"
 #include "../../engine/object/game_object.h"
 #include "../../engine/component/transform_component.h"
@@ -599,6 +600,70 @@ static void saveConfigValue(const char* section, const char* key, T value)
     if (!file.is_open())
         return;
     file << j.dump(4);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  ImGuiKey → SDL 按键名称，用于按键绑定重映射 UI
+//  返回 nullptr 表示该键不支持重绑定（或暂不处理）
+// ─────────────────────────────────────────────────────────────────────────────
+static const char* imguiKeyToSDLName(ImGuiKey key)
+{
+    // 字母键 A-Z
+    if (key >= ImGuiKey_A && key <= ImGuiKey_Z) {
+        static const char* s[] = {
+            "A","B","C","D","E","F","G","H","I","J","K","L","M",
+            "N","O","P","Q","R","S","T","U","V","W","X","Y","Z"
+        };
+        return s[key - ImGuiKey_A];
+    }
+    // 数字键 0-9
+    if (key >= ImGuiKey_0 && key <= ImGuiKey_9) {
+        static const char* s[] = {"0","1","2","3","4","5","6","7","8","9"};
+        return s[key - ImGuiKey_0];
+    }
+    // 功能键 F1-F12
+    if (key >= ImGuiKey_F1 && key <= ImGuiKey_F12) {
+        static const char* s[] = {
+            "F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"
+        };
+        return s[key - ImGuiKey_F1];
+    }
+    // 其他常用键
+    switch (key) {
+    case ImGuiKey_LeftArrow:    return "Left";
+    case ImGuiKey_RightArrow:   return "Right";
+    case ImGuiKey_UpArrow:      return "Up";
+    case ImGuiKey_DownArrow:    return "Down";
+    case ImGuiKey_Space:        return "Space";
+    case ImGuiKey_Enter:        return "Return";
+    case ImGuiKey_Escape:       return "Escape";
+    case ImGuiKey_Tab:          return "Tab";
+    case ImGuiKey_Backspace:    return "Backspace";
+    case ImGuiKey_Delete:       return "Delete";
+    case ImGuiKey_Insert:       return "Insert";
+    case ImGuiKey_Home:         return "Home";
+    case ImGuiKey_End:          return "End";
+    case ImGuiKey_PageUp:       return "PageUp";
+    case ImGuiKey_PageDown:     return "PageDown";
+    case ImGuiKey_LeftShift:
+    case ImGuiKey_RightShift:   return "Left Shift";
+    case ImGuiKey_LeftCtrl:
+    case ImGuiKey_RightCtrl:    return "Left Ctrl";
+    case ImGuiKey_LeftAlt:
+    case ImGuiKey_RightAlt:     return "Left Alt";
+    case ImGuiKey_GraveAccent:  return "`";
+    case ImGuiKey_Minus:        return "-";
+    case ImGuiKey_Equal:        return "=";
+    case ImGuiKey_LeftBracket:  return "[";
+    case ImGuiKey_RightBracket: return "]";
+    case ImGuiKey_Backslash:    return "\\";
+    case ImGuiKey_Semicolon:    return ";";
+    case ImGuiKey_Apostrophe:   return "'";
+    case ImGuiKey_Comma:        return ",";
+    case ImGuiKey_Period:       return ".";
+    case ImGuiKey_Slash:        return "/";
+    default:                    return nullptr;
+    }
 }
 
 static void applyRendererVSync(engine::render::Renderer& renderer, bool enabled)
@@ -1573,6 +1638,18 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
                     _context.getCamera().setFollowDeadzone(m_cameraFollowDeadzonePx);
                 }
             }
+            // 普通跳跃：posZ 超过画面高度 1/4 时也解锁 Y 轴，让镜头跟随上升
+            if (!unlockCameraY)
+            {
+                if (auto* actor = getControlledActor())
+                {
+                    if (auto* ctrl = actor->getComponent<engine::component::ControllerComponent>())
+                    {
+                        const float displayH = ImGui::GetIO().DisplaySize.y;
+                        unlockCameraY = (ctrl->getPosZ() > displayH * 0.25f);
+                    }
+                }
+            }
             _context.getCamera().setLockY(!unlockCameraY, 40.0f);
 
             if (m_comboResetTimer > 0.0f)
@@ -1652,6 +1729,23 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
                 for (const auto& holder : actor_manager->getActors())
                     updateActorFootTileContact(holder.get());
                 actor_manager->update(delta_time);
+
+                // ── DNF Z轴视觉偏移：为所有拥有 ControllerComponent 的 Actor 应用 posZ 偏移 ──
+                // PhysicsComponent::update() 每帧已将 transform.y 重置为 Box2D 值（地面），
+                // 这里在其上叠加视觉高度，让精灵向上偏移，影子在 render 时用 transform.y + posZ = 地面坐标。
+                for (const auto& holder : actor_manager->getActors())
+                {
+                    auto* ctrl = holder->getComponent<engine::component::ControllerComponent>();
+                    auto* tf   = holder->getComponent<engine::component::TransformComponent>();
+                    if (!ctrl || !tf) continue;
+                    const float posZ = ctrl->getPosZ();
+                    if (posZ > 0.0f)
+                    {
+                        glm::vec2 pos = tf->getPosition();
+                        pos.y -= posZ;
+                        tf->setPosition(pos);
+                    }
+                }
             }
         });
 
@@ -1975,6 +2069,49 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
             // 撤离结算界面
             renderSettlementUI();
             renderMechPrompt();
+
+            // ── ESC 暂停菜单 ─────────────────────────────────────────────────
+            if (m_showEscMenu && m_gameplayRunning)
+            {
+                const ImGuiIO& io = ImGui::GetIO();
+                ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f),
+                    ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+                ImGui::SetNextWindowSize(ImVec2(220.0f, 0.0f), ImGuiCond_Always);
+                ImGui::SetNextWindowBgAlpha(0.88f);
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding,   10.0f);
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding,    ImVec2(24.0f, 20.0f));
+                ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,      ImVec2(8.0f, 10.0f));
+                const ImGuiWindowFlags escFlags =
+                    ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
+                    ImGuiWindowFlags_NoNav         | ImGuiWindowFlags_NoSavedSettings |
+                    ImGuiWindowFlags_AlwaysAutoResize;
+                if (ImGui::Begin("##esc_menu", nullptr, escFlags))
+                {
+                    ImGui::SetCursorPosX((ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize("已暂停").x) * 0.5f);
+                    ImGui::TextColored(ImVec4(1.0f, 0.85f, 0.3f, 1.0f), "已暂停");
+                    ImGui::Separator();
+                    ImGui::Spacing();
+                    ImGui::PushStyleColor(ImGuiCol_Button,        ImVec4(0.15f, 0.35f, 0.15f, 0.9f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.25f, 0.55f, 0.25f, 1.0f));
+                    if (ImGui::Button("继续游戏", ImVec2(-1.0f, 0.0f)))
+                    {
+                        m_showEscMenu    = false;
+                        m_gameplayPaused = false;
+                    }
+                    ImGui::PopStyleColor(2);
+                    ImGui::PushStyleColor(ImGuiCol_Button,        ImVec4(0.35f, 0.12f, 0.12f, 0.9f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.60f, 0.18f, 0.18f, 1.0f));
+                    if (ImGui::Button("返回主菜单", ImVec2(-1.0f, 0.0f)))
+                    {
+                        m_showEscMenu = false;
+                        auto ms = std::make_unique<MenuScene>("MenuScene", _context, _scene_manager);
+                        _scene_manager.requestReplaceScene(std::move(ms));
+                    }
+                    ImGui::PopStyleColor(2);
+                }
+                ImGui::End();
+                ImGui::PopStyleVar(3);
+            }
 
             // ── 动作序列帧编辑器 ─────────────────────────────────────────────
             m_frameEditor.render(_context.getResourceManager());
@@ -2505,6 +2642,16 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
             if (stepToggleDown && !s_stepToggleWas && m_gameplayRunning && m_gameplayPaused)
                 m_stepOneFrame = true;
             s_stepToggleWas = stepToggleDown;
+
+            // ESC：切换暂停/退出菜单（仅游戏运行态生效；编辑器模式下不拦截）
+            static bool s_escWas = false;
+            const bool escDown = keys && keys[SDL_SCANCODE_ESCAPE] != 0;
+            if (escDown && !s_escWas && m_gameplayRunning && !m_frameEditor.isOpen())
+            {
+                m_showEscMenu = !m_showEscMenu;
+                m_gameplayPaused = m_showEscMenu;   // ESC菜单开 → 暂停；关 → 继续
+            }
+            s_escWas = escDown;
         }
 
         if (m_frameEditor.isOpen())
@@ -3463,11 +3610,29 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
 
         // 帧动画 JSON（包含贴图路径 + 动画剪辑）
         ImGui::InputText("帧动画JSON", m_playerConfigFrameJsonBuffer.data(), m_playerConfigFrameJsonBuffer.size());
-        if (ImGui::Button("加载精灵"))
+        const bool framePathEmpty = (m_playerConfigFrameJsonBuffer[0] == '\0');
+        if (ImGui::Button(framePathEmpty ? "新建##new_frame" : "加载精灵"))
         {
-            const std::string fjPath = m_playerConfigFrameJsonBuffer.data();
-            if (!fjPath.empty())
+            if (framePathEmpty)
             {
+                // 路径为空：新建文件，以 playerActorKey 为文件名，目录从 SM 路径推导（否则用默认）
+                const std::string id = m_playerActorKey.empty() ? "character" : m_playerActorKey;
+                std::string baseDir = "assets/textures/Actors";
+                const std::string smPath = m_playerConfigSmPathBuffer.data();
+                if (!smPath.empty())
+                    baseDir = std::filesystem::path(smPath).parent_path().string();
+                const std::string newPath = baseDir + "/" + id + ".frame.json";
+                // 写入最小模板（空 actions 列表）
+                nlohmann::json tmpl = {{"texture", ""}, {"actions", nlohmann::json::array()}};
+                if (std::ofstream out(newPath); out)
+                    out << tmpl.dump(2);
+                std::snprintf(m_playerConfigFrameJsonBuffer.data(), m_playerConfigFrameJsonBuffer.size(),
+                    "%s", newPath.c_str());
+                spdlog::info("[PlayerConfig] 新建帧动画 JSON: {}", newPath);
+            }
+            else
+            {
+                const std::string fjPath = m_playerConfigFrameJsonBuffer.data();
                 game::animation::FrameAnimationSet animSet;
                 if (game::animation::loadFrameAnimationSet(fjPath, animSet) && !animSet.texturePath.empty())
                 {
@@ -3491,11 +3656,31 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
 
         // 状态机
         ImGui::InputText("状态机路径", m_playerConfigSmPathBuffer.data(), m_playerConfigSmPathBuffer.size());
-        if (ImGui::Button("加载状态机"))
+        const bool smPathEmpty = (m_playerConfigSmPathBuffer[0] == '\0');
+        if (ImGui::Button(smPathEmpty ? "新建##new_sm" : "加载状态机"))
         {
-            const std::string path = m_playerConfigSmPathBuffer.data();
-            if (!path.empty())
+            if (smPathEmpty)
             {
+                // 路径为空：新建 SM 文件，以 playerActorKey 为文件名，目录从帧动画路径推导（否则用默认）
+                const std::string id = m_playerActorKey.empty() ? "character" : m_playerActorKey;
+                std::string baseDir = "assets/textures/Actors";
+                const std::string framePath = m_playerConfigFrameJsonBuffer.data();
+                if (!framePath.empty())
+                    baseDir = std::filesystem::path(framePath).parent_path().string();
+                const std::string newPath = baseDir + "/" + id + ".sm.json";
+                // 使用 SmLoader 保存最小 SM（空状态、初始状态为空）
+                engine::statemachine::StateMachineData emptyData;
+                emptyData.characterId = id;
+                emptyData.initialState = "";
+                using game::statemachine::SmLoader;
+                SmLoader::save(emptyData, newPath);
+                std::snprintf(m_playerConfigSmPathBuffer.data(), m_playerConfigSmPathBuffer.size(),
+                    "%s", newPath.c_str());
+                spdlog::info("[PlayerConfig] 新建状态机 JSON: {}", newPath);
+            }
+            else
+            {
+                const std::string path = m_playerConfigSmPathBuffer.data();
                 loadPlayerSM(path);
                 saveConfigValue("gameplay", "player_sm_path", path);
                 saveMechProfileConfig();
@@ -4083,6 +4268,197 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
         }
         ImGui::NewLine();
 
+        // ── 按键映射设置 ───────────────────────────────────────────────────
+        ImGui::SeparatorText("按键映射");
+
+        // 动作标签表（有序显示）
+        struct ActionLabel { const char* id; const char* label; };
+        static constexpr ActionLabel kActions[] = {
+            { "move_left",      "向左移动"     },
+            { "move_right",     "向右移动"     },
+            { "move_up",        "向上 / 上坡"  },
+            { "move_down",      "向下 / 蹲下"  },
+            { "jump",           "跳跃"         },
+            { "attack",         "攻击"         },
+            { "skill_use",      "技能"         },
+            { "interact",       "交互"         },
+            { "open_inventory", "背包"         },
+            { "open_map",       "地图"         },
+            { "evacuate",       "撤离"         },
+            { "possess",        "附身"         },
+            { "pause",          "暂停"         },
+            { "open_settings",  "打开设置"     },
+        };
+
+        auto& inputMgr = _context.getInputManager();
+        const auto& bindings = inputMgr.getActionBindings();
+
+        if (ImGui::BeginTable("##keybind_table", 4,
+            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit))
+        {
+            ImGui::TableSetupColumn("动作",     ImGuiTableColumnFlags_WidthStretch, 0.0f);
+            ImGui::TableSetupColumn("主键",     ImGuiTableColumnFlags_WidthFixed, 100.0f);
+            ImGui::TableSetupColumn("副键",     ImGuiTableColumnFlags_WidthFixed, 100.0f);
+            ImGui::TableSetupColumn("操作",     ImGuiTableColumnFlags_WidthFixed,  60.0f);
+            ImGui::TableHeadersRow();
+
+            for (auto& [aid, alabel] : kActions)
+            {
+                auto it = bindings.find(aid);
+                const std::string k0 = (it != bindings.end() && it->second.size() > 0) ? it->second[0] : "";
+                const std::string k1 = (it != bindings.end() && it->second.size() > 1) ? it->second[1] : "";
+
+                ImGui::TableNextRow();
+
+                // 动作名
+                ImGui::TableSetColumnIndex(0);
+                ImGui::TextUnformatted(alabel);
+
+                // 主键按钮
+                ImGui::TableSetColumnIndex(1);
+                {
+                    char btnId[64];
+                    snprintf(btnId, sizeof(btnId), "%s##k0_%s", k0.empty() ? "—" : k0.c_str(), aid);
+                    bool isListening = (m_keyListeningAction == aid && m_keyListeningSlot == 0);
+                    if (isListening)
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.4f, 0.0f, 1.0f));
+                    if (ImGui::Button(btnId, ImVec2(96.0f, 0)))
+                    {
+                        m_keyListeningAction = aid;
+                        m_keyListeningSlot   = 0;
+                        m_keyListeningFrames = 0;
+                        ImGui::OpenPopup("##keycapture_popup");
+                    }
+                    if (isListening)
+                        ImGui::PopStyleColor();
+                }
+
+                // 副键按钮
+                ImGui::TableSetColumnIndex(2);
+                {
+                    char btnId[64];
+                    snprintf(btnId, sizeof(btnId), "%s##k1_%s", k1.empty() ? "—" : k1.c_str(), aid);
+                    bool isListening = (m_keyListeningAction == aid && m_keyListeningSlot == 1);
+                    if (isListening)
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.4f, 0.0f, 1.0f));
+                    if (ImGui::Button(btnId, ImVec2(96.0f, 0)))
+                    {
+                        m_keyListeningAction = aid;
+                        m_keyListeningSlot   = 1;
+                        m_keyListeningFrames = 0;
+                        ImGui::OpenPopup("##keycapture_popup");
+                    }
+                    if (isListening)
+                        ImGui::PopStyleColor();
+                }
+
+                // 重置按钮（仅当前行有绑定时显示）
+                ImGui::TableSetColumnIndex(3);
+                if (!k0.empty() || !k1.empty())
+                {
+                    char btnId[32];
+                    snprintf(btnId, sizeof(btnId), "重置##rst_%s", aid);
+                    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.45f, 0.10f, 0.10f, 1.0f));
+                    if (ImGui::Button(btnId, ImVec2(52.0f, 0)))
+                    {
+                        // 清空该动作绑定
+                        inputMgr.rebindAction(aid, {});
+                        saveConfigValue("input_mapping", aid, std::vector<std::string>{});
+                    }
+                    ImGui::PopStyleColor();
+                }
+            }
+            ImGui::EndTable();
+        }
+        ImGui::TextDisabled("点击按键栏位后按下想要绑定的按键；主键 = 第一个，副键 = 第二个。");
+
+        // ── 按键捕获弹窗 ──────────────────────────────────────────────────
+        ImGui::SetNextWindowSize(ImVec2(320, 130), ImGuiCond_Always);
+        if (ImGui::BeginPopupModal("##keycapture_popup", nullptr,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
+        {
+            m_keyListeningFrames++;
+
+            // 查找 Chinese label
+            const char* actionLabel = m_keyListeningAction.c_str();
+            for (auto& [aid, alabel] : kActions)
+                if (m_keyListeningAction == aid) { actionLabel = alabel; break; }
+
+            ImGui::Spacing();
+            ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("请按下新按键...").x) * 0.5f);
+            ImGui::TextUnformatted("请按下新按键...");
+            ImGui::Spacing();
+            ImGui::Text("  动作: %s  |  槽位: %s", actionLabel,
+                         m_keyListeningSlot == 0 ? "主键" : "副键");
+            ImGui::Spacing();
+
+            const char* capturedKey = nullptr;
+
+            // 键盘按键检测（从第 1 帧开始）
+            for (int k = ImGuiKey_NamedKey_BEGIN; k < ImGuiKey_NamedKey_END && !capturedKey; ++k)
+            {
+                if (ImGui::IsKeyPressed(static_cast<ImGuiKey>(k), false))
+                {
+                    // Escape = 取消
+                    if (k == ImGuiKey_Escape)
+                    {
+                        m_keyListeningAction.clear();
+                        ImGui::CloseCurrentPopup();
+                        break;
+                    }
+                    capturedKey = imguiKeyToSDLName(static_cast<ImGuiKey>(k));
+                }
+            }
+
+            // 鼠标按键检测（等待 2 帧避免弹出时的点击误触）
+            if (!capturedKey && m_keyListeningFrames >= 2)
+            {
+                if      (ImGui::IsMouseClicked(ImGuiMouseButton_Left))   capturedKey = "MouseLeft";
+                else if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))  capturedKey = "MouseRight";
+                else if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle)) capturedKey = "MouseMiddle";
+            }
+
+            // 应用绑定
+            if (capturedKey)
+            {
+                auto& inMgr = _context.getInputManager();
+                const auto& curBindings = inMgr.getActionBindings();
+                auto it = curBindings.find(m_keyListeningAction);
+                std::vector<std::string> newKeys =
+                    (it != curBindings.end()) ? it->second : std::vector<std::string>{};
+
+                if (m_keyListeningSlot == 0)
+                {
+                    if (newKeys.empty()) newKeys.push_back(capturedKey);
+                    else                 newKeys[0] = capturedKey;
+                }
+                else  // slot 1
+                {
+                    if (newKeys.size() < 2) newKeys.resize(2);
+                    newKeys[1] = capturedKey;
+                }
+                // 移除空槽
+                newKeys.erase(
+                    std::remove_if(newKeys.begin(), newKeys.end(),
+                                   [](const std::string& s){ return s.empty(); }),
+                    newKeys.end());
+
+                inMgr.rebindAction(m_keyListeningAction, newKeys);
+                saveConfigValue("input_mapping", m_keyListeningAction.c_str(), newKeys);
+                m_keyListeningAction.clear();
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::SetCursorPosX((ImGui::GetWindowWidth() - 80.0f) * 0.5f);
+            if (ImGui::Button("取消", ImVec2(80.0f, 0)))
+            {
+                m_keyListeningAction.clear();
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+
         ImGui::End();
     }
 
@@ -4102,7 +4478,8 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
     // ─────────────────────────────────────────────────────────────────────────
     void GameScene::loadPlayerSM(const std::string& smJsonPath)
     {
-        using namespace game::statemachine;
+        using namespace engine::statemachine;
+        using game::statemachine::SmLoader;
         if (!SmLoader::load(smJsonPath, m_playerSMData))
         {
             spdlog::warn("[GameScene] 状态机加载失败: {}", SmLoader::lastError());
@@ -4116,13 +4493,42 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
         spdlog::info("[GameScene] 玩家状态机加载完成: {} (初始: {})",
                      smJsonPath, m_playerSMData.initialState);
 
+        // ── 按角色 ID 调用专属 SM 设置（状态切换回调、帧事件、自定义条件）──────
+        //   若找不到专属设置则使用通用默认：仅在 ATTACK 时锁定移动
+        auto* smTarget2 = getControlledActor();
+        const bool hasCustomSetup = game::statemachine::setupCharacterSM(
+            m_playerSMData.characterId, m_playerSM,
+            smTarget2, _context);
+
+        if (!hasCustomSetup)
+        {
+            // 通用默认：ATTACK 状态锁定 WASD 移动输入，退出后恢复
+            m_playerSM.setOnStateChanged([this](const std::string& from, const std::string& to)
+            {
+                auto* actor = getControlledActor();
+                if (!actor) return;
+                auto* ctrl = actor->getComponent<engine::component::ControllerComponent>();
+                if (!ctrl) return;
+
+                const bool enterAttack = (to.rfind("ATTACK", 0) == 0);
+                const bool leaveAttack = (from.rfind("ATTACK", 0) == 0);
+
+                if (enterAttack && !leaveAttack)
+                    ctrl->setEnabled(false);
+                else if (leaveAttack && !enterAttack)
+                    ctrl->setEnabled(true);
+            });
+        }
+
         // 立即播放初始状态对应的动画（init 内部用 dummy result，stateChanged 不会传出来）
-        if (m_player && !m_playerSMData.initialState.empty())
+        auto* smTarget = getControlledActor();
+        if (!smTarget) smTarget = m_player;
+        if (smTarget && !m_playerSMData.initialState.empty())
         {
             auto it = m_playerSMData.states.find(m_playerSMData.initialState);
             if (it != m_playerSMData.states.end() && !it->second.animationId.empty())
             {
-                if (auto* anim = m_player->getComponent<engine::component::AnimationComponent>())
+                if (auto* anim = smTarget->getComponent<engine::component::AnimationComponent>())
                     anim->forcePlay(it->second.animationId);
             }
         }
@@ -4179,14 +4585,18 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
     // ─────────────────────────────────────────────────────────────────────────
     void GameScene::tickPlayerSM(float dt)
     {
-        if (!m_playerSMLoaded || !m_player || m_isPlayerInMech || m_possessedMonster) return;
+        if (!m_playerSMLoaded || !getControlledActor() || m_isPlayerInMech || m_possessedMonster) return;
 
         using namespace engine::component;
-        using namespace game::statemachine;
+        using namespace engine::statemachine;
+
+        // SM 驱动当前控制对象（可能是 m_player，也可能是通过实体管理面板"设为控制对象"的生成角色）
+        auto* target = getControlledActor();
+        if (!target) return;
 
         // ── 1. 物理状态查询 ────────────────────────────────────────────────
-        auto* physics    = m_player->getComponent<PhysicsComponent>();
-        auto* controller = m_player->getComponent<ControllerComponent>();
+        auto* physics    = target->getComponent<PhysicsComponent>();
+        auto* controller = target->getComponent<ControllerComponent>();
         if (!physics || !controller) return;
 
         const glm::vec2 vel      = physics->getVelocity();
@@ -4216,6 +4626,22 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
         if (moveR) activeInputs.push_back("KEY_MOVE_R");
         if (!moveL && !moveR) activeInputs.push_back("NO_INPUT");
         if (moveL || moveR)   activeInputs.push_back("IS_MOVING");
+
+        // ── 根据移动方向更新朝向与精灵翻转（ATTACK 期间不翻转，避免中途换向）──
+        const bool inAttack = (m_playerSM.getCurrentState().rfind("ATTACK", 0) == 0);
+        if (!inAttack)
+        {
+            if (moveL)
+            {
+                controller->setFacingDirection(ControllerComponent::FacingDirection::Left);
+                if (auto* sp = target->getComponent<SpriteComponent>()) sp->setFlipped(true);
+            }
+            else if (moveR)
+            {
+                controller->setFacingDirection(ControllerComponent::FacingDirection::Right);
+                if (auto* sp = target->getComponent<SpriteComponent>()) sp->setFlipped(false);
+            }
+        }
 
         // 冲刺持续
         if (m_isDashing) activeInputs.push_back("IS_DASHING");
@@ -4249,17 +4675,80 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
         // ── 6. 帧事件回调 ─────────────────────────────────────────────────
         for (const auto& evt : result.firedEvents)
         {
-            // 格式："动词:参数"，e.g. "play_sound:sword_swing"
-            if      (evt.rfind("play_sound:", 0) == 0) { /* TODO: 音频系统 */ }
-            else if (evt.rfind("spawn_vfx:",  0) == 0) { /* TODO: 特效生成 */ }
-            else if (evt == "shake_screen")             { /* TODO: 屏幕震动 */ }
-            spdlog::debug("[SM] 帧事件: {}", evt);
+            // 格式："动词:参数"，e.g. "play_sound:ghost_swordsman_attack1"
+            if (evt.rfind("play_sound:", 0) == 0)
+            {
+                const std::string soundName = evt.substr(11); // "play_sound:" 占 11 字符
+                const std::string audioPath = "assets/audio/" + soundName + ".mp3";
+                auto& resMgr = _context.getResourceManager();
+                MIX_Mixer* mixer = resMgr.getAudioMixer();
+                if (mixer)
+                {
+                    if (MIX_Audio* audio = resMgr.getAudio(audioPath))
+                    {
+                        if (!MIX_PlayAudio(mixer, audio))
+                            spdlog::debug("[SM] 音效播放失败: {} ({})", soundName, SDL_GetError());
+                    }
+                    else
+                    {
+                        spdlog::debug("[SM] 未找到音效文件: {}", audioPath);
+                    }
+                }
+            }
+            else if (evt.rfind("spawn_hitbox:", 0) == 0)
+            {
+                // "spawn_hitbox:N"：N 为连招段数（1-4），越后期判定框越大
+                const int   comboIdx  = std::stoi(evt.substr(13));
+                const float hitboxW   = 40.0f + comboIdx * 4.0f;
+                const float hitboxH   = 36.0f;
+                const float facingSign =
+                    (controller->getFacingDirection() == ControllerComponent::FacingDirection::Left)
+                        ? -1.0f : 1.0f;
+                const glm::vec2 actorPos = physics->getPosition();
+
+                // ── 打怪 ──────────────────────────────────────────────────
+                std::vector<glm::vec2> defeatPositions;
+                int slain = m_monsterManager
+                    ? m_monsterManager->strikeMonstersFrom(
+                        target, facingSign, hitboxW, hitboxH, &defeatPositions)
+                    : 0;
+
+                // ── 斩击特效 ──────────────────────────────────────────────
+                const glm::vec2 vfxCenter = actorPos + glm::vec2(hitboxW * 0.5f * facingSign, -8.0f);
+                emitSlashVFX(vfxCenter, facingSign, 0.18f, hitboxW * 0.7f);
+
+                // ── 击杀碎片粒子 ──────────────────────────────────────────
+                for (const glm::vec2& pos : defeatPositions)
+                {
+                    for (int i = 0; i < 10; ++i)
+                    {
+                        float spread = -0.8f + 1.6f * (static_cast<float>(i) / 9.0f);
+                        glm::vec2 dir = glm::normalize(
+                            glm::vec2(facingSign * (1.4f + std::abs(spread) * 1.5f), spread - 0.3f));
+                        emitCombatFragment(pos, dir * (220.0f + 20.0f * i), 0.5f, 3.5f);
+                    }
+                }
+
+                spdlog::debug("[SM] spawn_hitbox:{} slain={} @ ({:.0f},{:.0f})",
+                    comboIdx, slain, actorPos.x, actorPos.y);
+            }
+            else if (evt.rfind("spawn_vfx:", 0) == 0)
+            {
+                // "spawn_vfx:slash" —— 第 3、4 段额外斩击光效
+                const float facingSign =
+                    (controller->getFacingDirection() == ControllerComponent::FacingDirection::Left)
+                        ? -1.0f : 1.0f;
+                const glm::vec2 actorPos = physics->getPosition();
+                emitSlashVFX(actorPos + glm::vec2(36.0f * facingSign, -12.0f), facingSign, 0.22f, 38.0f);
+            }
+            else if (evt == "shake_screen") { /* TODO: 屏幕震动 */ }
+            spdlog::info("[SM] 帧事件: {}", evt);
         }
 
         // ── 7. 同步动画组件 ────────────────────────────────────────────────
         if (result.stateChanged)
         {
-            spdlog::debug("[SM] → {}", result.currentState);
+            spdlog::info("[SM] {} → {}", m_playerSM.getCurrentState().empty() ? "(init)" : result.currentState, result.currentState);
 
             auto it = m_playerSMData.states.find(result.currentState);
             if (it != m_playerSMData.states.end())
@@ -4267,7 +4756,7 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
                 const std::string& clipName = it->second.animationId;
                 if (!clipName.empty())
                 {
-                    auto* anim = m_player->getComponent<engine::component::AnimationComponent>();
+                    auto* anim = target->getComponent<engine::component::AnimationComponent>();
                     if (anim)
                         anim->play(clipName);
                 }
@@ -4369,7 +4858,8 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
 
         constexpr float PPM = engine::world::WorldConfig::PIXELS_PER_METER;
 
-        auto* actor = actor_manager->createActor(ce.id + "_spawned_" + std::to_string(actor_manager->getActors().size()));
+        const std::string actorName = ce.displayName.empty() ? ce.id : ce.displayName;
+        auto* actor = actor_manager->createActor(actorName + "_" + std::to_string(actor_manager->getActors().size()));
         actor->setTag("character");
 
         actor->addComponent<engine::component::TransformComponent>(spawnPos);
@@ -4380,7 +4870,8 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
             spdlog::warn("[GameScene] spawn: 帧 JSON 加载失败: {}", ce.frameJsonPath);
             return;
         }
-        if (animSet.texturePath.empty() && !ce.texturePath.empty())
+        // character.json 中指定的 texture 路径始终优先（可覆盖 frame JSON 里可能错误的路径）
+        if (!ce.texturePath.empty())
             animSet.texturePath = ce.texturePath;
 
         const auto initRect = animSet.initialSourceRect().value_or(
@@ -4405,6 +4896,11 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
         physics->reshapeBox({ce.collisionHalfW, ce.collisionHalfD}, {0.0f, ce.mechHeightPx * 0.5f});
 
         spdlog::info("[GameScene] 已生成角色: {} @ ({:.1f}, {:.1f})", ce.displayName, spawnPos.x, spawnPos.y);
+
+        // 自动设为控制对象，并按 character.json 里配置的状态机路径加载 SM
+        setDevControlledActor(actor);
+        if (!ce.smPath.empty())
+            loadPlayerSM(ce.smPath);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -4904,20 +5400,25 @@ void GameScene::updateActorFootTileContact(engine::object::GameObject* actor)
         glm::vec2 screenLogical = _context.getCamera().worldToScreen(transform->getPosition());
         ImVec2 screen = logicalToImGuiScreen(_context, screenLogical);
         std::string stateLabel;
-        if (actor == m_player && m_playerSMLoaded && !m_playerSM.getCurrentState().empty())
+        const bool isSmControlled = (actor == getControlledActor())
+                                    && m_playerSMLoaded
+                                    && !m_playerSM.getCurrentState().empty();
+        if (isSmControlled)
         {
-            if (auto* anim = m_player->getComponent<engine::component::AnimationComponent>())
-                stateLabel = anim->currentClip();
-
-            if (stateLabel.empty())
+            // 优先显示：SM状态名 + 当前动画clip，便于调试
+            const std::string& smState = m_playerSM.getCurrentState();
+            std::string animClip;
+            if (auto* anim = actor->getComponent<engine::component::AnimationComponent>())
+                animClip = anim->currentClip();
+            if (animClip.empty())
             {
-                auto it = m_playerSMData.states.find(m_playerSM.getCurrentState());
+                auto it = m_playerSMData.states.find(smState);
                 if (it != m_playerSMData.states.end())
-                    stateLabel = it->second.animationId;
+                    animClip = it->second.animationId;
             }
-
-            if (stateLabel.empty())
-                stateLabel = m_playerSM.getCurrentState();
+            stateLabel = smState;
+            if (!animClip.empty() && animClip != smState)
+                stateLabel += " (" + animClip + ")";
         }
         else
         {

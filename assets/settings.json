@@ -6,7 +6,7 @@
     "enable_play_rollback": true,
     "hierarchy_favorites_only": false,
     "hierarchy_group_by_tag": true,
-    "invert_player_facing": false,
+    "invert_player_facing": true,
     "language": "zh_CN",
     "resource_explorer_view": "thumbnails",
     "scene_viewport_show_axes": true,

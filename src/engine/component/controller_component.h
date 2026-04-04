@@ -56,6 +56,8 @@ namespace engine::component
         bool  isJetpackEnabled() const { return m_jetpackEnabled; }
         MovementState getMovementState() const { return m_state; }
         FacingDirection getFacingDirection() const { return m_facing; }
+        /** SM 驱动角色使用：由状态机 tick 直接设置朝向，绕过 handleInput 路径 */
+        void setFacingDirection(FacingDirection dir) { m_facing = dir; }
         const char* getMovementStateName() const;
         const char* getAnimationStateKey() const;
         float getJetpackFuelRatio() const;

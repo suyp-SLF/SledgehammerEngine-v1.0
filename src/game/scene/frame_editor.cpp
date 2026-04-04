@@ -119,11 +119,18 @@ void FrameEditor::openWithJson(const std::string &jsonPath, const std::string &t
         loadJSONFrom(jsonPath);
         m_showLauncher = false;
     }
-    else if (!suggestedSavePath.empty())
+    else
     {
-        // 没有已有文件，但设置合理的默认保存路径（不加载）
-        std::strncpy(m_savePath, suggestedSavePath.c_str(), sizeof(m_savePath) - 1);
-        m_savePath[sizeof(m_savePath) - 1] = '\0';
+        // 无已有文件：重置到启动器状态，用建议路径作为新建默认路径
+        m_actions.clear();
+        m_selAction = -1;
+        m_selFrame  = -1;
+        if (!suggestedSavePath.empty())
+        {
+            std::strncpy(m_savePath, suggestedSavePath.c_str(), sizeof(m_savePath) - 1);
+            m_savePath[sizeof(m_savePath) - 1] = '\0';
+        }
+        m_showLauncher = true;
     }
     if (!texturePath.empty())
         std::snprintf(m_texturePath, sizeof(m_texturePath), "%s", texturePath.c_str());

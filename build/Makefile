@@ -944,6 +944,78 @@ src/engine/scene/scene_manager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/scene/scene_manager.cpp.s
 .PHONY : src/engine/scene/scene_manager.cpp.s
 
+src/engine/statemachine/input_buffer.o: src/engine/statemachine/input_buffer.cpp.o
+.PHONY : src/engine/statemachine/input_buffer.o
+
+# target to build an object file
+src/engine/statemachine/input_buffer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/input_buffer.cpp.o
+.PHONY : src/engine/statemachine/input_buffer.cpp.o
+
+src/engine/statemachine/input_buffer.i: src/engine/statemachine/input_buffer.cpp.i
+.PHONY : src/engine/statemachine/input_buffer.i
+
+# target to preprocess a source file
+src/engine/statemachine/input_buffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/input_buffer.cpp.i
+.PHONY : src/engine/statemachine/input_buffer.cpp.i
+
+src/engine/statemachine/input_buffer.s: src/engine/statemachine/input_buffer.cpp.s
+.PHONY : src/engine/statemachine/input_buffer.s
+
+# target to generate assembly for a file
+src/engine/statemachine/input_buffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/input_buffer.cpp.s
+.PHONY : src/engine/statemachine/input_buffer.cpp.s
+
+src/engine/statemachine/sm_loader.o: src/engine/statemachine/sm_loader.cpp.o
+.PHONY : src/engine/statemachine/sm_loader.o
+
+# target to build an object file
+src/engine/statemachine/sm_loader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/sm_loader.cpp.o
+.PHONY : src/engine/statemachine/sm_loader.cpp.o
+
+src/engine/statemachine/sm_loader.i: src/engine/statemachine/sm_loader.cpp.i
+.PHONY : src/engine/statemachine/sm_loader.i
+
+# target to preprocess a source file
+src/engine/statemachine/sm_loader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/sm_loader.cpp.i
+.PHONY : src/engine/statemachine/sm_loader.cpp.i
+
+src/engine/statemachine/sm_loader.s: src/engine/statemachine/sm_loader.cpp.s
+.PHONY : src/engine/statemachine/sm_loader.s
+
+# target to generate assembly for a file
+src/engine/statemachine/sm_loader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/sm_loader.cpp.s
+.PHONY : src/engine/statemachine/sm_loader.cpp.s
+
+src/engine/statemachine/state_controller.o: src/engine/statemachine/state_controller.cpp.o
+.PHONY : src/engine/statemachine/state_controller.o
+
+# target to build an object file
+src/engine/statemachine/state_controller.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/state_controller.cpp.o
+.PHONY : src/engine/statemachine/state_controller.cpp.o
+
+src/engine/statemachine/state_controller.i: src/engine/statemachine/state_controller.cpp.i
+.PHONY : src/engine/statemachine/state_controller.i
+
+# target to preprocess a source file
+src/engine/statemachine/state_controller.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/state_controller.cpp.i
+.PHONY : src/engine/statemachine/state_controller.cpp.i
+
+src/engine/statemachine/state_controller.s: src/engine/statemachine/state_controller.cpp.s
+.PHONY : src/engine/statemachine/state_controller.s
+
+# target to generate assembly for a file
+src/engine/statemachine/state_controller.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/state_controller.cpp.s
+.PHONY : src/engine/statemachine/state_controller.cpp.s
+
 src/engine/world/chunk.o: src/engine/world/chunk.cpp.o
 .PHONY : src/engine/world/chunk.o
 
@@ -1544,77 +1616,29 @@ src/game/scene/voxel_scene.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/scene/voxel_scene.cpp.s
 .PHONY : src/game/scene/voxel_scene.cpp.s
 
-src/game/statemachine/input_buffer.o: src/game/statemachine/input_buffer.cpp.o
-.PHONY : src/game/statemachine/input_buffer.o
+src/game/statemachine/ghost_swordsman_sm.o: src/game/statemachine/ghost_swordsman_sm.cpp.o
+.PHONY : src/game/statemachine/ghost_swordsman_sm.o
 
 # target to build an object file
-src/game/statemachine/input_buffer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/input_buffer.cpp.o
-.PHONY : src/game/statemachine/input_buffer.cpp.o
+src/game/statemachine/ghost_swordsman_sm.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/ghost_swordsman_sm.cpp.o
+.PHONY : src/game/statemachine/ghost_swordsman_sm.cpp.o
 
-src/game/statemachine/input_buffer.i: src/game/statemachine/input_buffer.cpp.i
-.PHONY : src/game/statemachine/input_buffer.i
-
-# target to preprocess a source file
-src/game/statemachine/input_buffer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/input_buffer.cpp.i
-.PHONY : src/game/statemachine/input_buffer.cpp.i
-
-src/game/statemachine/input_buffer.s: src/game/statemachine/input_buffer.cpp.s
-.PHONY : src/game/statemachine/input_buffer.s
-
-# target to generate assembly for a file
-src/game/statemachine/input_buffer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/input_buffer.cpp.s
-.PHONY : src/game/statemachine/input_buffer.cpp.s
-
-src/game/statemachine/sm_loader.o: src/game/statemachine/sm_loader.cpp.o
-.PHONY : src/game/statemachine/sm_loader.o
-
-# target to build an object file
-src/game/statemachine/sm_loader.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/sm_loader.cpp.o
-.PHONY : src/game/statemachine/sm_loader.cpp.o
-
-src/game/statemachine/sm_loader.i: src/game/statemachine/sm_loader.cpp.i
-.PHONY : src/game/statemachine/sm_loader.i
+src/game/statemachine/ghost_swordsman_sm.i: src/game/statemachine/ghost_swordsman_sm.cpp.i
+.PHONY : src/game/statemachine/ghost_swordsman_sm.i
 
 # target to preprocess a source file
-src/game/statemachine/sm_loader.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/sm_loader.cpp.i
-.PHONY : src/game/statemachine/sm_loader.cpp.i
+src/game/statemachine/ghost_swordsman_sm.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/ghost_swordsman_sm.cpp.i
+.PHONY : src/game/statemachine/ghost_swordsman_sm.cpp.i
 
-src/game/statemachine/sm_loader.s: src/game/statemachine/sm_loader.cpp.s
-.PHONY : src/game/statemachine/sm_loader.s
-
-# target to generate assembly for a file
-src/game/statemachine/sm_loader.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/sm_loader.cpp.s
-.PHONY : src/game/statemachine/sm_loader.cpp.s
-
-src/game/statemachine/state_controller.o: src/game/statemachine/state_controller.cpp.o
-.PHONY : src/game/statemachine/state_controller.o
-
-# target to build an object file
-src/game/statemachine/state_controller.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/state_controller.cpp.o
-.PHONY : src/game/statemachine/state_controller.cpp.o
-
-src/game/statemachine/state_controller.i: src/game/statemachine/state_controller.cpp.i
-.PHONY : src/game/statemachine/state_controller.i
-
-# target to preprocess a source file
-src/game/statemachine/state_controller.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/state_controller.cpp.i
-.PHONY : src/game/statemachine/state_controller.cpp.i
-
-src/game/statemachine/state_controller.s: src/game/statemachine/state_controller.cpp.s
-.PHONY : src/game/statemachine/state_controller.s
+src/game/statemachine/ghost_swordsman_sm.s: src/game/statemachine/ghost_swordsman_sm.cpp.s
+.PHONY : src/game/statemachine/ghost_swordsman_sm.s
 
 # target to generate assembly for a file
-src/game/statemachine/state_controller.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/state_controller.cpp.s
-.PHONY : src/game/statemachine/state_controller.cpp.s
+src/game/statemachine/ghost_swordsman_sm.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LearnSunnyLand-Darwin.dir/build.make CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/ghost_swordsman_sm.cpp.s
+.PHONY : src/game/statemachine/ghost_swordsman_sm.cpp.s
 
 src/game/weapon/weapon.o: src/game/weapon/weapon.cpp.o
 .PHONY : src/game/weapon/weapon.o
@@ -2012,6 +2036,15 @@ help:
 	@echo "... src/engine/scene/scene_manager.o"
 	@echo "... src/engine/scene/scene_manager.i"
 	@echo "... src/engine/scene/scene_manager.s"
+	@echo "... src/engine/statemachine/input_buffer.o"
+	@echo "... src/engine/statemachine/input_buffer.i"
+	@echo "... src/engine/statemachine/input_buffer.s"
+	@echo "... src/engine/statemachine/sm_loader.o"
+	@echo "... src/engine/statemachine/sm_loader.i"
+	@echo "... src/engine/statemachine/sm_loader.s"
+	@echo "... src/engine/statemachine/state_controller.o"
+	@echo "... src/engine/statemachine/state_controller.i"
+	@echo "... src/engine/statemachine/state_controller.s"
 	@echo "... src/engine/world/chunk.o"
 	@echo "... src/engine/world/chunk.i"
 	@echo "... src/engine/world/chunk.s"
@@ -2087,15 +2120,9 @@ help:
 	@echo "... src/game/scene/voxel_scene.o"
 	@echo "... src/game/scene/voxel_scene.i"
 	@echo "... src/game/scene/voxel_scene.s"
-	@echo "... src/game/statemachine/input_buffer.o"
-	@echo "... src/game/statemachine/input_buffer.i"
-	@echo "... src/game/statemachine/input_buffer.s"
-	@echo "... src/game/statemachine/sm_loader.o"
-	@echo "... src/game/statemachine/sm_loader.i"
-	@echo "... src/game/statemachine/sm_loader.s"
-	@echo "... src/game/statemachine/state_controller.o"
-	@echo "... src/game/statemachine/state_controller.i"
-	@echo "... src/game/statemachine/state_controller.s"
+	@echo "... src/game/statemachine/ghost_swordsman_sm.o"
+	@echo "... src/game/statemachine/ghost_swordsman_sm.i"
+	@echo "... src/game/statemachine/ghost_swordsman_sm.s"
 	@echo "... src/game/weapon/weapon.o"
 	@echo "... src/game/weapon/weapon.i"
 	@echo "... src/game/weapon/weapon.s"

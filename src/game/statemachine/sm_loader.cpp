@@ -1,11 +1,7 @@
-#include "sm_loader.h"
-#include <nlohmann/json.hpp>
-#include <fstream>
-#include <spdlog/spdlog.h>
+// SmLoader 实现已移至 engine/statemachine/sm_loader.cpp
+// 此文件保留以兼容旧 #include 路径，不包含任何代码。
+// 如果你看到重复符号链接错误，请检查 CMakeLists.txt 中是否误将此文件也加入编译。
 
-namespace game::statemachine {
-
-std::string SmLoader::s_lastError;
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  保存

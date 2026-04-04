@@ -1,7 +1,7 @@
 #include "input_buffer.h"
 #include <algorithm>
 
-namespace game::statemachine {
+namespace engine::statemachine {
 
 void InputBuffer::push(const std::string& action, float currentTime)
 {
@@ -59,4 +59,4 @@ void InputBuffer::clear()
     m_buffer.clear();
 }
 
-} // namespace game::statemachine
+} // namespace engine::statemachine

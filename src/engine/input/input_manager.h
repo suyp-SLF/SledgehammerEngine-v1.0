@@ -80,6 +80,11 @@ namespace engine::input
             };
         }
 
+        /// 查询所有动作绑定（action → key name 列表）
+        const std::unordered_map<std::string, std::vector<std::string>>& getActionBindings() const;
+        /// 替换指定动作的全部按键绑定，立即生效。传空 vector 则清除绑定。
+        void rebindAction(const std::string& action, std::vector<std::string> keys);
+
     private:
         void processEvent(const SDL_Event &event);
         void initializeMappings(const engine::core::Config *config);

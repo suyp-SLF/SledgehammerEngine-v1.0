@@ -2,7 +2,7 @@
 #include "frame_editor.h"
 #include "state_machine_editor.h"
 #include "universe_editor.h"
-#include "../statemachine/state_controller.h"
+#include "../../engine/statemachine/state_controller.h"
 #include "../../engine/scene/scene.h"
 #include "../../engine/world/chunk_manager.h"
 #include "../../engine/world/world_config.h"
@@ -158,6 +158,11 @@ namespace game::scene
         bool m_vsyncEnabled = true;
         glm::vec2 m_cameraFollowDeadzonePx = {140.0f, 56.0f};
         bool m_showSettings = false;
+        bool m_showEscMenu  = false;   // ESC 暂停/退出菜单
+        // ── 按键绑定重映射状态 ────────────────────────────────────────────
+        std::string m_keyListeningAction;      // 正在等待绑定的动作名（空=未在监听）
+        int         m_keyListeningSlot   = 0;  // 绑定槽位：0=主键, 1=副键
+        int         m_keyListeningFrames = 0;  // 已等待帧数（避免弹出瞬间误触发）
         bool m_cleanStartupUi = true;
         bool m_showPlayerConfigPanel = true;
         std::string m_editorLayoutPreset = "default";
@@ -665,8 +670,8 @@ namespace game::scene
         //  2. 在 update() 中调用 tickPlayerSM(dt)：
         //     - 根据按键/物理状态构建 activeInputs
         //     - 调用 m_playerSM.update() 并应用根位移/帧事件
-        game::statemachine::StateController m_playerSM;
-        game::statemachine::StateMachineData m_playerSMData;
+        engine::statemachine::StateController m_playerSM;
+        engine::statemachine::StateMachineData m_playerSMData;
         std::string m_playerSMPath;
         bool   m_playerSMLoaded  = false;
         bool   m_prevGrounded    = true;   // 上帧落地状态（用于检测 LAND 事件）

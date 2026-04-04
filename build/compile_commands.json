@@ -277,21 +277,27 @@
 },
 {
   "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
-  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui/backends -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/tinygltf-src -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/input_buffer.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/game/statemachine/input_buffer.cpp",
-  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/statemachine/input_buffer.cpp",
-  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/input_buffer.cpp.o"
+  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui/backends -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/tinygltf-src -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/input_buffer.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/statemachine/input_buffer.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/statemachine/input_buffer.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/input_buffer.cpp.o"
 },
 {
   "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
-  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui/backends -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/tinygltf-src -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/state_controller.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/game/statemachine/state_controller.cpp",
-  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/statemachine/state_controller.cpp",
-  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/state_controller.cpp.o"
+  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui/backends -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/tinygltf-src -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/state_controller.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/statemachine/state_controller.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/statemachine/state_controller.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/state_controller.cpp.o"
 },
 {
   "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
-  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui/backends -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/tinygltf-src -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/sm_loader.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/game/statemachine/sm_loader.cpp",
-  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/statemachine/sm_loader.cpp",
-  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/sm_loader.cpp.o"
+  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui/backends -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/tinygltf-src -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/sm_loader.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/engine/statemachine/sm_loader.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/engine/statemachine/sm_loader.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/engine/statemachine/sm_loader.cpp.o"
+},
+{
+  "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",
+  "command": "/usr/bin/c++ -DFMT_SHARED -DSPDLOG_COMPILED_LIB -DSPDLOG_FMT_EXTERNAL -DSPDLOG_SHARED_LIB -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui -I/Users/suyp/C++/Projects/LearnSunnyLand/third_party/imgui/backends -I/Users/suyp/C++/Projects/LearnSunnyLand/build/_deps/tinygltf-src -isystem /Users/suyp/C++/Library/build/include -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -isystem /opt/homebrew/include/freetype2 -isystem /opt/homebrew/include/harfbuzz -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -o CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/ghost_swordsman_sm.cpp.o -c /Users/suyp/C++/Projects/LearnSunnyLand/src/game/statemachine/ghost_swordsman_sm.cpp",
+  "file": "/Users/suyp/C++/Projects/LearnSunnyLand/src/game/statemachine/ghost_swordsman_sm.cpp",
+  "output": "CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/ghost_swordsman_sm.cpp.o"
 },
 {
   "directory": "/Users/suyp/C++/Projects/LearnSunnyLand/build",

@@ -1,0 +1,61 @@
+{
+  "character_id": "TestSheet",
+  "initial_state": "IDLE",
+  "states": {
+    "IDLE": {
+      "animation_id": "idle",
+      "frame_events": [],
+      "loop": true,
+      "root_motion": [],
+      "total_frames": 8,
+      "transitions": [
+        {
+          "priority": 5,
+          "require_window": false,
+          "target": "ATTACK_1",
+          "trigger": "KEY_ATTACK",
+          "window_type": 0
+        },
+        {
+          "priority": 4,
+          "require_window": false,
+          "target": "JUMP",
+          "trigger": "KEY_JUMP",
+          "window_type": 0
+        },
+        {
+          "priority": 3,
+          "require_window": false,
+          "target": "MOVE",
+          "trigger": "IS_MOVING",
+          "window_type": 0
+        }
+      ],
+      "windows": []
+    },
+    "MOVE": {
+      "animation_id": "walk",
+      "frame_events": [],
+      "loop": true,
+      "root_motion": [],
+      "total_frames": 8,
+      "transitions": [
+        {
+          "priority": 5,
+          "require_window": false,
+          "target": "ATTACK_1",
+          "trigger": "KEY_ATTACK",
+          "window_type": 0
+        },
+        {
+          "priority": 1,
+          "require_window": false,
+          "target": "IDLE",
+          "trigger": "NO_INPUT",
+          "window_type": 0
+        }
+      ],
+      "windows": []
+    }
+  }
+}

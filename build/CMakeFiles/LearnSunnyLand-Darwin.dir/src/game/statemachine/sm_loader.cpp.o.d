@@ -1,7 +1,7 @@
 CMakeFiles/LearnSunnyLand-Darwin.dir/src/game/statemachine/sm_loader.cpp.o: \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/statemachine/sm_loader.cpp \
   /Users/suyp/C++/Projects/LearnSunnyLand/src/game/statemachine/sm_loader.h \
-  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/statemachine/sm_types.h \
+  /Users/suyp/C++/Projects/LearnSunnyLand/src/game/statemachine/../../engine/statemachine/sm_types.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/max.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/comp.h \
